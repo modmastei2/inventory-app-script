@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <base target="_top">
+    <link rel="manifest"
+        href="data:application/manifest+json,<?!= encodeURIComponent(include('manifest.json.html')) ?>">
+
+    <meta name=" viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        html {
+            font-family: "Roboto", "Sarabun", sans-serif;
+        }
+
+        body {
+            font-family: inherit !important;
+            font-weight: inherit !important;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus,
+        button:focus {
+            outline: none;
+        }
+
+        .delay-150 {
+            animation-delay: 150ms;
+        }
+
+        .delay-300 {
+            animation-delay: 300ms;
+        }
+    </style>
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+        rel="stylesheet">
+
+    <!-- tailwind -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- moment.js (GAS compatible) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+
+    <!-- jQuery -->
+    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
+
+    <!-- DevExtreme theme -->
+    <!-- <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.15/css/dx.light.compact.css"> -->
+
+    <!-- DevExtreme libraries (reference only one of them) -->
+    <!-- <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/23.2.15/js/dx.all.js"></script> -->
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+<body class="min-h-screen dx-viewport bg-gradient-to-br from-slate-50 to-slate-100">
+    <div id="loader" class="inset-0 z-[555] hidden bg-black/75">
+        <div class="flex items-center justify-center h-screen">
+            <div
+                class="w-20 h-20 rounded-full animate-spin border-t-3 border-b-3 border-r-3 border-t-blue-500 border-b-red-500">
+            </div>
+        </div>
+    </div>
+
+    <div id="mobile-nav"
+        class="fixed left-0 z-40 hidden w-full p-4 space-y-4 md:hidden bg-slate-300/50 backdrop-blur-md">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-2 transition rounded-lg cursor-pointer bg-slate-200 hover:bg-slate-300"
+                    onclick="toggleMobileNav()">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+            </div>
+        </div>
+        <button onclick="navigateMobilePage('items')" id="tab-items-mobile"
+            class="w-full px-4 py-2 font-medium text-blue-700 transition bg-blue-100 rounded-lg cursor-pointer">
+            Items
+        </button>
+        <button onclick="navigateMobilePage('daily')" id="tab-daily-mobile"
+            class="w-full px-4 py-2 font-medium transition rounded-lg cursor-pointer text-slate-600 hover:bg-slate-100">
+            Daily Request
+        </button>
+        <button onclick="navigateMobilePage('history')" id="tab-history-mobile"
+            class="w-full px-4 py-2 font-medium transition rounded-lg cursor-pointer text-slate-600 hover:bg-slate-100">
+            Historical
+        </button>
+        <button onclick="navigateMobilePage('dashboard')" id="tab-dashboard-mobile"
+            class="w-full px-4 py-2 font-medium transition rounded-lg cursor-pointer text-slate-600 hover:bg-slate-100">
+            Dashboard
+        </button>
+
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-10 bg-white border-b shadow-lg border-slate-200">
+        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div
+                        class="hidden p-2 rounded-lg cursor-pointer md:flex bg-gradient-to-br from-blue-500 to-blue-600">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                    <div class="p-2 transition rounded-lg cursor-pointer sm:flex md:hidden bg-slate-200 hover:bg-slate-300"
+                        onclick="toggleMobileNav()">
+                        <i class="fa-solid fa-bars"></i>
+                    </div>
+                    <div class="text-xl font-bold text-slate-800">Inventory Management</div>
+                </div>
+
+                <!-- Menu Tabs -->
+                <div class="items-center hidden space-x-1 md:flex">
+                    <button onclick="navigatePage('items')" id="tab-items"
+                        class="px-4 py-2 font-medium text-blue-700 transition bg-blue-100 rounded-lg cursor-pointer">
+                        Items
+                    </button>
+                    <button onclick="navigatePage('daily')" id="tab-daily"
+                        class="px-4 py-2 font-medium transition rounded-lg cursor-pointer text-slate-600 hover:bg-slate-100">
+                        Daily Request
+                    </button>
+                    <button onclick="navigatePage('history')" id="tab-history"
+                        class="px-4 py-2 font-medium transition rounded-lg cursor-pointer text-slate-600 hover:bg-slate-100">
+                        Historical
+                    </button>
+                    <button onclick="navigatePage('dashboard')" id="tab-dashboard"
+                        class="px-4 py-2 font-medium transition rounded-lg cursor-pointer text-slate-600 hover:bg-slate-100">
+                        Dashboard
+                    </button>
+                </div>
+
+                <!-- Cart Button -->
+                <div>
+                    <button id="cart-button" onclick="toggleCart()"
+                        class="hidden relative px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg shadow-sm cursor-pointer hover:bg-blue-700">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                            <span>Basket</span>
+                            <span id="cartCount"
+                                class="hidden absolute flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full -top-2 -right-2">0</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <!-- Page Items -->
+        <div id="page-items" class="page-content ">
+            <div class="mb-2">
+                <h2 class="mb-2 text-2xl font-bold text-slate-800">Search</h2>
+                <!-- <p class="text-slate-600">Select the items you want to borrow and add them to the basket.</p> -->
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="p-6 mb-2 bg-white border shadow-md rounded-xl border-slate-200">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-6">
+                    <div class="md:col-span-4">
+                        <div class="relative">
+                            <input type="text" id="search-input" placeholder="Search by name or item code..."
+                                class="w-full px-4 py-1 transition border rounded-lg pl-11 border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <select id="status-filter"
+                            class="w-full px-4 py-[0.35rem] transition border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="ALL">All</option>
+                            <option value="TRUE">Available</option>
+                            <option value="FALSE">Unavailable</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button id="search-button"
+                            class="w-full px-4 py-1 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Items Table -->
+            <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                <div class="px-4 py-2 border-b border-slate-200 bg-slate-50">
+                    <div class="text-xl font-bold text-slate-800">
+                        Equipment
+                        <span class="text-sm text-slate-600" id="item-count"></span>
+                    </div>
+                </div>
+                <div id="item-list" class="grid gap-4 p-4 sm:grid-cols-2 md:grid-cols-4">
+                    <!-- Example Card -->
+                    <!-- <div
+                        class="overflow-hidden bg-white border rounded-md shadow-md border-slate-200 card-hover fade-in">
+                        <img src="https://www.salika.co/wp-content/uploads/2019/10/Da-Vinci-Surgical-System-Robot.jpg"
+                            alt="" class="object-cover w-full h-48 shadow-sm">
+                        <div class="p-2 ">
+                            <div class="">
+                                <h4 class="line-clamp-1"
+                                    title="805 : เครื่องประหารหัวพยัคฆ์ร้ายส่ายหน้าไปส่ายหน้ามาไม่มองตาไม่มองยาย">805 :
+                                    เครื่องประหารหัวพยัคฆ์ร้ายส่ายหน้าไปส่ายหน้ามาไม่มองตาไม่มองยายเครื่องประหารหัวพยัคฆ์ร้ายส่ายหน้าไปส่ายหน้ามาไม่มองตาไม่มองยาย
+                                </h4>
+                                <p class="mt-1 text-xs text-slate-600 line-clamp-2">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque rerum, quisquam
+                                    voluptas minus modi dolorum doloribus cumque voluptatibus voluptate vel?
+                                </p>
+
+                                <div class="flex items-center justify-between mt-1">
+                                    <span class="font-bold text-md text-slate-800">99/100</span>
+                                    <div class="p-1 text-red-600 bg-red-200 rounded-md">หมด</div>
+                                    <button
+                                        class="px-1 py-1 font-medium text-white transition bg-blue-600 rounded-lg shadow-sm cursor-pointer hover:bg-blue-700">
+                                        <i class="fa-solid fa-plus"></i>
+                                        <span>Add</span>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- <div
+                        class="overflow-hidden bg-white border rounded-md shadow-md border-slate-200 card-hover fade-in">
+                        <img src="https://www.salika.co/wp-content/uploads/2019/10/medical-tool-way-to-medical-hub-thailand-1.jpg"
+                            alt="" class="object-cover w-full h-48 shadow-sm">
+                        <div class="p-2 ">
+                            <div class="">
+                                <h4 class="line-clamp-1"
+                                    title="805 : เครื่องประหารหัวพยัคฆ์ร้ายส่ายหน้าไปส่ายหน้ามาไม่มองตาไม่มองยาย">805 :
+                                    เครื่องประหารหัวพยัคฆ์ร้ายส่ายหน้าไปส่ายหน้ามาไม่มองตาไม่มองยายเครื่องประหารหัวพยัคฆ์ร้ายส่ายหน้าไปส่ายหน้ามาไม่มองตาไม่มองยาย
+                                </h4>
+                                <p class="mt-1 text-xs text-slate-600 line-clamp-2">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque rerum, quisquam
+                                    voluptas minus modi dolorum doloribus cumque voluptatibus voluptate vel?
+                                </p>
+
+                                <div class="flex items-center justify-between mt-1">
+                                    <span class="font-bold text-md text-slate-800">99/100</span>
+                                    <div class="p-1 text-red-600 bg-red-200 rounded-md">Out of stock</div>
+                                    <button
+                                        class="px-1 py-1 font-medium text-white transition bg-blue-600 rounded-lg shadow-sm cursor-pointer hover:bg-blue-700">
+                                        <i class="fa-solid fa-plus"></i>
+                                        <span>Add</span>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div> -->
+
+                </div>
+                <!-- loader dot jump -->
+                <!-- <div id="sentinel-load" class="hidden flex items-center justify-center py-2 space-x-2 cursor-pointer" onclick="loadItems()" title="Click to load more items">
+                    <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce delay-150"></div>
+                    <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce delay-300"></div>
+                </div> -->
+
+                <div id="item-sentinel" class="h-2"></div>
+            </div>
+
+        </div>
+
+        <!-- Page: Daily Request -->
+        <div id="page-daily" class="hidden page-content">
+            <div class="mb-2 flex items-center justify-between">
+                <h2 class="mb-2 text-2xl font-bold text-slate-800">Daily Request</h2>
+                <button onclick="getRequestList()"
+                    class="px-1.5 py-1 text-sm text-blue-600 transition border border-blue-600 rounded-lg hover:bg-blue-700 hover:text-white cursor-pointer">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
+            </div>
+
+            <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="border-b bg-slate-100 border-slate-200">
+                            <tr>
+                                <th class="px-2 w-8"></th>
+                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Request
+                                    ID</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                    Requirer Name</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Request
+                                    Date</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Return
+                                    Date</th>
+                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Amount
+                                </th>
+                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Status
+                                </th>
+                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="dailyRequestsBody" class="divide-y divide-slate-200 touch">
+                            <!-- Daily requests will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="flex text-xs items-center justify-end gap-2 mt-2">
+                <span class="flex items-center justify-center font-normal gap-1">
+                    <span class="w-6 h-6 text-white bg-blue-500 rounded flex items-center justify-center">
+                        <i class="fa-solid fa-dolly"></i>
+                    </span>
+                    <span>Distribute Request</span>
+                </span>
+
+                <span class="flex items-center justify-center font-normal gap-1">
+                    <span class="w-6 h-6 text-white bg-orange-500 rounded flex items-center justify-center">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </span>
+                    <span>Return Request</span>
+                </span>
+
+                <span class="flex items-center justify-center font-normal gap-1">
+                    <span class="w-6 h-6 text-white bg-red-500 rounded flex items-center justify-center">
+                        <i class="fa-solid fa-xmark"></i>
+                    </span>
+                    <span>Cancel Request</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Page: Historical -->
+        <div id="page-history" class="hidden page-content">
+            <div class="mb-2">
+                <h2 class="mb-2 text-2xl font-bold text-slate-800">Historical</h2>
+                <p class="text-slate-600">Complete borrowing and returning history</p>
+            </div>
+
+            <div class="p-6 mb-6 bg-white border shadow-md rounded-xl border-slate-200">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div>
+                        <input type="date" id="dateFrom"
+                            class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <input type="date" id="dateTo"
+                            class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <button onclick="filterHistory()"
+                            class="w-full px-4 py-3 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700">
+                            ค้นหา
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="border-b bg-slate-100 border-slate-200">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Request
+                                    ID
+                                </th>
+                                <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Borrower
+                                </th>
+                                <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Product
+                                </th>
+                                <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Borrow
+                                    Date
+                                </th>
+                                <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Return
+                                    Date
+                                </th>
+                                <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody" class="divide-y divide-slate-200">
+                            <!-- History will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Dashboard -->
+        <div id="page-dashboard" class="hidden page-content">
+            <div class="mb-2">
+                <h2 class="mb-2 text-2xl font-bold text-slate-800">Dashboard</h2>
+                <!-- <p class="text-slate-600">ภาพรวมระบบจัดการคลังอุปกรณ์</p> -->
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 lg:grid-cols-4">
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Total Item Types</p>
+                            <p class="mt-2 text-3xl font-bold text-blue-800" id="totalItemTypes">0</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Available Items</p>
+                            <p class="mt-2 text-3xl font-bold text-green-600" id="availableItems">0</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Total Accessory Types</p>
+                            <p class="mt-2 text-3xl font-bold text-blue-800" id="totalAccessoryTypes">0</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Available Accessories</p>
+                            <p class="mt-2 text-3xl font-bold text-green-600" id="availableAccessories">0</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 lg:grid-cols-4">
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Submit Requests</p>
+                            <p class="mt-2 text-3xl font-bold text-amber-600" id="submitRequest">0</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-amber-100">
+                            <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Waiting Returns</p>
+                            <p class="mt-2 text-3xl font-bold text-red-600" id="waitingReturn">0</p>
+                        </div>
+                        <div class="p-3 bg-red-100 rounded-lg">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 mb-4" id="recent-activity-container">
+                <h3 class="mb-4 text-lg font-semibold text-slate-800">Recent Activity</h3>
+                <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="border-b bg-slate-100 border-slate-200">
+                                <tr>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Log
+                                        Id</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                        Email</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                        Activity</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                        Action At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentActivity" class="divide-y divide-slate-200">
+                                <!-- Activity items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Activity-->
+            <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 hidden"
+                id="system-activity-container">
+                <h3 class="mb-4 text-lg font-semibold text-slate-800">System Activity</h3>
+                <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="border-b bg-slate-100 border-slate-200">
+                                <tr>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Log
+                                        Id</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                        Email</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                        Activity</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                        Action At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="systemActivity" class="divide-y divide-slate-200">
+                                <!-- Activity items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar"
+        class="fixed inset-y-0 right-0 z-50 flex flex-col w-full transition-transform duration-300 transform translate-x-full bg-white shadow-2xl md:w-96">
+        <div class="flex items-center justify-between p-6 border-b border-slate-200">
+            <h3 class="text-xl font-bold text-slate-800">Basket</h3>
+            <button onclick="toggleCart()" class="p-2 transition rounded-lg cursor-pointer hover:bg-slate-100">
+                <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <div id="cartItems" class="flex-1 p-6 space-y-4 overflow-y-auto">
+            <!-- Cart items will be inserted here -->
+            <div class="text-center py-12">
+                <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                    </path>
+                </svg>
+                <p class="text-slate-500 font-medium">ตระกร้าว่างเปล่า</p>
+            </div>
+        </div>
+
+        <div class="p-6 space-y-4 border-t border-slate-200">
+            <div class="flex items-center justify-between text-lg font-semibold">
+                <span class="text-slate-700">Total Items:</span>
+                <span id="cartTotal" class="text-blue-600">0 รายการ</span>
+            </div>
+            <button onclick="openRequestModal()"
+                class="w-full px-6 py-3 font-semibold text-white transition bg-blue-600 rounded-lg shadow-lg cursor-pointer hover:bg-blue-700">
+                Next
+            </button>
+        </div>
+    </div>
+
+    <!-- Request Modal -->
+    <div id="requestModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 bg-black/75">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 flex items-center justify-between p-4 bg-white border-b border-slate-200">
+                <h3 class="text-xl font-bold text-slate-800">ส่งคำขอยืมอุปกรณ์</h3>
+                <button onclick="closeRequestModal()"
+                    class="p-2 transition rounded-lg cursor-pointer hover:bg-slate-100">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-4 space-y-4">
+                <!-- Borrower Info -->
+                <div>
+                    <label class="block mb-2 text-sm font-semibold text-slate-700">ชื่อผู้ยืม <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" id="borrowerName" placeholder="กรอกชื่อผู้ยืม"
+                        class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Dates -->
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <label class="block mb-2 text-sm font-semibold text-slate-700">วันที่ยืม</label>
+                        <input type="date" id="requestDate"
+                            class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500 bg-slate-50"
+                            readonly>
+                    </div>
+                    <div>
+                        <label class="block mb-2 text-sm font-semibold text-slate-700">วันที่คืน <span
+                                class="text-red-500">*</span></label>
+                        <input type="date" id="returnDate"
+                            class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <!-- Remark -->
+                <div>
+                    <label class="block mb-2 text-sm font-semibold text-slate-700">หมายเหตุ</label>
+                    <textarea id="remark" rows="3" placeholder="ระบุหมายเหตุ (ถ้ามี)"
+                        class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+
+                <!-- Items List -->
+                <div>
+                    <h4 class="mb-4 text-md font-semibold text-slate-800">รายการอุปกรณ์ที่ขอยืม</h4>
+                    <div id="modalItemsList" class="space-y-4">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex items-center justify-end pt-4 space-x-3 border-t border-slate-200 ">
+                    <button onclick="closeRequestModal()"
+                        class="px-6 py-3 font-medium transition border rounded-lg cursor-pointer border-slate-300 text-slate-700 hover:bg-slate-50">
+                        ยกเลิก
+                    </button>
+                    <button onclick="submitBorrowRequest()"
+                        class="px-6 py-3 font-semibold text-white transition bg-blue-600 rounded-lg shadow-lg cursor-pointer hover:bg-blue-700">
+                        ยืนยันส่งคำขอ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Return Modal -->
+    <div id="returnModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 bg-black/75">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 flex items-center justify-between p-4 bg-white border-b border-slate-200">
+                <h3 class="text-xl font-bold text-slate-800">คืนอุปกรณ์</h3>
+                <button onclick="closeReturnModal()"
+                    class="p-2 transition rounded-lg cursor-pointer hover:bg-slate-100">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-4 space-y-4">
+                <!-- Borrower Info (Read-only) -->
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">รหัสคำขอ</label>
+                            <p id="displayRequestId" class="text-slate-900 font-medium">-</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">ชื่อผู้ยืม</label>
+                            <p id="displayBorrowerName" class="text-slate-900 font-medium">-</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">วันที่ยืม</label>
+                            <p id="displayBorrowDate" class="text-slate-900 font-medium">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Return Date -->
+                <div>
+                    <label class="block mb-2 text-sm font-semibold text-slate-700">วันที่คืน <span
+                            class="text-red-500">*</span></label>
+                    <input type="date" id="actualReturnDate"
+                        class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-green-500">
+                </div>
+
+                <!-- Return Type Selection -->
+                <div>
+                    <label class="block mb-2 text-sm font-semibold text-slate-700">ประเภทการคืน <span
+                            class="text-red-500">*</span></label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center cursor-pointer">
+                            <input type="radio" name="returnType" value="full" checked onchange="toggleReturnType()"
+                                class="w-4 h-4 text-green-600 cursor-pointer">
+                            <span class="ml-2 text-slate-700">คืนครบทุกรายการ</span>
+                        </label>
+                        <label class="flex items-center cursor-pointer">
+                            <input type="radio" name="returnType" value="partial" onchange="toggleReturnType()"
+                                class="w-4 h-4 text-green-600 cursor-pointer">
+                            <span class="ml-2 text-slate-700">คืนบางส่วน</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Remark -->
+                <div>
+                    <label class="block mb-2 text-sm font-semibold text-slate-700">หมายเหตุ</label>
+                    <textarea id="returnRemark" rows="3" placeholder="ระบุหมายเหตุ (ถ้ามี)"
+                        class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-green-500"></textarea>
+                </div>
+
+                <!-- Items List -->
+                <div>
+                    <h4 class="mb-4 text-md font-semibold text-slate-800">รายการอุปกรณ์ที่ยืม</h4>
+                    <div id="returnItemsList" class="space-y-4">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex items-center justify-end pt-4 space-x-3 border-t border-slate-200">
+                    <button onclick="closeReturnModal()"
+                        class="px-6 py-3 font-medium transition border rounded-lg cursor-pointer border-slate-300 text-slate-700 hover:bg-slate-50">
+                        ยกเลิก
+                    </button>
+                    <button onclick="submitReturn()"
+                        class="px-6 py-3 font-semibold text-white transition bg-green-600 rounded-lg shadow-lg cursor-pointer hover:bg-green-700">
+                        ยืนยันการคืน
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 z-40 hidden bg-black/75" onclick="toggleCart()"></div>
+
+
+</body>
+<script>
+    // Items variable
+    let page = 1;
+    let pageSize = 12;
+    let loadingItems = false;
+    let hasMoreItems = true;
+
+    let cart = [];
+    let modalItemsData = [];
+    let itemList = [];
+    let accessoriesList = [];
+
+    // active requests
+    let activeRequest = [];
+    const loader = document.getElementById('loader');
+    // search
+    let searchParam = { name: '', status: 'ALL' };
+    const searchInput = document.getElementById('search-input');
+    const statusFilter = document.getElementById('status-filter');
+    const searchButton = document.getElementById('search-button');
+
+    // return 
+    let returnItemsData = [];
+
+    const showLoader = () => {
+        loader.classList.remove('hidden');
+        loader.classList.add('fixed');
+    };
+
+    const hideLoader = () => {
+        loader.classList.add('hidden');
+        loader.classList.remove('fixed');
+    };
+
+    const navigateMobilePage = (page) => {
+        navigatePage(page);
+
+        toggleMobileNav();
+    }
+    // Page Navigation
+    const navigatePage = (page) => {
+        console.log('Show page:', page);
+        switch (page) {
+            case 'items':
+                document.title = 'Items - Inventory Management';
+                break;
+            case 'daily':
+                if (activeRequest.length <= 0) {
+                    getRequestList();
+                }
+                break;
+            case 'history':
+                document.title = 'Historical - Inventory Management';
+                break;
+            case 'dashboard':
+                getDashboardStats();
+                break;
+            default:
+                document.title = 'Inventory Management';
+        }
+
+        document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+        document.getElementById('page-' + page).classList.remove('hidden');
+
+        document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+            tab.classList.remove('bg-blue-100', 'text-blue-700');
+            tab.classList.add('text-slate-600', 'hover:bg-slate-100');
+        });
+        document.getElementById('tab-' + page).classList.add('bg-blue-100', 'text-blue-700');
+        document.getElementById('tab-' + page).classList.remove('text-slate-600', 'hover:bg-slate-100');
+
+        // if (page === 'dashboard') updateDashboard();
+        // if (page === 'daily') renderDailyRequests();
+        // if (page === 'history') renderHistory();
+
+
+    }
+
+    const toggleMobileNav = () => {
+        const mobileNav = document.getElementById('mobile-nav');
+        if (mobileNav.classList.contains('hidden')) {
+            mobileNav.classList.remove('hidden');
+        } else {
+            mobileNav.classList.add('hidden');
+        }
+    };
+
+    // Cart functions
+    const toggleCart = () => {
+        const sidebar = document.getElementById('cartSidebar');
+        const overlay = document.getElementById('overlay');
+        const isOpen = sidebar.classList.contains('translate-x-0');
+
+        if (isOpen) {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+        } else {
+            sidebar.classList.remove('translate-x-full');
+            sidebar.classList.add('translate-x-0');
+            overlay.classList.remove('hidden');
+        }
+    }
+
+    function openRequestModal() {
+        if (cart.length === 0) {
+            alert('กรุณาเพิ่มอุปกรณ์ลงในตระกร้า');
+            return;
+        }
+
+        // Set today's date as borrow date
+        // const today = new Date().toISOString().split('T')[0];
+        const today = moment().format('YYYY-MM-DD');
+        console.log('TODAY:', today);
+        document.getElementById('requestDate').value = today;
+
+        // Clear previous data
+        document.getElementById('borrowerName').value = '';
+        document.getElementById('returnDate').value = '';
+        document.getElementById('remark').value = '';
+
+        showLoader();
+        google.script.run
+            .withSuccessHandler((acc) => {
+                console.log("Loaded accessories:", acc.data);
+
+                accessoriesList = acc.data
+
+                // Initialize modal items data
+                modalItemsData = cart.map(item => ({
+                    Item_Id: item.Item_Id,
+                    Item_Name: item.Item_Name,
+                    Image: item.Image,
+                    Qty: item.Qty,
+                    Accessories: []
+                }));
+
+                renderModalItems();
+                document.getElementById('requestModal').classList.remove('hidden');
+
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                hideLoader();
+            })
+            .loadAccessories(cart.map(i => i.Item_Id));
+    }
+
+    const closeRequestModal = () => {
+        document.getElementById('requestModal').classList.add('hidden');
+    }
+
+    const renderModalItems = () => {
+        const container = document.getElementById('modalItemsList');
+
+        const itemContainer = document.createElement('div');
+
+        modalItemsData.forEach((item, idx) => {
+            const div = document.createElement('div');
+
+            div.className = 'p-4 border rounded-lg border-slate-200 bg-slate-50';
+
+            div.innerHTML = `
+                    <div class="flex items-center mb-4 space-x-4">
+                        <img src="${item.Image}" alt="${item.Item_Name}" class="object-cover w-20 h-20 rounded-lg">
+                        <div class="flex-1">
+                            <h5 class="font-semibold text-slate-800">${item.Item_Name}</h5>
+                            <div class="flex items-center mt-2 space-x-2">
+                                <span class="text-sm text-slate-600">จำนวน:</span>
+                                <button onclick="updateModalItemQty(${idx}, -1)" class="flex items-center justify-center transition bg-white border rounded w-7 h-7 border-slate-300 hover:bg-slate-100 cursor-pointer">-</button>
+                                <input type="number" value="${item.Qty}" onchange="setModalItemQty(${idx}, this.value)" class="w-16 px-2 py-1 text-center border rounded border-slate-300" min="1">
+                                <button onclick="updateModalItemQty(${idx}, 1)" class="flex items-center justify-center transition bg-white border rounded w-7 h-7 border-slate-300 hover:bg-slate-100 cursor-pointer">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-semibold text-slate-700">อุปกรณ์เสริม</label>
+                            <button onclick="addAccessoryToItem(${idx})" class="text-sm font-medium text-blue-600 hover:text-blue-700 cursor-pointer">+ เพิ่มอุปกรณ์</button>
+                        </div>
+                        <div id="accessories-${idx}" class="space-y-2">
+                            ${item.Accessories.map((acc, accIdx) => `
+                                <div class="flex items-center p-2 space-x-2 bg-white border rounded border-slate-200">
+                                    <select onchange="updateAccessoryType(${idx}, ${accIdx}, this.value)" class="flex-1 px-2 py-1 text-sm border rounded border-slate-300">
+                                        <option value="">เลือกอุปกรณ์</option>
+                                        ${accessoriesList.filter(a => a.Item_Id === item.Item_Id).map(a => `<option value="${a.Accessory_Id}" ${acc.Accessory_Id === a.Accessory_Id ? 'selected' : ''}>${a.Accessory_Name} (คงเหลือ: ${a.Available_Qty})</option>`).join('')}
+                                    </select>
+                                    ${acc.Accessory_Id
+                    ? `
+                                        <input type="number" value="${acc.Qty}" onchange="updateAccessoryQty(${idx}, ${accIdx}, this.value)" class="w-16 px-2 py-1 text-sm text-center border rounded border-slate-300" min="1">
+                                    ` : ``
+                }
+                                    <button onclick="removeAccessoryFromItem(${idx}, ${accIdx})" class="p-1 text-red-600 hover:text-red-700">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+            `
+
+            itemContainer.appendChild(div);
+        })
+
+        container.innerHTML = itemContainer.innerHTML;
+    }
+
+    const updateModalItemQty = (idx, change) => {
+        const item = modalItemsData[idx];
+        const cartItem = cart.find(c => c.Item_Id === item.Item_Id);
+        const newQty = item.Qty + change;
+
+        if (newQty > 0 && newQty <= cartItem.MaxQty) {
+            modalItemsData[idx].Qty = newQty;
+            renderModalItems();
+        }
+    }
+
+    const setModalItemQty = (idx, value) => {
+        const qty = parseInt(value) || 1;
+        const item = modalItemsData[idx];
+        const cartItem = cart.find(c => c.Item_Id === item.Item_Id);
+
+        if (qty > 0 && qty <= cartItem.MaxQty) {
+            modalItemsData[idx].Qty = qty;
+        } else if (qty > cartItem.MaxQty) {
+            modalItemsData[idx].Qty = cartItem.MaxQty;
+        } else {
+            modalItemsData[idx].Qty = 1;
+        }
+        renderModalItems();
+    }
+
+    const addAccessoryToItem = (idx) => {
+        modalItemsData[idx].Accessories.push({ Accessory_Id: '', Accessory_Name: '', Qty: 1 });
+        renderModalItems();
+    }
+
+    const removeAccessoryFromItem = (idx, accIdx) => {
+        modalItemsData[idx].Accessories.splice(accIdx, 1);
+        renderModalItems();
+    }
+
+    function updateAccessoryType(idx, accIdx, accessoryId) {
+        const accessory = accessoriesList.find(a => a.Accessory_Id === +accessoryId);
+
+        if (accessory) {
+            modalItemsData[idx].Accessories[accIdx].Accessory_Id = accessory.Accessory_Id;
+            modalItemsData[idx].Accessories[accIdx].Accessory_Name = accessory.Accessory_Name;
+
+            if (modalItemsData[idx].Accessories[accIdx].Qty > accessory.Available_Qty) {
+                modalItemsData[idx].Accessories[accIdx].Qty = accessory.Available_Qty;
+            }
+        }
+
+        renderModalItems();
+    }
+
+    function updateAccessoryQty(idx, accIdx, value) {
+        const qty = parseInt(value);
+        const acc = modalItemsData[idx].Accessories[accIdx];
+        const accessory = accessoriesList.find(a => a.Accessory_Id === acc.Accessory_Id);
+
+        if (qty > 0 && accessory && qty <= accessory.Available_Qty) {
+            modalItemsData[idx].Accessories[accIdx].Qty = qty;
+        } else if (accessory && qty > accessory.Available_Qty) {
+            modalItemsData[idx].Accessories[accIdx].Qty = accessory.Available_Qty;
+        } else {
+            modalItemsData[idx].Accessories[accIdx].Qty = 1;
+        }
+
+        renderModalItems();
+    }
+
+    function getRowRequest(requestId) {
+        google.script.run
+            .withSuccessHandler((response) => {
+                return response;
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                alert(error.message || 'เกิดข้อผิดพลาดในการส่งคำขอ กรุณาลองใหม่อีกครั้ง');
+            })
+            .getRowRequest(requestId);
+    }
+
+    function submitBorrowRequest() {
+        console.log(modalItemsData)
+        const requirerName = document.getElementById('borrowerName').value.trim();
+        const requestDate = document.getElementById('requestDate').value;
+        const returnDate = document.getElementById('returnDate').value;
+        const remark = document.getElementById('remark').value.trim();
+
+        if (!requirerName) {
+            alert('กรุณากรอกชื่อผู้ยืม');
+            return;
+        }
+        console.log(returnDate)
+        if (!returnDate) {
+            alert('กรุณาเลือกวันที่คืน');
+            return;
+        }
+
+        modalItemsData.forEach(item => {
+            if (item.Qty <= 0) {
+                alert('จำนวนอุปกรณ์ต้องมากกว่า 0');
+                throw new Error('Invalid item quantity');
+            }
+            item.Accessories.forEach(acc => {
+                if (!acc.Accessory_Id) {
+                    alert('กรุณาเลือกอุปกรณ์เสริมให้ครบถ้วน');
+                    throw new Error('Invalid accessory selection');
+                }
+                if (acc.Qty <= 0) {
+                    alert('จำนวนอุปกรณ์เสริมต้องมากกว่า 0');
+                    throw new Error('Invalid accessory quantity');
+                }
+            });
+        });
+
+        let submitRequestData = {
+            IsNew: true,
+            Request_Id: null,
+            Requirer_Name: requirerName,
+            Status: 'Submit',
+            Request_Date: moment(requestDate).format('YYYY-MM-DD'),
+            Distributed_Date: null,
+            Return_Date: moment(returnDate).format('YYYY-MM-DD'),
+            Remark: remark,
+            Items: []
+        }
+
+        modalItemsData.forEach((item, index) => {
+            let submitItem = {
+                Item_Index: index + 1,
+                Item_Id: item.Item_Id,
+                Item_Name: item.Item_Name,
+                Qty: item.Qty,
+                Accessories: []
+            };
+
+            item.Accessories.forEach((acc, index) => {
+                submitItem.Accessories.push({
+                    Accessory_Index: index + 1,
+                    Accessory_Id: acc.Accessory_Id,
+                    Accessory_Name: acc.Accessory_Name,
+                    Qty: acc.Qty
+                });
+            });
+
+            submitRequestData.Items.push(submitItem);
+        });
+
+        console.log("Submitting items:", submitRequestData);
+
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                alert('ส่งคำขอยืมสำเร็จ!\nรหัสคำขอ: ' + response.Request_Id);
+
+                cart = [];
+                modalItemsData = [];
+                updateCart();
+                closeRequestModal();
+                toggleCart();
+                resetLoadedItems();
+                loadItems();
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                alert(error.message || 'เกิดข้อผิดพลาดในการส่งคำขอ กรุณาลองใหม่อีกครั้ง');
+                hideLoader();
+            })
+            .submitRequest(submitRequestData);
+    }
+
+    const loadItems = () => {
+        if (loadingItems || !hasMoreItems) return;
+
+        loadingItems = true;
+        showLoader();
+
+        renderSkeletonItems(pageSize - 4);
+        google.script.run
+            .withSuccessHandler((items) => {
+                if (!items || items.data.length === 0) {
+                    loadingItems = false;
+                    hasMoreItems = false;
+                    clearSkeletonItems();
+                    if (page === 1) {
+                        renderNoItems();
+                    }
+                    hideLoader();
+                    return;
+                }
+
+                // final page check 
+                if (items.data.length < pageSize) {
+                    hasMoreItems = false;
+                }
+
+                // const sentinelLoad = document.getElementById('sentinel-load');
+                // if (hasMoreItems) {
+                //     sentinelLoad.classList.remove('hidden');
+                // } else {
+                //     sentinelLoad.classList.add('hidden');
+                // }
+
+                // console.log("Items Data: ", items.data)
+                clearSkeletonItems();
+                console.log(items.data)
+                renderItems(items.data);
+                itemList = itemList.concat(items.data);
+                // console.log("Items List:", itemList)
+
+                const itemCount = document.getElementById('item-count');
+                if (itemList.length > 0) {
+                    itemCount.textContent = `(${itemList.length} items found)`;
+                } else {
+                    itemCount.textContent = ``;
+                }
+
+                page++;
+                loadingItems = false;
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                clearSkeletonItems();
+                loadingItems = false;
+                hideLoader();
+            })
+            .loadItems(searchParam.name, searchParam.status, page, pageSize);
+
+
+    }
+
+    const renderItems = (items) => {
+        const container = document.getElementById('item-list');
+
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className =
+                'overflow-hidden bg-white border rounded-md shadow-md border-slate-200 card-hover fade-in';
+
+            div.innerHTML = `
+            ${item.Image
+                    ? `
+                <img src="${item.Image}" class="object-cover w-full h-48 shadow-sm">
+            `
+                    : `
+                <div class="flex items-center justify-center w-full h-48 bg-slate-200">
+                    <i class="fa-solid fa-image fa-2x text-slate-400"></i>
+                    <p class="text-slate-400">No image available</p>
+                </div>
+            `
+                }
+
+            <div class="p-2">
+                <h4 class="line-clamp-1" title="${item.Item_Name}">
+                    ${item.Item_Name}
+                </h4>
+
+                <p class="mt-1 text-xs text-slate-600 line-clamp-2" title="${item.Item_Desc}">
+                    ${item.Item_Desc || '-'}
+                </p>
+
+                <div class="flex items-center justify-between mt-1">
+                    ${item.Available_Qty
+                    ? `<span class="font-bold text-md text-slate-800">
+                            ${item.Available_Qty}/${item.Total_Qty}
+                           </span>`
+                    : `<div class="p-1 text-red-600 bg-red-200 rounded-md">
+                            Out of stock
+                           </div>`
+                }
+
+                    ${item.Available_Qty
+                    ? `
+                        ${cart.find(c => c.Item_Id === item.Item_Id)
+                        ? `<button onclick="removeFromCart(${item.Item_Id})"
+                                class="px-2 py-1 text-white bg-red-600 rounded hover:bg-red-700 cursor-pointer">
+                                <i class="fa-solid fa-minus"></i>
+                                Remove
+                            </button>`
+                        : `
+                        <button onclick="addToCart(${item.Item_Id})"
+                            class="px-2 py-1 text-white bg-blue-600 rounded hover:bg-blue-700 cursor-pointer">
+                            <i class="fa-solid fa-plus"></i>
+                            Add
+                        </button>
+                        `}
+                    ` : ``
+                }
+
+                </div>
+            </div>
+        `;
+
+            container.appendChild(div);
+        });
+    }
+
+    const renderNoItems = () => {
+        const container = document.getElementById('item-list');
+        container.innerHTML = `
+            <div class="col-span-4 p-6 text-center text-slate-600">
+                <i class="fa-solid fa-box-open fa-2x mb-4"></i>
+                <p class="text-lg">No items found.</p>
+            </div>
+        `;
+    }
+
+    const renderSkeletonItems = (count) => {
+        const container = document.getElementById('item-list');
+
+        for (let i = 0; i < count; i++) {
+            const div = document.createElement('div');
+            div.className =
+                'overflow-hidden bg-white border rounded-md shadow-md border-slate-200 card-hover animate-pulse skeleton-item';
+
+            div.innerHTML = `
+            <div class="object-cover w-full h-48 bg-slate-200"></div>
+
+            <div class="p-2">
+                <div class="w-3/4 h-4 mb-2 bg-slate-200 rounded"></div>
+                <div class="w-full h-3 mb-4 bg-slate-200 rounded"></div>
+                <div class="flex items-center justify-between mt-1">
+                    <div class="w-1/4 h-5 bg-slate-200 rounded"></div>
+                    <div class="w-12 h-8 bg-slate-200 rounded"></div>
+                </div>
+            </div>
+        `;
+
+            container.appendChild(div);
+        }
+    }
+
+    const clearSkeletonItems = () => {
+        const container = document.getElementById('item-list');
+        const skeletons = container.querySelectorAll('.skeleton-item');
+        skeletons.forEach(skel => skel.remove());
+    }
+
+    const addToCart = (itemId) => {
+        const item = itemList.find(i => i.Item_Id === itemId);
+        const cartItem = cart.find(c => c.Item_Id === itemId);
+
+        if (cartItem) {
+            if (cartItem.Qty < item.Available_Qty) {
+                cartItem.Qty++;
+            } else {
+                alert('ไม่สามารถเพิ่มได้เนื่องจากอุปกรณ์ไม่เพียงพอ');
+                return;
+            }
+        } else {
+            cart.push({ Item_Id: item.Item_Id, Item_Name: item.Item_Name, Image: item.Image, Qty: 1, MaxQty: item.Available_Qty });
+        }
+
+        document.getElementById('item-list').innerHTML = '';
+        updateCart();
+        renderItems(itemList)
+    }
+
+    const updateCart = () => {
+        const cartItemsDiv = document.getElementById('cartItems');
+        const cartCount = document.getElementById('cartCount');
+        const cartTotal = document.getElementById('cartTotal');
+
+        cartCount.textContent = cart.reduce((sum, item) => sum + item.Qty, 0);
+        cartTotal.textContent = cart.length + ' รายการ';
+
+        if (cart.length === 0) {
+            cartCount.classList.add('hidden');
+            cartItemsDiv.innerHTML = `
+                    <div class="text-center py-12">
+                        <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <p class="text-slate-500 font-medium">ตระกร้าว่างเปล่า</p>
+                    </div>
+                `;
+        } else {
+            cartCount.classList.remove('hidden');
+            cartItemsDiv.innerHTML = cart.map(item => `
+                    <div class="flex items-center space-x-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <img src="${item.Image}" alt="${item.Item_Name}" class="w-16 h-16 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-slate-800">${item.Item_Name}</h4>
+                            <div class="flex items-center space-x-2 mt-2">
+                                <button onclick="updateCartQty('${item.Item_Id}', -1)" class="w-8 h-8 bg-white border border-slate-300 rounded-lg hover:bg-slate-100 transition flex items-center justify-center cursor-pointer">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                                    </svg>
+                                </button>
+                                <input type="number" class="w-16 px-2 py-1 text-center border rounded border-slate-300" min="1" max="${item.MaxQty}" value="${item.Qty}" onchange="setCartQty('${item.Item_Id}', this.value)">
+                               
+                                <button onclick="updateCartQty('${item.Item_Id}', 1)" class="w-8 h-8 bg-white border border-slate-300 rounded-lg hover:bg-slate-100 transition flex items-center justify-center cursor-pointer">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart('${item.Item_Id}')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition cursor-pointer">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `).join('');
+        }
+    }
+
+    const removeFromCart = (itemId) => {
+        cart = cart.filter(item => item.Item_Id !== +itemId);
+        console.log(cart);
+        console.log(itemId);
+        document.getElementById('item-list').innerHTML = '';
+        updateCart();
+        renderItems(itemList)
+    }
+
+    const updateCartQty = (itemId, change) => {
+        const cartItem = cart.find(c => c.Item_Id === +itemId);
+        console.log(cart);
+        if (cartItem) {
+            const NewQty = cartItem.Qty + change;
+            if (NewQty > 0 && NewQty <= cartItem.MaxQty) {
+                cartItem.Qty = NewQty;
+                updateCart();
+            } else if (NewQty <= 0) {
+                removeFromCart(itemId);
+            }
+        }
+    }
+
+    const setCartQty = (itemId, value) => {
+        const cartItem = cart.find(c => c.Item_Id === +itemId);
+        const intValue = parseInt(value);
+        if (cartItem && !isNaN(intValue)) {
+            if (intValue > 0 && intValue <= cartItem.MaxQty) {
+                cartItem.Qty = intValue;
+                updateCart();
+            } else if (intValue <= 0) {
+                removeFromCart(itemId);
+            } else {
+                cartItem.Qty = cartItem.MaxQty;
+                updateCart();
+            }
+        }
+    }
+
+    function getRequestList() {
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                activeRequest = response.data || [];
+                renderDailyRequests();
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                hideLoader();
+            })
+            .getRequestList();
+    }
+
+    function distributeRequest(requestId) {
+        if (!confirm('ยืนยันการจ่ายอุปกรณ์สำหรับคำขอ ' + requestId + '?')) {
+            return;
+        }
+
+        const requestData = activeRequest.find(r => r.Request_Id === +requestId);
+
+        if (!requestData) {
+            alert('ไม่พบคำขอที่ระบุ');
+            return;
+        }
+
+        console.log(requestData)
+
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                alert('จ่ายอุปกรณ์สำเร็จสำหรับคำขอ ' + requestId);
+                getRequestList();
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                alert(error.message || 'เกิดข้อผิดพลาดในการจ่ายอุปกรณ์ กรุณาลองใหม่อีกครั้ง');
+                hideLoader();
+            })
+            .distributeRequest(requestData);
+    }
+
+    function cancelRequest(requestId) {
+        if (!confirm('ยืนยันการยกเลิกคำขอ ' + requestId + '?')) {
+            return;
+        }
+
+        const requestData = activeRequest.find(r => r.Request_Id === +requestId);
+
+        if (!requestData) {
+            alert('ไม่พบคำขอที่ระบุ');
+            return;
+        }
+
+        console.log(requestData)
+
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                alert('ยกเลิกคำขอสำเร็จสำหรับคำขอ ' + requestId);
+                getRequestList();
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                alert(error.message || 'เกิดข้อผิดพลาดในการยกเลิกคำขอ กรุณาลองใหม่อีกครั้ง');
+                hideLoader();
+            })
+            .cancelRequest(requestId);
+    }
+
+    function openReturnModal(requestId) {
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                console.log(response)
+
+                const requestData = response.data;
+
+                // Set display info
+                document.getElementById('displayRequestId').textContent = requestData.Request_Id;
+                document.getElementById('displayBorrowerName').textContent = requestData.Requirer_Name;
+                document.getElementById('displayBorrowDate').textContent = moment(requestData.Request_Date).format('YYYY-MM-DD');
+
+                // Set today's date as return date
+                const today = moment().format('YYYY-MM-DD');
+                document.getElementById('actualReturnDate').value = today;
+
+                // Clear remark
+                document.getElementById('returnRemark').value = '';
+
+                // Initialize return items data
+                returnItemsData = requestData.Items.map(item => ({
+                    Item_Index: item.Item_Index,
+                    Item_Id: item.Item_Id,
+                    Item_Name: item.Item_Name,
+                    Item_Image: item.Item_Image,
+                    Borrowed_Qty: item.Qty,
+                    Return_Qty: item.Qty, // Default to full return
+                    Accessories: item.Accessories.map(acc => ({
+                        Accessory_Index: acc.Accessory_Index,
+                        Accessory_Id: acc.Accessory_Id,
+                        Accessory_Name: acc.Accessory_Name,
+                        Borrowed_Qty: acc.Qty,
+                        Return_Qty: acc.Qty // Default to full return
+                    }))
+                }));
+
+                renderReturnItems();
+                document.getElementById('returnModal').classList.remove('hidden');
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                alert(error.message || 'เกิดข้อผิดพลาดในการส่งคำขอ กรุณาลองใหม่อีกครั้ง');
+            })
+            .getRowRequest(requestId);
+    }
+
+    function closeReturnModal() {
+        document.getElementById('returnModal').classList.add('hidden');
+    }
+
+    function toggleReturnType() {
+        renderReturnItems();
+    }
+
+    const renderReturnItems = () => {
+        const container = document.getElementById('returnItemsList');
+        const returnType = document.querySelector('input[name="returnType"]:checked').value;
+        const isPartial = returnType === 'partial';
+
+        const itemContainer = document.createElement('div');
+
+        returnItemsData.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = 'p-4 border rounded-lg border-slate-200 bg-slate-50';
+
+            div.innerHTML = `
+                    <div class="flex items-center mb-4 space-x-4">
+                        <img src="${item.Item_Image}" alt="${item.Item_Name}" class="object-cover w-20 h-20 rounded-lg">
+                        <div class="flex-1">
+                            <h5 class="font-semibold text-slate-800">${item.Item_Name}</h5>
+                            <div class="flex items-center mt-2 space-x-2">
+                                <span class="text-sm text-slate-600">จำนวนที่ยืม: <strong>${item.Borrowed_Qty}</strong> ชิ้น</span>
+                            </div>
+                            ${isPartial ? `
+                            <div class="flex items-center mt-2 space-x-2">
+                                <span class="text-sm font-semibold text-slate-700">จำนวนที่คืน:</span>
+                                <button onclick="updateReturnItemQty(${idx}, -1)" class="flex items-center justify-center transition bg-white border rounded w-7 h-7 border-slate-300 hover:bg-slate-100 cursor-pointer">-</button>
+                                <input type="number" value="${item.Return_Qty}" onchange="setReturnItemQty(${idx}, this.value)" class="w-16 px-2 py-1 text-center border rounded border-slate-300" min="0" max="${item.Borrowed_Qty}">
+                                <button onclick="updateReturnItemQty(${idx}, 1)" class="flex items-center justify-center transition bg-white border rounded w-7 h-7 border-slate-300 hover:bg-slate-100 cursor-pointer">+</button>
+                            </div>
+                            ` : `
+                            <div class="flex items-center mt-2">
+                                <span class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-lg font-semibold">คืนครบ ${item.Borrowed_Qty} ชิ้น</span>
+                            </div>
+                            `}
+                        </div>
+                    </div>
+                    
+                    ${item.Accessories.length > 0 ? `
+                    <div class="space-y-2 mt-3 pt-3 border-t border-slate-200">
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-semibold text-slate-700">อุปกรณ์เสริม</label>
+                        </div>
+                        <div id="accessories-${idx}" class="space-y-2">
+                            ${item.Accessories.map((acc, accIdx) => `
+                                <div class="flex items-center p-2 space-x-2 bg-white border rounded border-slate-200">
+                                    <div class="flex-1">
+                                        <div class="text-sm font-medium text-slate-800">${acc.Accessory_Name}</div>
+                                        <div class="text-xs text-slate-600 mt-1">จำนวนที่ยืม: <strong>${acc.Borrowed_Qty}</strong> ชิ้น</div>
+                                    </div>
+                                    ${isPartial ? `
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs text-slate-600">คืน:</span>
+                                        <button onclick="updateReturnAccessoryQty(${idx}, ${accIdx}, -1)" class="flex items-center justify-center transition bg-white border rounded w-6 h-6 border-slate-300 hover:bg-slate-100 cursor-pointer text-sm">-</button>
+                                        <input type="number" value="${acc.Return_Qty}" onchange="setReturnAccessoryQty(${idx}, ${accIdx}, this.value)" class="w-14 px-2 py-1 text-sm text-center border rounded border-slate-300" min="0" max="${acc.Borrowed_Qty}">
+                                        <button onclick="updateReturnAccessoryQty(${idx}, ${accIdx}, 1)" class="flex items-center justify-center transition bg-white border rounded w-6 h-6 border-slate-300 hover:bg-slate-100 cursor-pointer text-sm">+</button>
+                                    </div>
+                                    ` : `
+                                    <div class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded font-semibold">
+                                        คืน ${acc.Borrowed_Qty} ชิ้น
+                                    </div>
+                                    `}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                `;
+
+            itemContainer.appendChild(div);
+        });
+
+        container.innerHTML = itemContainer.innerHTML;
+    }
+
+    const updateReturnItemQty = (idx, change) => {
+        const item = returnItemsData[idx];
+        const newQty = item.Return_Qty + change;
+
+        if (newQty >= 0 && newQty <= item.Borrowed_Qty) {
+            returnItemsData[idx].Return_Qty = newQty;
+            renderReturnItems();
+        }
+    }
+
+    const setReturnItemQty = (idx, value) => {
+        const qty = parseInt(value) || 0;
+        const item = returnItemsData[idx];
+
+        if (qty >= 0 && qty <= item.Borrowed_Qty) {
+            returnItemsData[idx].Return_Qty = qty;
+        } else if (qty > item.Borrowed_Qty) {
+            returnItemsData[idx].Return_Qty = item.Borrowed_Qty;
+        } else {
+            returnItemsData[idx].Return_Qty = 0;
+        }
+        renderReturnItems();
+    }
+
+    const updateReturnAccessoryQty = (itemIdx, accIdx, change) => {
+        const acc = returnItemsData[itemIdx].Accessories[accIdx];
+        const newQty = acc.Return_Qty + change;
+
+        if (newQty >= 0 && newQty <= acc.Borrowed_Qty) {
+            returnItemsData[itemIdx].Accessories[accIdx].Return_Qty = newQty;
+            renderReturnItems();
+        }
+    }
+
+    const setReturnAccessoryQty = (itemIdx, accIdx, value) => {
+        const qty = parseInt(value) || 0;
+        const acc = returnItemsData[itemIdx].Accessories[accIdx];
+
+        if (qty >= 0 && qty <= acc.Borrowed_Qty) {
+            returnItemsData[itemIdx].Accessories[accIdx].Return_Qty = qty;
+        } else if (qty > acc.Borrowed_Qty) {
+            returnItemsData[itemIdx].Accessories[accIdx].Return_Qty = acc.Borrowed_Qty;
+        } else {
+            returnItemsData[itemIdx].Accessories[accIdx].Return_Qty = 0;
+        }
+        renderReturnItems();
+    }
+
+    function submitReturn() {
+        console.log('Return Items Data:', returnItemsData);
+
+        const requestId = +document.getElementById('displayRequestId').textContent;
+        const requirerName = document.getElementById('displayBorrowerName').textContent.trim();
+        const returnDate = document.getElementById('actualReturnDate').value;
+        const returnType = document.querySelector('input[name="returnType"]:checked').value;
+        const remark = document.getElementById('returnRemark').value.trim();
+
+        if (!returnDate) {
+            alert('กรุณาระบุวันที่คืน');
+            return;
+        }
+
+        // Validate partial return
+        if (returnType === 'partial') {
+            const totalItemsReturned = returnItemsData.reduce((sum, item) => sum + item.Return_Qty, 0);
+            const totalAccessoriesReturned = returnItemsData.reduce((sum, item) =>
+                sum + item.Accessories.reduce((accSum, acc) => accSum + acc.Return_Qty, 0), 0);
+
+            if (totalItemsReturned === 0 && totalAccessoriesReturned === 0) {
+                alert('กรุณาระบุจำนวนที่ต้องการคืนอย่างน้อย 1 รายการ');
+                return;
+            }
+        }
+
+        // Prepare submit data
+        let submitReturnData = {
+            Request_Id: requestId,
+            Requirer_Name: requirerName,
+            Return_Type: returnType,
+            Return_Date: moment(returnDate).format('YYYY-MM-DD'),
+            Remark: remark,
+            Items: []
+        };
+
+        returnItemsData.forEach((item) => {
+            let submitItem = {
+                Item_Index: item.Item_Index,
+                Item_Id: item.Item_Id,
+                Item_Name: item.Item_Name,
+                Borrowed_Qty: item.Borrowed_Qty,
+                Return_Qty: returnType === 'full' ? item.Borrowed_Qty : item.Return_Qty,
+                Accessories: []
+            };
+
+            item.Accessories.forEach((acc) => {
+                submitItem.Accessories.push({
+                    Accessory_Index: acc.Accessory_Index,
+                    Accessory_Id: acc.Accessory_Id,
+                    Accessory_Name: acc.Accessory_Name,
+                    Borrowed_Qty: acc.Borrowed_Qty,
+                    Return_Qty: returnType === 'full' ? acc.Borrowed_Qty : acc.Return_Qty
+                });
+            });
+
+            submitReturnData.Items.push(submitItem);
+        });
+
+        console.log("Submitting return data:", submitReturnData);
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                alert('คืนอุปกรณ์สำเร็จ!');
+                
+                closeReturnModal();
+                returnItemsData = [];
+                
+                getRequestList();
+                hideLoader();
+                // Refresh data
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                alert('เกิดข้อผิดพลาดในการคืนอุปกรณ์');
+            })
+            .returnRequest(submitReturnData);
+
+        closeReturnModal();
+    }
+
+    function renderDailyRequests() {
+        const container = document.getElementById('dailyRequestsBody');
+
+        if (activeRequest.length === 0) {
+            container.innerHTML = `
+            <tr>
+                <td colspan="8" class="px-6 py-4 text-center text-slate-600">
+                    <i class="fa-solid fa-inbox fa-2x mb-4"></i>
+                    <p class="text-lg">ไม่มีคำขอยืมที่กำลังดำเนินการอยู่</p>
+                </td>
+            </tr>
+        `;
+            return;
+        }
+
+        container.innerHTML = activeRequest.map((request, index) => `
+        <!-- REQUEST ROW -->
+        <tr class="bg-white hover:bg-slate-50">
+            <td class="px-2 text-xs text-slate-700" onclick="toggleRow(${index})">
+                <button class="cursor-pointer">
+                    <i id="arrow-${index}" class="w-4 h-4 transition-transform fa-solid fa-chevron-right"></i>
+                </button>
+            </td>
+            <td class="px-4 py-3 text-sm text-center text-slate-700">${request.Request_Id}</td>
+            <td class="px-4 py-3 text-sm text-left text-slate-700">${request.Requirer_Name}</td>
+            <td class="px-4 py-3 text-sm text-center text-slate-700">${request.Request_Date}</td>
+            <td class="px-4 py-3 text-sm text-center text-slate-700">${request.Return_Date}</td>
+            <td class="px-4 py-3 text-sm text-center text-slate-700">${request.Items.length} รายการ</td>
+            <td class="px-4 py-3 text-sm text-center text-slate-700">
+                ${getStatusBadge(request.Status)}
+            </td>
+            <td class="px-6 py-4">
+                ${getActionButtons(request)}
+            </td>
+        </tr>
+
+        <!-- ACCORDION ROW -->
+        <tr id="row-${index}" class="hidden bg-slate-50">
+            <td colspan="8" class="p-0">
+                <table class="w-full text-sm">
+                    <thead class="border-b bg-slate-100 border-slate-200">
+                        <tr>
+                            <th class="px-6 py-3 text-xs font-semibold text-left uppercase text-slate-700">Item / Accessory</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-center uppercase text-slate-700">Return / Quantity</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-center uppercase text-slate-700">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${request.Items.map(item => `
+                            <!-- ITEM -->
+                            <tr class="border-b bg-white border-slate-200">
+                                <td class="px-6 py-4 text-xs font-medium">
+                                    ${item.Item_Name}
+                                </td>
+                                <td class="px-6 py-4 text-xs text-center">${item.Returned_Qty || 0} / ${item.Qty}</td>
+                                <td class="px-6 py-4 text-xs text-center">${getStatusBadge(item.Status, true)}</td>
+                            </tr>
+
+                            <!-- ACCESSORIES -->
+                            ${item.Accessories.map(acc => `
+                                <tr class="border-b border-slate-200">
+                                    <td class="px-6 py-3 pl-12 text-xs text-slate-700">
+                                        └ ${acc.Accessory_Name}
+                                    </td>
+                                    <td class="px-6 py-3 text-xs text-center text-slate-700">${acc.Returned_Qty || 0} / ${acc.Qty}</td>
+                                    <td class="px-6 py-3 text-xs text-center text-slate-700">${getStatusBadge(acc.Status, true)}</td>
+                                </tr>
+                            `).join("")}
+                        `).join("")}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    `).join("");
+    }
+
+    // Helper function for status badges (unified for all levels)
+    function getStatusBadge(status, isSmall = false) {
+        const statusConfig = {
+            'Submit': { color: 'bg-green-500 text-white', label: 'Submit' },
+            'Distributed': { color: 'bg-blue-500 text-white', label: 'Distributed' },
+            'Partial_Returned': { color: 'bg-yellow-500 text-white', label: 'Partial Return' },
+            'Returned': { color: 'bg-orange-500 text-white', label: 'Returned' },
+            'Cancelled': { color: 'bg-red-500 text-white', label: 'Cancelled' }
+        };
+
+        const config = statusConfig[status] || { color: 'bg-gray-500 text-white', label: status };
+
+        // Use smaller badge for items/accessories
+        const sizeClass = isSmall ? 'px-2 py-0.5 text-xs' : 'px-2 py-1 text-xs';
+
+        return `
+        <span class="${sizeClass} font-medium rounded-full ${config.color}">
+            ${config.label}
+        </span>
+    `;
+    }
+
+    // Helper function for action buttons
+    function getActionButtons(request) {
+        if (request.Status === 'Submit') {
+            return `
+            <button onclick="distributeRequest('${request.Request_Id}')" class="px-1.5 py-1 text-sm font-normal text-center text-white bg-blue-500 rounded mr-2 cursor-pointer" title="Distribute Request">
+                <i class="fa-solid fa-dolly"></i>
+            </button>
+            <button onclick="cancelRequest('${request.Request_Id}')" class="px-1.5 py-1 text-sm font-normal text-center text-white bg-red-500 rounded mr-2 cursor-pointer" title="Cancel Request">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        `;
+        } else if (request.Status === 'Distributed' || request.Status === 'Partial_Returned') {
+            return `
+            <button onclick="openReturnModal('${request.Request_Id}')" class="px-1.5 py-1 text-sm font-normal text-center text-white bg-orange-500 rounded mr-2 cursor-pointer" title="Return Request">
+                <i class="fa-solid fa-rotate-left"></i>
+            </button>
+        `;
+        }
+        return '';
+    }
+
+    function toggleRow(index) {
+        const row = document.getElementById(`row-${index}`);
+        const arrow = document.getElementById(`arrow-${index}`);
+
+        row.classList.toggle("hidden");
+        arrow.classList.toggle("rotate-90");
+    }
+
+    function getDashboardStats() {
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                console.log("Dashboard Stats:", response);
+                const stats = response.data || {};
+
+                // items
+                document.getElementById('totalItemTypes').textContent = stats.totalItemTypes || 0;
+                document.getElementById('availableItems').textContent = `${stats.remainItems} / ${stats.totalItems}` || 0;
+
+                // accessories
+                document.getElementById('totalAccessoryTypes').textContent = stats.totalAccessoryTypes || 0;
+                document.getElementById('availableAccessories').textContent = `${stats.remainAccessories} / ${stats.totalAccessories}` || 0;
+
+                // requests
+                document.getElementById('submitRequest').textContent = stats.submitRequestCount || 0;
+                document.getElementById('waitingReturn').textContent = stats.waitingReturnCount || 0;
+
+                // system
+                document.getElementById('recentActivity').innerHTML = stats.top50_recentlyActivity.map(activity => `
+                    <tr class="bg-white hover:bg-slate-50">
+                        <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Log_Id}</td>
+                        <td class="px-4 py-3 text-sm text-left text-slate-700">${activity.Email}</td>
+                        <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Activity}</td>
+                        <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Action_At}</td>
+                    </tr>
+                `).join('');
+
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                hideLoader();
+            })
+            .getDashboardStats();
+    }
+
+    function resetLoadedItems() {
+        hasMoreItems = true;
+        page = 1;
+        document.getElementById('item-list').innerHTML = '';
+        itemList = []; // reset loaded items
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showLoader();
+
+        google.script.run
+            .withSuccessHandler((data) => {
+                console.log("User Role:", data);
+                switch (data.perm) {
+                    case 'Admin':
+                        document.getElementById('system-activity-container').classList.remove('hidden');
+                    case 'User':
+                        document.getElementById('cart-button').classList.remove('hidden');
+                        break;
+                    default:
+                        break;
+                }
+
+                hideLoader();
+            })
+            .withFailureHandler((err) => {
+                consol.log(err)
+                hideLoader();
+            })
+            .getAuthorized();
+
+        searchInput.addEventListener('keyup', (e) => {
+            searchParam.name = e.target.value;
+        })
+
+        statusFilter.addEventListener('change', (e) => {
+            searchParam.status = e.target.value;
+        })
+
+        searchButton.addEventListener('click', () => {
+            // Reset\
+            resetLoadedItems();
+            loadItems();
+        });
+
+        // 🔹 1. หา sentinel หลัง DOM พร้อมแล้ว
+        const sentinel = document.getElementById('item-sentinel');
+
+        // 🔹 2. สร้าง observer
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && hasMoreItems && !loadingItems) {
+                    loadItems();
+                }
+            },
+            {
+                root: null,
+                threshold: 0.3
+            }
+        );
+
+        // 🔹 3. เริ่ม observe
+        if (sentinel) {
+            observer.observe(sentinel);
+        }
+
+        loadItems();
+    });
+
+</script>
+
+</html>
