@@ -65,7 +65,54 @@
 </head>
 
 <body class="min-h-screen dx-viewport bg-gradient-to-br from-slate-50 to-slate-100">
-    <div id="loader" class="inset-0 z-[555] hidden bg-black/75">
+    <!-- Login Screen (hidden by default) -->
+    <div id="login-screen" class="hidden flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-md p-8 bg-white border shadow-2xl rounded-xl border-slate-200">
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-slate-800">Inventory Management</h1>
+                <p class="mt-2 text-slate-600">Please login to continue</p>
+            </div>
+            
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-700">Email</label>
+                    <input 
+                        type="email" 
+                        id="login-email" 
+                        required
+                        class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="your-email@example.com"
+                    />
+                </div>
+                
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-700">Password</label>
+                    <input 
+                        type="password" 
+                        id="login-password" 
+                        required
+                        class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="••••••••"
+                    />
+                </div>
+                
+                <div id="login-error" class="hidden p-3 text-sm text-red-700 bg-red-100 border border-red-300 rounded-lg">
+                </div>
+                
+                <button 
+                    type="submit" 
+                    id="login-button"
+                    class="w-full px-4 py-3 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer"
+                >
+                    Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application (hidden by default) -->
+    <div id="main-app" class="hidden">
+    <div id="loader" class="inset-0 z-[555] fixed bg-black/75">
         <div class="flex items-center justify-center h-screen">
             <div
                 class="w-20 h-20 rounded-full animate-spin border-t-3 border-b-3 border-r-3 border-t-blue-500 border-b-red-500">
@@ -99,12 +146,16 @@
             class="w-full px-4 py-2 font-medium transition rounded-lg cursor-pointer text-slate-600 hover:bg-slate-100">
             Dashboard
         </button>
+        <button onclick="navigateMobilePage('management')" id="tab-management-mobile"
+            class="hidden w-full px-4 py-2 font-medium transition rounded-lg cursor-pointer text-slate-600 hover:bg-slate-100">
+            Management
+        </button>
 
     </div>
 
     <!-- Navigation -->
     <nav class="sticky top-0 z-10 bg-white border-b shadow-lg border-slate-200">
-        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="px-4 mx-auto max-w-[1600px] sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center space-x-3">
                     <div
@@ -139,10 +190,30 @@
                         class="px-4 py-2 font-medium transition rounded-lg cursor-pointer text-slate-600 hover:bg-slate-100">
                         Dashboard
                     </button>
+                    <button onclick="navigatePage('management')" id="tab-management"
+                        class="hidden px-4 py-2 font-medium transition rounded-lg cursor-pointer text-slate-600 hover:bg-slate-100">
+                        Management
+                    </button>
                 </div>
 
-                <!-- Cart Button -->
-                <div>
+                <!-- User Info & Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- User Info (Hidden on mobile) -->
+                    <div class="hidden text-sm md:flex md:items-center md:gap-2">
+                        <div class="flex flex-col items-end">
+                            <span class="font-medium text-slate-700" id="user-email"></span>
+                            <span class="text-xs text-slate-500" id="user-permission"></span>
+                        </div>
+                    </div>
+
+                    <!-- Logout Button -->
+                    <button onclick="handleLogout()" 
+                        class="p-2 transition rounded-lg cursor-pointer hover:bg-slate-100" 
+                        title="Logout">
+                        <i class="text-slate-600 fas fa-sign-out-alt"></i>
+                    </button>
+
+                    <!-- Cart Button -->
                     <button id="cart-button" onclick="toggleCart()"
                         class="hidden relative px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg shadow-sm cursor-pointer hover:bg-blue-700">
                         <div class="flex items-center space-x-2">
@@ -162,7 +233,7 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div class="px-4 py-8 mx-auto max-w-[1600px] sm:px-6 lg:px-8">
         <!-- Page Items -->
         <div id="page-items" class="page-content ">
             <div class="mb-2">
@@ -363,7 +434,7 @@
                     </div>
                     <div>
                         <button onclick="filterHistory()"
-                            class="w-full px-4 py-3 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700">
+                            class="w-full px-4 py-3 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
                             ค้นหา
                         </button>
                     </div>
@@ -554,6 +625,353 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Page: Management (Admin Only) -->
+        <div id="page-management" class="hidden page-content">
+            <div class="mb-6">
+                <h2 class="mb-2 text-2xl font-bold text-slate-800">Management</h2>
+                <p class="text-slate-600">จัดการรายการอุปกรณ์, อุปกรณ์เสริม และผู้ใช้งาน</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex gap-2 mb-6 border-b border-slate-200">
+                <button onclick="switchManagementTab('items')" id="mgmt-tab-items" 
+                    class="px-4 py-2 font-medium text-blue-600 border-b-2 border-blue-600 cursor-pointer">
+                    Items & Accessories
+                </button>
+                <button onclick="switchManagementTab('users')" id="mgmt-tab-users"
+                    class="px-4 py-2 font-medium text-slate-600 hover:text-slate-800 cursor-pointer">
+                    Users
+                </button>
+            </div>
+
+            <!-- Items Management -->
+            <div id="mgmt-items" class="mgmt-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800">Items List</h3>
+                    <button onclick="openItemModal()" 
+                        class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                        <i class="fas fa-plus mr-2"></i>Add Item
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto bg-white border shadow-md rounded-xl border-slate-200">
+                    <table class="w-full">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">ID</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Name</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Total Qty</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Available Qty</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Active</th>
+                                <th class="px-4 py-3 text-center text-sm font-semibold text-slate-700">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mgmt-items-tbody">
+                            <!-- Items will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users Management -->
+            <div id="mgmt-users" class="hidden mgmt-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800">Users List</h3>
+                    <button onclick="openUserModal()" 
+                        class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                        <i class="fas fa-plus mr-2"></i>Add User
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto bg-white border shadow-md rounded-xl border-slate-200">
+                    <table class="w-full">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Email</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Permission</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Active</th>
+                                <th class="px-4 py-3 text-center text-sm font-semibold text-slate-700">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mgmt-users-tbody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Modal -->
+    <div id="item-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 bg-black/75">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full">
+            <div class="flex items-center justify-between p-6 border-b border-slate-200">
+                <h3 class="text-xl font-bold text-slate-800" id="item-modal-title">Add Item</h3>
+                <button onclick="closeItemModal()" class="p-2 transition rounded-lg hover:bg-slate-100 cursor-pointer">
+                    <i class="fas fa-times text-slate-600"></i>
+                </button>
+            </div>
+
+            <form id="item-form" onsubmit="saveItem(event)" class="p-6 space-y-4">
+                <input type="hidden" id="item-id" value="">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block mb-2 text-sm font-medium text-slate-700">Item Name <span class="text-red-500">*</span></label>
+                        <input type="text" id="item-name" required
+                            class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="block mb-2 text-sm font-medium text-slate-700">Description</label>
+                        <textarea id="item-desc" rows="3"
+                            class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-slate-700">Total Quantity <span class="text-red-500">*</span></label>
+                        <input type="number" id="item-total-qty" required min="0"
+                            class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-slate-700">Available Quantity <span class="text-red-500">*</span></label>
+                        <input type="number" id="item-available-qty" required min="0"
+                            class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="block mb-2 text-sm font-medium text-slate-700">Image URL</label>
+                        <input type="url" id="item-image"
+                            class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" id="item-active" checked class="w-4 h-4 text-blue-600 rounded">
+                            <span class="text-sm font-medium text-slate-700">Active</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 pt-4">
+                    <button type="submit"
+                        class="flex-1 px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                        Save
+                    </button>
+                    <button type="button" onclick="closeItemModal()"
+                        class="px-4 py-2 font-medium transition rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Accessory Modal (for specific item) -->
+    <div id="accessory-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 bg-black/75">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 flex items-center justify-between p-6 bg-white border-b border-slate-200">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800">Manage Accessories</h3>
+                    <p class="text-sm text-slate-600" id="accessory-item-name"></p>
+                </div>
+                <button onclick="closeAccessoryModal()" class="p-2 transition rounded-lg hover:bg-slate-100 cursor-pointer">
+                    <i class="fas fa-times text-slate-600"></i>
+                </button>
+            </div>
+
+            <div class="p-6">
+                <input type="hidden" id="current-item-id" value="">
+                
+                <!-- Add Accessory Button -->
+                <div class="mb-4">
+                    <button onclick="openAccessoryForm()" 
+                        class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                        <i class="fas fa-plus mr-2"></i>Add Accessory
+                    </button>
+                </div>
+
+                <!-- Accessories List -->
+                <div class="space-y-3" id="accessories-list">
+                    <!-- Accessories will be loaded here -->
+                </div>
+
+                <!-- Accessory Form (hidden by default) -->
+                <div id="accessory-form-container" class="hidden p-4 border rounded-lg border-slate-200 bg-slate-50 mt-4">
+                    <h4 class="mb-3 font-semibold text-slate-800" id="accessory-form-title">Add Accessory</h4>
+                    <form id="accessory-form" onsubmit="saveAccessory(event)" class="space-y-3">
+                        <input type="hidden" id="accessory-id" value="">
+                        
+                        <div>
+                            <label class="block mb-1 text-sm font-medium text-slate-700">Accessory Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="accessory-name" required
+                                class="w-full px-3 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block mb-1 text-sm font-medium text-slate-700">Description</label>
+                            <textarea id="accessory-desc" rows="2"
+                                class="w-full px-3 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block mb-1 text-sm font-medium text-slate-700">Total Quantity <span class="text-red-500">*</span></label>
+                                <input type="number" id="accessory-total-qty" required min="0"
+                                    class="w-full px-3 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <div>
+                                <label class="block mb-1 text-sm font-medium text-slate-700">Available Quantity <span class="text-red-500">*</span></label>
+                                <input type="number" id="accessory-available-qty" required min="0"
+                                    class="w-full px-3 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" id="accessory-active" checked class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-medium text-slate-700">Active</span>
+                            </label>
+                        </div>
+
+                        <div class="flex gap-2 pt-2">
+                            <button type="submit"
+                                class="flex-1 px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                                Save
+                            </button>
+                            <button type="button" onclick="cancelAccessoryForm()"
+                                class="px-4 py-2 font-medium transition rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div id="user-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 bg-black/75">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full">
+            <div class="flex items-center justify-between p-6 border-b border-slate-200">
+                <h3 class="text-xl font-bold text-slate-800" id="user-modal-title">Add User</h3>
+                <button onclick="closeUserModal()" class="p-2 transition rounded-lg hover:bg-slate-100 cursor-pointer">
+                    <i class="fas fa-times text-slate-600"></i>
+                </button>
+            </div>
+
+            <form id="user-form" onsubmit="saveUser(event)" class="p-6 space-y-4">
+                <input type="hidden" id="user-original-email" value="">
+                
+                <!-- Email Display (for Edit) -->
+                <div id="email-display-field" class="hidden">
+                    <label class="block mb-2 text-sm font-medium text-slate-700">Email</label>
+                    <div class="w-full px-4 py-2 border rounded-lg border-slate-200 bg-slate-50 text-slate-700">
+                        <i class="fas fa-envelope mr-2 text-slate-500"></i>
+                        <span id="user-email-display"></span>
+                    </div>
+                </div>
+
+                <!-- Email Input (for Add) -->
+                <div id="email-input-field">
+                    <label class="block mb-2 text-sm font-medium text-slate-700">Email <span class="text-red-500">*</span></label>
+                    <input type="text" id="user-email-input"
+                        class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div id="password-field">
+                    <label class="block mb-2 text-sm font-medium text-slate-700">Password <span class="text-red-500">*</span></label>
+                    <input type="password" id="user-password" minlength="6"
+                        class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div id="confirm-password-field">
+                    <label class="block mb-2 text-sm font-medium text-slate-700">Confirm Password <span class="text-red-500">*</span></label>
+                    <input type="password" id="user-confirm-password" minlength="6"
+                        class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-700">Permission <span class="text-red-500">*</span></label>
+                    <select id="user-permission-select"
+                        class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select Permission</option>
+                        <option value="Admin">Admin</option>
+                        <option value="User">User</option>
+                        <option value="Guest">Guest</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="user-active" checked class="w-4 h-4 text-blue-600 rounded">
+                        <span class="text-sm font-medium text-slate-700">Active</span>
+                    </label>
+                </div>
+
+                <div class="flex gap-2 pt-4">
+                    <button type="submit"
+                        class="flex-1 px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                        Save
+                    </button>
+                    <button type="button" onclick="closeUserModal()"
+                        class="px-4 py-2 font-medium transition rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 bg-black/75">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div class="flex items-center justify-between p-6 border-b border-slate-200">
+                <h3 class="text-xl font-bold text-slate-800">Change Password</h3>
+                <button onclick="closeChangePasswordModal()" class="p-2 transition rounded-lg hover:bg-slate-100 cursor-pointer">
+                    <i class="fas fa-times text-slate-600"></i>
+                </button>
+            </div>
+
+            <form id="change-password-form" onsubmit="saveChangePassword(event)" class="p-6 space-y-4">
+                <input type="hidden" id="change-password-email" value="">
+                
+                <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p class="text-sm text-slate-700">
+                        <i class="fas fa-user mr-2 text-blue-600"></i>
+                        <span class="font-medium">User:</span>
+                        <span id="change-password-user-display"></span>
+                    </p>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-700">New Password <span class="text-red-500">*</span></label>
+                    <input type="password" id="new-password" required minlength="6"
+                        class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                    <p class="mt-1 text-xs text-slate-500">Minimum 6 characters</p>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-700">Confirm Password <span class="text-red-500">*</span></label>
+                    <input type="password" id="confirm-password" required minlength="6"
+                        class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="flex gap-2 pt-4">
+                    <button type="submit"
+                        class="flex-1 px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                        Change Password
+                    </button>
+                    <button type="button" onclick="closeChangePasswordModal()"
+                        class="px-4 py-2 font-medium transition rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer">
+                        Cancel
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -749,9 +1167,17 @@
     <!-- Overlay -->
     <div id="overlay" class="fixed inset-0 z-40 hidden bg-black/75" onclick="toggleCart()"></div>
 
-
+    </div> <!-- End main-app -->
 </body>
 <script>
+    // Session management
+    let currentSession = {
+        sessionId: null,
+        sessionToken: null,
+        email: null,
+        permission: null
+    };
+
     // Items variable
     let page = 1;
     let pageSize = 12;
@@ -774,6 +1200,202 @@
 
     // return 
     let returnItemsData = [];
+
+    // ============================================
+    // Authentication Functions
+    // ============================================
+    
+    function handleLogin(event) {
+        event.preventDefault();
+        
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const errorDiv = document.getElementById('login-error');
+        const loginButton = document.getElementById('login-button');
+        
+        // Clear previous errors
+        errorDiv.classList.add('hidden');
+        loginButton.disabled = true;
+        loginButton.textContent = 'Logging in...';
+        
+        google.script.run
+            .withSuccessHandler((response) => {
+                if (response.success) {
+                    // Save session to localStorage
+                    currentSession = {
+                        sessionId: response.sessionId,
+                        sessionToken: response.sessionToken,
+                        email: response.email,
+                        permission: response.permission
+                    };
+                    localStorage.setItem('session', JSON.stringify(currentSession));
+                    
+                    // Show main app
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('main-app').classList.remove('hidden');
+                    
+                    // Update user info display
+                    document.getElementById('user-email').textContent = response.email;
+                    document.getElementById('user-permission').textContent = `(${response.permission})`;
+                    
+                    // Initialize app
+                    initializeApp();
+                } else {
+                    errorDiv.textContent = response.message || 'Login failed';
+                    errorDiv.classList.remove('hidden');
+                    loginButton.disabled = false;
+                    loginButton.textContent = 'Login';
+                }
+            })
+            .withFailureHandler((error) => {
+                errorDiv.textContent = error.message || 'An error occurred';
+                errorDiv.classList.remove('hidden');
+                loginButton.disabled = false;
+                loginButton.textContent = 'Login';
+            })
+            .login(email, password);
+    }
+    
+    function handleLogout() {
+        if (!confirm('Are you sure you want to logout?')) {
+            return;
+        }
+        
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                // Clear session
+                localStorage.removeItem('session');
+                currentSession = {
+                    sessionId: null,
+                    sessionToken: null,
+                    email: null,
+                    permission: null
+                };
+                
+                // Show login screen
+                document.getElementById('main-app').classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+                
+                // Reset form
+                document.getElementById('login-form').reset();
+                
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                alert('Logout failed: ' + error.message);
+                hideLoader();
+            })
+            .logout(currentSession.sessionId);
+    }
+    
+    function checkSession() {
+        const savedSession = localStorage.getItem('session');
+        
+        if (!savedSession) {
+            // No session, show login
+            console.log('No saved session found');
+            hideLoader();
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            return;
+        }
+        
+        try {
+            currentSession = JSON.parse(savedSession);
+            console.log('Validating session:', currentSession.sessionId);
+        } catch (e) {
+            console.error('Invalid session data:', e);
+            localStorage.removeItem('session');
+            hideLoader();
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            return;
+        }
+        
+        // Validate session with server
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                console.log('Session validation response:', response);
+                if (response.valid) {
+                    // Update session with latest permission from server
+                    currentSession.email = response.email;
+                    currentSession.permission = response.permission;
+                    localStorage.setItem('session', JSON.stringify(currentSession));
+                    
+                    // Session is valid, show main app
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('main-app').classList.remove('hidden');
+                    
+                    // Update user info
+                    document.getElementById('user-email').textContent = response.email;
+                    document.getElementById('user-permission').textContent = `(${response.permission})`;
+                    
+                    // Initialize app
+                    initializeApp();
+                } else {
+                    console.log('Session invalid:', response.message);
+                    // Session invalid, clear and show login
+                    localStorage.removeItem('session');
+                    document.getElementById('login-screen').classList.remove('hidden');
+                    document.getElementById('main-app').classList.add('hidden');
+                    hideLoader();
+                }
+            })
+            .withFailureHandler((error) => {
+                console.error('Session validation error:', error);
+                // Error validating session, show login
+                localStorage.removeItem('session');
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('main-app').classList.add('hidden');
+                hideLoader();
+            })
+            .validateSession(currentSession.sessionId, currentSession.sessionToken);
+    }
+    
+    function initializeApp() {
+        // Setup UI based on permission
+        const permission = currentSession.permission;
+        
+        // Hide all permission-based elements by default
+        const systemActivityContainer = document.getElementById('system-activity-container');
+        const cartButton = document.getElementById('cart-button');
+        const managementTab = document.getElementById('tab-management');
+        const managementTabMobile = document.getElementById('tab-management-mobile');
+        
+        console.log('Current permission:', permission);
+        switch (permission) {
+            case 'Admin':
+                // Admin can see everything
+                if (systemActivityContainer) {
+                    systemActivityContainer.classList.remove('hidden');
+                }
+                if (cartButton) {
+                    cartButton.classList.remove('hidden');
+                }
+                if (managementTab) {
+                    managementTab.classList.remove('hidden');
+                }
+                if (managementTabMobile) {
+                    managementTabMobile.classList.remove('hidden');
+                }
+                break;
+            case 'User':
+                // User can only use cart
+                if (cartButton) {
+                    cartButton.classList.remove('hidden');
+                }
+                break;
+            default:
+                // Guest has no special access
+                break;
+        }
+        
+        // Load initial data
+        loadItems();
+        hideLoader();
+    }
 
     const showLoader = () => {
         loader.classList.remove('hidden');
@@ -808,6 +1430,10 @@
             case 'dashboard':
                 getDashboardStats();
                 break;
+            case 'management':
+                document.title = 'Management - Inventory Management';
+                switchManagementTab('items');
+                break;
             default:
                 document.title = 'Inventory Management';
         }
@@ -815,12 +1441,29 @@
         document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
         document.getElementById('page-' + page).classList.remove('hidden');
 
+        // Update desktop tabs
         document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+            if (!tab.id.includes('-mobile')) {
+                tab.classList.remove('bg-blue-100', 'text-blue-700');
+                tab.classList.add('text-slate-600', 'hover:bg-slate-100');
+            }
+        });
+        const desktopTab = document.getElementById('tab-' + page);
+        if (desktopTab) {
+            desktopTab.classList.add('bg-blue-100', 'text-blue-700');
+            desktopTab.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        }
+
+        // Update mobile tabs
+        document.querySelectorAll('[id$="-mobile"]').forEach(tab => {
             tab.classList.remove('bg-blue-100', 'text-blue-700');
             tab.classList.add('text-slate-600', 'hover:bg-slate-100');
         });
-        document.getElementById('tab-' + page).classList.add('bg-blue-100', 'text-blue-700');
-        document.getElementById('tab-' + page).classList.remove('text-slate-600', 'hover:bg-slate-100');
+        const mobileTab = document.getElementById('tab-' + page + '-mobile');
+        if (mobileTab) {
+            mobileTab.classList.add('bg-blue-100', 'text-blue-700');
+            mobileTab.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        }
 
         // if (page === 'dashboard') updateDashboard();
         // if (page === 'daily') renderDailyRequests();
@@ -938,7 +1581,7 @@
                                 <div class="flex items-center p-2 space-x-2 bg-white border rounded border-slate-200">
                                     <select onchange="updateAccessoryType(${idx}, ${accIdx}, this.value)" class="flex-1 px-2 py-1 text-sm border rounded border-slate-300">
                                         <option value="">เลือกอุปกรณ์</option>
-                                        ${accessoriesList.filter(a => a.Item_Id === item.Item_Id).map(a => `<option value="${a.Accessory_Id}" ${acc.Accessory_Id === a.Accessory_Id ? 'selected' : ''}>${a.Accessory_Name} (คงเหลือ: ${a.Available_Qty})</option>`).join('')}
+                                        ${accessoriesList.filter(a => a.Item_Id === item.Item_Id && a.Active).map(a => `<option value="${a.Accessory_Id}" ${acc.Accessory_Id === a.Accessory_Id ? 'selected' : ''}>${a.Accessory_Name} (คงเหลือ: ${a.Available_Qty})</option>`).join('')}
                                     </select>
                                     ${acc.Accessory_Id
                     ? `
@@ -1233,7 +1876,11 @@
                            </div>`
                 }
 
-                    ${item.Available_Qty
+                    ${!item.Active
+                    ? `<div class="px-2 py-1 text-xs font-semibold text-slate-600 bg-slate-200 rounded-md">
+                            Unavailable
+                       </div>`
+                    : item.Available_Qty
                     ? `
                         ${cart.find(c => c.Item_Id === item.Item_Id)
                         ? `<button onclick="removeFromCart(${item.Item_Id})"
@@ -1911,28 +2558,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        showLoader();
-
-        google.script.run
-            .withSuccessHandler((data) => {
-                console.log("User Role:", data);
-                switch (data.perm) {
-                    case 'Admin':
-                        document.getElementById('system-activity-container').classList.remove('hidden');
-                    case 'User':
-                        document.getElementById('cart-button').classList.remove('hidden');
-                        break;
-                    default:
-                        break;
-                }
-
-                hideLoader();
-            })
-            .withFailureHandler((err) => {
-                consol.log(err)
-                hideLoader();
-            })
-            .getAuthorized();
+        // Check session on page load
+        checkSession();
 
         searchInput.addEventListener('keyup', (e) => {
             searchParam.name = e.target.value;
@@ -1943,15 +2570,13 @@
         })
 
         searchButton.addEventListener('click', () => {
-            // Reset\
+            // Reset
             resetLoadedItems();
             loadItems();
         });
 
-        // 🔹 1. หา sentinel หลัง DOM พร้อมแล้ว
+        // Sentinel for infinite scroll
         const sentinel = document.getElementById('item-sentinel');
-
-        // 🔹 2. สร้าง observer
         const observer = new IntersectionObserver(
             entries => {
                 if (entries[0].isIntersecting && hasMoreItems && !loadingItems) {
@@ -1964,13 +2589,740 @@
             }
         );
 
-        // 🔹 3. เริ่ม observe
+        // Start observing
         if (sentinel) {
             observer.observe(sentinel);
         }
-
-        loadItems();
     });
+
+    // ============================================
+    // Management Functions
+    // ============================================
+    
+    let managementItems = [];
+    let managementAccessories = [];
+    let managementUsers = [];
+
+    function switchManagementTab(tab) {
+        // Hide all sections
+        document.querySelectorAll('.mgmt-section').forEach(s => s.classList.add('hidden'));
+        
+        // Update tab styles
+        document.querySelectorAll('[id^="mgmt-tab-"]').forEach(t => {
+            t.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+            t.classList.add('text-slate-600');
+        });
+        
+        // Show selected section
+        document.getElementById('mgmt-' + tab).classList.remove('hidden');
+        document.getElementById('mgmt-tab-' + tab).classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+        document.getElementById('mgmt-tab-' + tab).classList.remove('text-slate-600');
+        
+        // Load data for the selected tab
+        if (tab === 'items') {
+            loadManagementItems();
+        } else if (tab === 'users') {
+            loadManagementUsers();
+        }
+    }
+
+    function loadManagementItems() {
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                managementItems = response.data || [];
+                renderManagementItems();
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error('Error loading items:', error);
+                alert('Error loading items: ' + error.message);
+                hideLoader();
+            })
+            .loadItems('', 'ALL', 1, 1000);
+    }
+
+    function renderManagementItems() {
+        const tbody = document.getElementById('mgmt-items-tbody');
+        
+        if (managementItems.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-slate-500">No items found</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = managementItems.map(item => `
+            <tr class="border-t border-slate-100 hover:bg-slate-50">
+                <td class="px-4 py-3 text-sm text-slate-700">${item.Item_Id}</td>
+                <td class="px-4 py-3 text-sm font-medium text-slate-800">${item.Item_Name}</td>
+                <td class="px-4 py-3 text-sm text-slate-700">${item.Total_Qty}</td>
+                <td class="px-4 py-3 text-sm text-slate-700">${item.Available_Qty}</td>
+                <td class="px-4 py-3 text-sm">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full ${item.Active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                        ${item.Active ? 'Active' : 'Inactive'}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-center">
+                    <button onclick="openAccessoryModal(${item.Item_Id}, '${item.Item_Name}')" class="px-2 py-1 text-xs font-medium text-purple-600 bg-purple-50 hover:bg-purple-100 rounded mr-1 cursor-pointer" title="Manage Accessories">
+                        <i class="fas fa-puzzle-piece"></i> Accessories
+                    </button>
+                    <button onclick="editItem(${item.Item_Id})" class="px-2 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded cursor-pointer" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="deleteItemConfirm(${item.Item_Id})" class="px-2 py-1 text-sm text-red-600 hover:bg-red-50 rounded cursor-pointer" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // Item Modal Functions
+    function openItemModal(itemId = null) {
+        const modal = document.getElementById('item-modal');
+        const form = document.getElementById('item-form');
+        form.reset();
+        
+        if (itemId) {
+            const item = managementItems.find(i => i.Item_Id === itemId);
+            if (item) {
+                document.getElementById('item-modal-title').textContent = 'Edit Item';
+                document.getElementById('item-id').value = item.Item_Id;
+                document.getElementById('item-name').value = item.Item_Name;
+                document.getElementById('item-desc').value = item.Item_Desc || '';
+                document.getElementById('item-total-qty').value = item.Total_Qty;
+                document.getElementById('item-available-qty').value = item.Available_Qty;
+                document.getElementById('item-image').value = item.Image || '';
+                document.getElementById('item-active').checked = item.Active;
+            }
+        } else {
+            document.getElementById('item-modal-title').textContent = 'Add Item';
+            document.getElementById('item-id').value = '';
+        }
+        
+        modal.classList.remove('hidden');
+    }
+
+    function closeItemModal() {
+        document.getElementById('item-modal').classList.add('hidden');
+    }
+
+    function editItem(itemId) {
+        openItemModal(itemId);
+    }
+
+    function saveItem(event) {
+        event.preventDefault();
+        
+        const itemId = document.getElementById('item-id').value;
+        const itemData = {
+            Item_Name: document.getElementById('item-name').value,
+            Item_Desc: document.getElementById('item-desc').value,
+            Total_Qty: parseInt(document.getElementById('item-total-qty').value),
+            Available_Qty: parseInt(document.getElementById('item-available-qty').value),
+            Image: document.getElementById('item-image').value,
+            Active: document.getElementById('item-active').checked
+        };
+        
+        showLoader();
+        
+        if (itemId) {
+            // Update
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        alert('Item updated successfully');
+                        closeItemModal();
+                        loadManagementItems();
+                    } else {
+                        alert('Error: ' + response.message);
+                        hideLoader();
+                    }
+                })
+                .withFailureHandler((error) => {
+                    alert('Error: ' + error.message);
+                    hideLoader();
+                })
+                .updateItem(parseInt(itemId), itemData, currentSession.email);
+        } else {
+            // Create
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        alert('Item created successfully');
+                        closeItemModal();
+                        loadManagementItems();
+                    } else {
+                        alert('Error: ' + response.message);
+                        hideLoader();
+                    }
+                })
+                .withFailureHandler((error) => {
+                    alert('Error: ' + error.message);
+                    hideLoader();
+                })
+                .createItem(itemData, currentSession.email);
+        }
+    }
+
+    function deleteItemConfirm(itemId) {
+        const item = managementItems.find(i => i.Item_Id === itemId);
+        if (!item) return;
+        
+        if (!confirm(`Are you sure you want to delete "${item.Item_Name}"?`)) {
+            return;
+        }
+        
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                if (response.success) {
+                    alert('Item deleted successfully');
+                    loadManagementItems();
+                } else {
+                    alert('Error: ' + response.message);
+                    hideLoader();
+                }
+            })
+            .withFailureHandler((error) => {
+                alert('Error: ' + error.message);
+                hideLoader();
+            })
+            .deleteItem(itemId, currentSession.email);
+    }
+
+    // Accessory Modal Functions
+    let currentItemAccessories = [];
+    
+    function openAccessoryModal(itemId, itemName) {
+        document.getElementById('current-item-id').value = itemId;
+        document.getElementById('accessory-item-name').textContent = `Item: ${itemName} (ID: ${itemId})`;
+        document.getElementById('accessory-modal').classList.remove('hidden');
+        document.getElementById('accessory-form-container').classList.add('hidden');
+        
+        // Clear previous data
+        document.getElementById('accessories-list').innerHTML = '<p class="text-center text-slate-500 py-4">Loading...</p>';
+        currentItemAccessories = [];
+        
+        // Reset form
+        document.getElementById('accessory-form').reset();
+        document.getElementById('accessory-id').value = '';
+        
+        // Load accessories for this item
+        loadAccessoriesForItem(itemId);
+    }
+    
+    function loadAccessoriesForItem(itemId) {
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                currentItemAccessories = (response.data || []).filter(acc => acc.Item_Id === itemId);
+                renderAccessoriesList();
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error('Error loading accessories:', error);
+                alert('Error loading accessories: ' + error.message);
+                hideLoader();
+            })
+            .loadAccessories([itemId], true); // true = include inactive accessories for management
+    }
+    
+    function renderAccessoriesList() {
+        const container = document.getElementById('accessories-list');
+        
+        if (currentItemAccessories.length === 0) {
+            container.innerHTML = '<p class="text-center text-slate-500 py-4">No accessories found for this item</p>';
+            return;
+        }
+        
+        container.innerHTML = currentItemAccessories.map(acc => `
+            <div class="flex items-center justify-between p-4 border rounded-lg border-slate-200 bg-white hover:shadow-md transition">
+                <div class="flex-1">
+                    <div class="font-medium text-slate-800">${acc.Accessory_Name}</div>
+                    <div class="text-sm text-slate-600">${acc.Accessory_Desc || 'No description'}</div>
+                    <div class="flex gap-4 mt-2 text-sm text-slate-600">
+                        <span><i class="fas fa-boxes mr-1"></i>Total: ${acc.Total_Qty}</span>
+                        <span><i class="fas fa-check-circle mr-1"></i>Available: ${acc.Available_Qty}</span>
+                        <span class="px-2 py-0.5 text-xs font-medium rounded-full ${acc.Active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                            ${acc.Active ? 'Active' : 'Inactive'}
+                        </span>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openAccessoryForm(${acc.Accessory_Id})" class="p-2 transition rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="deleteAccessoryConfirm(${acc.Accessory_Id})" class="p-2 transition rounded-lg text-red-600 hover:bg-red-50 cursor-pointer" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function openAccessoryForm(accessoryId = null) {
+        const itemId = document.getElementById('current-item-id').value;
+        const formContainer = document.getElementById('accessory-form-container');
+        const formTitle = document.getElementById('accessory-form-title');
+        const form = document.getElementById('accessory-form');
+        
+        form.reset();
+        formContainer.classList.remove('hidden');
+        
+        if (accessoryId) {
+            formTitle.textContent = 'Edit Accessory';
+            document.getElementById('accessory-id').value = accessoryId;
+            
+            const accessory = currentItemAccessories.find(a => a.Accessory_Id === accessoryId);
+            if (accessory) {
+                document.getElementById('accessory-name').value = accessory.Accessory_Name;
+                document.getElementById('accessory-desc').value = accessory.Accessory_Desc || '';
+                document.getElementById('accessory-total-qty').value = accessory.Total_Qty;
+                document.getElementById('accessory-available-qty').value = accessory.Available_Qty;
+                document.getElementById('accessory-active').checked = accessory.Active;
+            }
+        } else {
+            formTitle.textContent = 'Add Accessory';
+            document.getElementById('accessory-id').value = '';
+            document.getElementById('accessory-active').checked = true;
+        }
+    }
+    
+    function cancelAccessoryForm() {
+        document.getElementById('accessory-form-container').classList.add('hidden');
+        document.getElementById('accessory-form').reset();
+    }
+    
+    function closeAccessoryModal() {
+        document.getElementById('accessory-modal').classList.add('hidden');
+        document.getElementById('accessory-form-container').classList.add('hidden');
+        
+        // Clear all data
+        document.getElementById('accessories-list').innerHTML = '';
+        document.getElementById('accessory-form').reset();
+        document.getElementById('accessory-id').value = '';
+        document.getElementById('current-item-id').value = '';
+        currentItemAccessories = [];
+    }
+
+    function saveAccessory(event) {
+        event.preventDefault();
+        
+        const accessoryId = document.getElementById('accessory-id').value;
+        const itemId = parseInt(document.getElementById('current-item-id').value);
+        const accessoryData = {
+            Item_Id: itemId,
+            Accessory_Name: document.getElementById('accessory-name').value,
+            Accessory_Desc: document.getElementById('accessory-desc').value,
+            Total_Qty: parseInt(document.getElementById('accessory-total-qty').value),
+            Available_Qty: parseInt(document.getElementById('accessory-available-qty').value),
+            Active: document.getElementById('accessory-active').checked
+        };
+        
+        showLoader();
+        
+        if (accessoryId) {
+            // Update
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        alert('Accessory updated successfully');
+                        cancelAccessoryForm();
+                        loadAccessoriesForItem(itemId);
+                    } else {
+                        alert('Error: ' + response.message);
+                        hideLoader();
+                    }
+                })
+                .withFailureHandler((error) => {
+                    alert('Error: ' + error.message);
+                    hideLoader();
+                })
+                .updateAccessory(parseInt(accessoryId), accessoryData, currentSession.email);
+        } else {
+            // Create
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        alert('Accessory created successfully');
+                        cancelAccessoryForm();
+                        loadAccessoriesForItem(itemId);
+                    } else {
+                        alert('Error: ' + response.message);
+                        hideLoader();
+                    }
+                })
+                .withFailureHandler((error) => {
+                    alert('Error: ' + error.message);
+                    hideLoader();
+                })
+                .createAccessory(accessoryData, currentSession.email);
+        }
+    }
+
+    function deleteAccessoryConfirm(accessoryId) {
+        const accessory = currentItemAccessories.find(a => a.Accessory_Id === accessoryId);
+        if (!accessory) return;
+        
+        if (!confirm(`Are you sure you want to delete "${accessory.Accessory_Name}"?`)) {
+            return;
+        }
+        
+        const itemId = parseInt(document.getElementById('current-item-id').value);
+
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                if (response.success) {
+                    alert('Accessory deleted successfully');
+                    loadAccessoriesForItem(itemId);
+                } else {
+                    alert('Error: ' + response.message);
+                    hideLoader();
+                }
+            })
+            .withFailureHandler((error) => {
+                alert('Error: ' + error.message);
+                hideLoader();
+            })
+            .deleteAccessory(accessoryId, currentSession.email);
+    }
+
+    // ============================================
+    // User Management Functions
+    // ============================================
+
+    function loadManagementUsers() {
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                managementUsers = response.data || [];
+                renderManagementUsers();
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error('Error loading users:', error);
+                alert('Error loading users: ' + error.message);
+                hideLoader();
+            })
+            .getUsers();
+    }
+
+    function renderManagementUsers() {
+        const tbody = document.getElementById('mgmt-users-tbody');
+        
+        if (managementUsers.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-slate-500">No users found</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = managementUsers.map(user => `
+            <tr class="border-t border-slate-100 hover:bg-slate-50">
+                <td class="px-4 py-3 text-sm font-medium text-slate-800">${user.Email}</td>
+                <td class="px-4 py-3 text-sm text-slate-700">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full ${
+                        user.Permission === 'Admin' ? 'bg-purple-100 text-purple-700' : 
+                        user.Permission === 'User' ? 'bg-blue-100 text-blue-700' : 
+                        'bg-slate-100 text-slate-700'
+                    }">
+                        ${user.Permission}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-sm">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full ${user.Active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                        ${user.Active ? 'Active' : 'Inactive'}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-center">
+                    <button onclick="openUserModal('${user.Email}')" class="p-2 transition rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="openChangePasswordModal('${user.Email}')" class="p-2 transition rounded-lg text-blue-600 hover:bg-blue-50 cursor-pointer" title="Change Password">
+                        <i class="fas fa-key"></i>
+                    </button>
+                    <button onclick="toggleUserActive('${user.Email}', ${!user.Active})" class="p-2 transition rounded-lg ${user.Active ? 'text-red-600 hover:bg-red-50' : 'text-green-600 hover:bg-green-50'} cursor-pointer" title="${user.Active ? 'Deactivate' : 'Activate'}">
+                        <i class="fas ${user.Active ? 'fa-ban' : 'fa-check-circle'}"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function openUserModal(userEmail = null) {
+        const modal = document.getElementById('user-modal');
+        const form = document.getElementById('user-form');
+        const passwordField = document.getElementById('password-field');
+        const confirmPasswordField = document.getElementById('confirm-password-field');
+        const permissionSelect = document.getElementById('user-permission-select');
+        
+        const emailInput = document.getElementById('user-email-input');
+        const passwordInput = document.getElementById('user-password');
+        const confirmPasswordInput = document.getElementById('user-confirm-password');
+        
+        if (userEmail) {
+            // Edit mode
+            const user = managementUsers.find(u => u.Email === userEmail);
+            if (!user) {
+                alert('User not found');
+                return;
+            }
+            
+            document.getElementById('user-modal-title').textContent = 'Edit User';
+            document.getElementById('user-original-email').value = user.Email;
+            
+            // Show email as text display, hide input
+            document.getElementById('email-display-field').classList.remove('hidden');
+            document.getElementById('email-input-field').classList.add('hidden');
+            document.getElementById('user-email-display').textContent = user.Email;
+            
+            // Remove required from email
+            emailInput.removeAttribute('required');
+            
+            // Hide password fields
+            passwordField.classList.add('hidden');
+            confirmPasswordField.classList.add('hidden');
+            
+            // Remove required from password fields
+            passwordInput.removeAttribute('required');
+            confirmPasswordInput.removeAttribute('required');
+            
+            // Set permission - use setTimeout to ensure modal is shown first
+            setTimeout(() => {
+                permissionSelect.value = user.Permission;
+            }, 0);
+            
+            document.getElementById('user-active').checked = user.Active;
+        } else {
+            // Add mode - reset form for new user
+            form.reset();
+            
+            document.getElementById('user-modal-title').textContent = 'Add User';
+            document.getElementById('user-original-email').value = '';
+            
+            // Hide email display, show input
+            document.getElementById('email-display-field').classList.add('hidden');
+            document.getElementById('email-input-field').classList.remove('hidden');
+            
+            // Add required to email
+            emailInput.setAttribute('required', 'required');
+            
+            // Show password fields
+            passwordField.classList.remove('hidden');
+            confirmPasswordField.classList.remove('hidden');
+            
+            // Add required to password fields
+            passwordInput.setAttribute('required', 'required');
+            confirmPasswordInput.setAttribute('required', 'required');
+            
+            // Set defaults
+            permissionSelect.value = '';
+            document.getElementById('user-active').checked = true;
+        }
+        
+        modal.classList.remove('hidden');
+    }
+
+    function closeUserModal() {
+        document.getElementById('user-modal').classList.add('hidden');
+    }
+
+    function saveUser(event) {
+        event.preventDefault();
+        
+        const originalEmail = document.getElementById('user-original-email').value;
+        const isEditMode = !!originalEmail;
+        
+        // Get email
+        let email;
+        if (isEditMode) {
+            email = originalEmail;
+        } else {
+            const emailInput = document.getElementById('user-email-input');
+            
+            if (!emailInput) {
+                alert('Email input field not found');
+                return;
+            }
+            
+            // Check if the field is hidden
+            const emailInputField = document.getElementById('email-input-field');
+            if (emailInputField && emailInputField.classList.contains('hidden')) {
+                alert('Email field is hidden. Please close and reopen the modal.');
+                return;
+            }
+            
+            const emailValue = emailInput.value || '';
+            email = emailValue.trim();
+            
+            if (!email) {
+                alert('Please enter an email address');
+                return;
+            }
+            
+            // Normalize to lowercase
+            email = email.toLowerCase();
+            
+            // Check for duplicate
+            const emailExists = managementUsers.some(u => u.Email.toLowerCase() === email);
+            if (emailExists) {
+                alert('This email already exists. Please use a different email address.');
+                return;
+            }
+        }
+        
+        // Get permission
+        const permissionSelect = document.getElementById('user-permission-select');
+        
+        const permission = permissionSelect.value;
+        if (!permission) {
+            alert('Please select a permission level');
+            return;
+        }
+        
+        // Prepare user data
+        const userData = {
+            Email: email,
+            Permission: permission,
+            Active: document.getElementById('user-active').checked
+        };
+        
+        // Validate password for new users
+        if (!isEditMode) {
+            const password = document.getElementById('user-password').value;
+            const confirmPassword = document.getElementById('user-confirm-password').value;
+            
+            if (!password) {
+                alert('Please enter a password');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            userData.Password = password;
+        }
+        
+        showLoader();
+        
+        if (isEditMode) {
+            // Update existing user
+            google.script.run
+                .withSuccessHandler((response) => {
+                    hideLoader();
+                    if (response.success) {
+                        alert('User updated successfully');
+                        closeUserModal();
+                        loadManagementUsers();
+                    } else {
+                        alert('Error: ' + (response.message || 'Failed to update user'));
+                    }
+                })
+                .withFailureHandler((error) => {
+                    hideLoader();
+                    alert('Error: ' + (error.message || 'Failed to update user'));
+                })
+                .updateUser(originalEmail, userData, currentSession.email);
+        } else {
+            // Create new user
+            google.script.run
+                .withSuccessHandler((response) => {
+                    hideLoader();
+                    if (response.success) {
+                        alert('User created successfully');
+                        closeUserModal();
+                        loadManagementUsers();
+                    } else {
+                        alert('Error: ' + (response.message || 'Failed to create user'));
+                    }
+                })
+                .withFailureHandler((error) => {
+                    hideLoader();
+                    alert('Error: ' + (error.message || 'Failed to create user'));
+                })
+                .createUser(userData, currentSession.email);
+        }
+    }
+
+    function toggleUserActive(userEmail, newActiveState) {
+        if (!confirm(`Are you sure you want to ${newActiveState ? 'activate' : 'deactivate'} user "${userEmail}"?`)) {
+            return;
+        }
+        
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                if (response.success) {
+                    alert(`User ${newActiveState ? 'activated' : 'deactivated'} successfully`);
+                    loadManagementUsers();
+                } else {
+                    alert('Error: ' + response.message);
+                    hideLoader();
+                }
+            })
+            .withFailureHandler((error) => {
+                alert('Error: ' + error.message);
+                hideLoader();
+            })
+            .toggleUserActive(userEmail, newActiveState, currentSession.email);
+    }
+
+    function openChangePasswordModal(userEmail) {
+        document.getElementById('change-password-email').value = userEmail;
+        document.getElementById('change-password-user-display').textContent = userEmail;
+        document.getElementById('change-password-form').reset();
+        document.getElementById('change-password-email').value = userEmail; // Set again after reset
+        document.getElementById('change-password-modal').classList.remove('hidden');
+    }
+
+    function closeChangePasswordModal() {
+        document.getElementById('change-password-modal').classList.add('hidden');
+        document.getElementById('change-password-form').reset();
+    }
+
+    function saveChangePassword(event) {
+        event.preventDefault();
+        
+        const userEmail = document.getElementById('change-password-email').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        
+        // Validate passwords match
+        if (newPassword !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+        
+        // Validate minimum length
+        if (newPassword.length < 6) {
+            alert('Password must be at least 6 characters long!');
+            return;
+        }
+        
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                if (response.success) {
+                    alert('Password changed successfully');
+                    closeChangePasswordModal();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                alert('Error: ' + error.message);
+                hideLoader();
+            })
+            .changeUserPassword(userEmail, newPassword, currentSession.email);
+    }
+
 
 </script>
 

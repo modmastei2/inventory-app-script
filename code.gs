@@ -29,6 +29,7 @@ const REQUEST_ITEM_ACCESSORY_SHEET_NAME = "Request_Item_Accessory";
 const STOCK_LEDGER_SHEET_NAME = "StockLedger";
 const USER_SHEET_NAME = "Users";
 const AUDIT_LOG_SHEET_NAME = "Audit_Log";
+const SESSION_SHEET_NAME = "Sessions";
 const DURATION_CACHE_SEC = 15; // 5 minutes
 const ENABLE_CACHE = false; // Set to false to disable caching
 
@@ -103,11 +104,12 @@ const repairSheets = () => {
   let requestItemAccessorySheet = ss.getSheetByName(REQUEST_ITEM_ACCESSORY_SHEET_NAME);
   let stockLedgerSheet = ss.getSheetByName(STOCK_LEDGER_SHEET_NAME);
   let auditLogSheet = ss.getSheetByName(AUDIT_LOG_SHEET_NAME);
+  let sessionSheet = ss.getSheetByName(SESSION_SHEET_NAME);
 
     if (!userSheet) {
         userSheet = ss.insertSheet(USER_SHEET_NAME);
-        userSheet.getRange(1,1,1,2).setValues([
-            ["Email","Permission"]
+        userSheet.getRange(1,1,1,4).setValues([
+            ["Email","Password","Permission","Active"]
         ])
 
         Logger.log(`Created sheet: ${USER_SHEET_NAME}`);
@@ -175,11 +177,529 @@ const repairSheets = () => {
         ])
         Logger.log(`Created sheet: ${AUDIT_LOG_SHEET_NAME}`);
     }
+
+    if (!sessionSheet) {
+        sessionSheet = ss.insertSheet(SESSION_SHEET_NAME);
+        sessionSheet.getRange(1,1,1,5).setValues([
+            ["Session_Id","Email","Permission","Created_At","Last_Activity"]
+        ])
+        Logger.log(`Created sheet: ${SESSION_SHEET_NAME}`);
+    }
 }
 
 // ============================================
 // Item Functions
 // ============================================
+
+/*
+@ Check Admin Permission
+*/
+function checkAdminPermission(email) {
+    const ss = getActiveSheet();
+    const userSheet = ss.getSheetByName(USER_SHEET_NAME);
+    
+    if (!userSheet) {
+        return false;
+    }
+    
+    const userData = userSheet.getDataRange().getValues();
+    const headers = userData[0];
+    const emailCol = headers.indexOf("Email");
+    const permissionCol = headers.indexOf("Permission");
+    const activeCol = headers.indexOf("Active");
+    
+    for (let i = 1; i < userData.length; i++) {
+        if (userData[i][emailCol] === email) {
+            const isActive = userData[i][activeCol] === true || userData[i][activeCol] === 'TRUE';
+            return userData[i][permissionCol] === 'Admin' && isActive;
+        }
+    }
+    
+    return false;
+}
+
+/*
+@ Create Item (Admin only)
+*/
+function createItem(itemData, userEmail) {
+    try {
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const itemsSheet = ss.getSheetByName(ITEM_SHEET_NAME);
+        
+        if (!itemsSheet) {
+            throw new Error(`Sheet "${ITEM_SHEET_NAME}" not found`);
+        }
+        
+        const itemId = getNextId(itemsSheet, 0);
+        const timestamp = new Date();
+        
+        itemsSheet.appendRow([
+            itemId,
+            itemData.Item_Name,
+            itemData.Item_Desc || '',
+            itemData.Total_Qty || 0,
+            itemData.Available_Qty || 0,
+            itemData.Image || '',
+            itemData.Active !== false ? true : false,
+            userEmail,
+            timestamp,
+            userEmail,
+            timestamp
+        ]);
+        
+        auditLog(`Admin ${userEmail} created item: ${itemData.Item_Name} (ID: ${itemId})`);
+        
+        return { success: true, message: "Item created successfully", itemId: itemId };
+    } catch (error) {
+        Logger.log("Error in createItem: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+/*
+@ Update Item (Admin only)
+*/
+function updateItem(itemId, itemData, userEmail) {
+    try {
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const itemsSheet = ss.getSheetByName(ITEM_SHEET_NAME);
+        
+        if (!itemsSheet) {
+            throw new Error(`Sheet "${ITEM_SHEET_NAME}" not found`);
+        }
+        
+        const data = itemsSheet.getDataRange().getValues();
+        const headers = data[0];
+        
+        // Find item row
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0] == itemId) {
+                const rowNum = i + 1;
+                const timestamp = new Date();
+                
+                // Update fields
+                if (itemData.Item_Name !== undefined) itemsSheet.getRange(rowNum, 2).setValue(itemData.Item_Name);
+                if (itemData.Item_Desc !== undefined) itemsSheet.getRange(rowNum, 3).setValue(itemData.Item_Desc);
+                if (itemData.Total_Qty !== undefined) itemsSheet.getRange(rowNum, 4).setValue(itemData.Total_Qty);
+                if (itemData.Available_Qty !== undefined) itemsSheet.getRange(rowNum, 5).setValue(itemData.Available_Qty);
+                if (itemData.Image !== undefined) itemsSheet.getRange(rowNum, 6).setValue(itemData.Image);
+                if (itemData.Active !== undefined) itemsSheet.getRange(rowNum, 7).setValue(itemData.Active);
+                
+                itemsSheet.getRange(rowNum, 10).setValue(userEmail);
+                itemsSheet.getRange(rowNum, 11).setValue(timestamp);
+                
+                auditLog(`Admin ${userEmail} updated item ID: ${itemId}`);
+                
+                return { success: true, message: "Item updated successfully" };
+            }
+        }
+        
+        return { success: false, message: "Item not found" };
+    } catch (error) {
+        Logger.log("Error in updateItem: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+/*
+@ Delete Item (Admin only)
+*/
+function deleteItem(itemId, userEmail) {
+    try {
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const itemsSheet = ss.getSheetByName(ITEM_SHEET_NAME);
+        
+        if (!itemsSheet) {
+            throw new Error(`Sheet "${ITEM_SHEET_NAME}" not found`);
+        }
+        
+        const data = itemsSheet.getDataRange().getValues();
+        
+        // Find and delete item row
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0] == itemId) {
+                itemsSheet.deleteRow(i + 1);
+                auditLog(`Admin ${userEmail} deleted item ID: ${itemId}`);
+                return { success: true, message: "Item deleted successfully" };
+            }
+        }
+        
+        return { success: false, message: "Item not found" };
+    } catch (error) {
+        Logger.log("Error in deleteItem: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+/*
+@ Create Accessory (Admin only)
+*/
+function createAccessory(accessoryData, userEmail) {
+    try {
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
+        
+        if (!accessorySheet) {
+            throw new Error(`Sheet "${ACCESSORY_SHEET_NAME}" not found`);
+        }
+        
+        const accessoryId = getNextId(accessorySheet, 0);
+        const timestamp = new Date();
+        
+        accessorySheet.appendRow([
+            accessoryId,
+            accessoryData.Item_Id,
+            accessoryData.Accessory_Name,
+            accessoryData.Accessory_Desc || '',
+            accessoryData.Total_Qty || 0,
+            accessoryData.Available_Qty || 0,
+            accessoryData.Active !== false ? true : false,
+            userEmail,
+            timestamp,
+            userEmail,
+            timestamp
+        ]);
+        
+        auditLog(`Admin ${userEmail} created accessory: ${accessoryData.Accessory_Name} (ID: ${accessoryId})`);
+        
+        return { success: true, message: "Accessory created successfully", accessoryId: accessoryId };
+    } catch (error) {
+        Logger.log("Error in createAccessory: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+/*
+@ Update Accessory (Admin only)
+*/
+function updateAccessory(accessoryId, accessoryData, userEmail) {
+    try {
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
+        
+        if (!accessorySheet) {
+            throw new Error(`Sheet "${ACCESSORY_SHEET_NAME}" not found`);
+        }
+        
+        const data = accessorySheet.getDataRange().getValues();
+        const headers = data[0];
+        
+        // Find accessory row
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0] == accessoryId) {
+                const rowNum = i + 1;
+                const timestamp = new Date();
+                
+                // Update fields
+                if (accessoryData.Item_Id !== undefined) accessorySheet.getRange(rowNum, 2).setValue(accessoryData.Item_Id);
+                if (accessoryData.Accessory_Name !== undefined) accessorySheet.getRange(rowNum, 3).setValue(accessoryData.Accessory_Name);
+                if (accessoryData.Accessory_Desc !== undefined) accessorySheet.getRange(rowNum, 4).setValue(accessoryData.Accessory_Desc);
+                if (accessoryData.Total_Qty !== undefined) accessorySheet.getRange(rowNum, 5).setValue(accessoryData.Total_Qty);
+                if (accessoryData.Available_Qty !== undefined) accessorySheet.getRange(rowNum, 6).setValue(accessoryData.Available_Qty);
+                if (accessoryData.Active !== undefined) accessorySheet.getRange(rowNum, 7).setValue(accessoryData.Active);
+                
+                accessorySheet.getRange(rowNum, 10).setValue(userEmail);
+                accessorySheet.getRange(rowNum, 11).setValue(timestamp);
+                
+                auditLog(`Admin ${userEmail} updated accessory ID: ${accessoryId}`);
+                
+                return { success: true, message: "Accessory updated successfully" };
+            }
+        }
+        
+        return { success: false, message: "Accessory not found" };
+    } catch (error) {
+        Logger.log("Error in updateAccessory: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+/*
+@ Delete Accessory (Admin only)
+*/
+function deleteAccessory(accessoryId, userEmail) {
+    try {
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
+        
+        if (!accessorySheet) {
+            throw new Error(`Sheet "${ACCESSORY_SHEET_NAME}" not found`);
+        }
+        
+        const data = accessorySheet.getDataRange().getValues();
+        
+        // Find and delete accessory row
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0] == accessoryId) {
+                accessorySheet.deleteRow(i + 1);
+                auditLog(`Admin ${userEmail} deleted accessory ID: ${accessoryId}`);
+                return { success: true, message: "Accessory deleted successfully" };
+            }
+        }
+        
+        return { success: false, message: "Accessory not found" };
+    } catch (error) {
+        Logger.log("Error in deleteAccessory: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+// ============================================
+// User Management Functions
+// ============================================
+
+/*
+@ Get Users (Admin only)
+*/
+function getUsers() {
+    try {
+        const ss = getActiveSheet();
+        const userSheet = ss.getSheetByName(USER_SHEET_NAME);
+        
+        if (!userSheet) {
+            throw new Error(`Sheet "${USER_SHEET_NAME}" not found`);
+        }
+        
+        const data = userSheet.getDataRange().getValues();
+        
+        if (data.length === 0) {
+            return { success: true, data: [] };
+        }
+        
+        const headers = data.shift();
+        
+        const users = data
+            .filter(row => row.some(cell => cell !== ""))
+            .map(row => ({
+                Email: row[0],
+                Permission: row[2],
+                Active: row[3] === true || row[3] === 'TRUE'
+            }));
+        
+        return { success: true, data: users };
+    } catch (error) {
+        Logger.log("Error in getUsers: " + error.toString());
+        return { success: false, message: error.toString(), data: [] };
+    }
+}
+
+/*
+@ Create User (Admin only)
+*/
+function createUser(userData, adminEmail) {
+    try {
+        if (!checkAdminPermission(adminEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const userSheet = ss.getSheetByName(USER_SHEET_NAME);
+        
+        if (!userSheet) {
+            throw new Error(`Sheet "${USER_SHEET_NAME}" not found`);
+        }
+        
+        // Normalize email: trim and convert to lowercase
+        const normalizedEmail = userData.Email.trim().toLowerCase();
+        
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(normalizedEmail)) {
+            return { success: false, message: "Invalid email format" };
+        }
+        
+        // Check if email already exists (case-insensitive)
+        const data = userSheet.getDataRange().getValues();
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0].toLowerCase() === normalizedEmail) {
+                return { success: false, message: "Email already exists" };
+            }
+        }
+        
+        // Hash password
+        const passwordHash = hashPassword(userData.Password);
+        
+        userSheet.appendRow([
+            normalizedEmail,
+            passwordHash,
+            userData.Permission,
+            userData.Active !== false ? true : false
+        ]);
+        
+        auditLog(`Admin ${adminEmail} created user: ${normalizedEmail}`);
+        
+        return { success: true, message: "User created successfully" };
+    } catch (error) {
+        Logger.log("Error in createUser: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+/*
+@ Update User (Admin only)
+*/
+function updateUser(originalEmail, userData, adminEmail) {
+    try {
+        if (!checkAdminPermission(adminEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const userSheet = ss.getSheetByName(USER_SHEET_NAME);
+        
+        if (!userSheet) {
+            throw new Error(`Sheet "${USER_SHEET_NAME}" not found`);
+        }
+        
+        const data = userSheet.getDataRange().getValues();
+        const headers = data[0];
+        
+        // Find user row
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0] === originalEmail) {
+                const rowNum = i + 1;
+                
+                // Update permission
+                if (userData.Permission !== undefined) {
+                    userSheet.getRange(rowNum, 3).setValue(userData.Permission);
+                }
+                
+                // Update active status
+                if (userData.Active !== undefined) {
+                    userSheet.getRange(rowNum, 4).setValue(userData.Active);
+                }
+                
+                // Update password if provided
+                if (userData.Password && userData.Password.trim() !== '') {
+                    const passwordHash = hashPassword(userData.Password);
+                    userSheet.getRange(rowNum, 2).setValue(passwordHash);
+                }
+                
+                auditLog(`Admin ${adminEmail} updated user: ${originalEmail}`);
+                
+                return { success: true, message: "User updated successfully" };
+            }
+        }
+        
+        return { success: false, message: "User not found" };
+    } catch (error) {
+        Logger.log("Error in updateUser: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+/*
+@ Toggle User Active Status (Admin only)
+*/
+function toggleUserActive(userEmail, newActiveState, adminEmail) {
+    try {
+        if (!checkAdminPermission(adminEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const userSheet = ss.getSheetByName(USER_SHEET_NAME);
+        
+        if (!userSheet) {
+            throw new Error(`Sheet "${USER_SHEET_NAME}" not found`);
+        }
+        
+        const data = userSheet.getDataRange().getValues();
+        
+        // Normalize email for case-insensitive comparison
+        const normalizedEmail = userEmail.toLowerCase();
+        
+        // Find user row (case-insensitive)
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0].toLowerCase() === normalizedEmail) {
+                const rowNum = i + 1;
+                userSheet.getRange(rowNum, 4).setValue(newActiveState);
+                
+                auditLog(`Admin ${adminEmail} ${newActiveState ? 'activated' : 'deactivated'} user: ${data[i][0]}`);
+                
+                return { success: true, message: `User ${newActiveState ? 'activated' : 'deactivated'} successfully` };
+            }
+        }
+        
+        return { success: false, message: "User not found" };
+    } catch (error) {
+        Logger.log("Error in toggleUserActive: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+/*
+@ Change User Password (Admin only)
+*/
+function changeUserPassword(userEmail, newPassword, adminEmail) {
+    try {
+        if (!checkAdminPermission(adminEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        // Validate new password
+        if (!newPassword || newPassword.trim().length < 6) {
+            return { success: false, message: "Password must be at least 6 characters long" };
+        }
+        
+        const ss = getActiveSheet();
+        const userSheet = ss.getSheetByName(USER_SHEET_NAME);
+        
+        if (!userSheet) {
+            throw new Error(`Sheet "${USER_SHEET_NAME}" not found`);
+        }
+        
+        const data = userSheet.getDataRange().getValues();
+        
+        // Normalize email for case-insensitive comparison
+        const normalizedEmail = userEmail.toLowerCase();
+        
+        // Find user row (case-insensitive)
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0].toLowerCase() === normalizedEmail) {
+                const rowNum = i + 1;
+                
+                // Hash and update password
+                const passwordHash = hashPassword(newPassword);
+                userSheet.getRange(rowNum, 2).setValue(passwordHash);
+                
+                auditLog(`Admin ${adminEmail} changed password for user: ${data[i][0]}`);
+                
+                return { success: true, message: "Password changed successfully" };
+            }
+        }
+        
+        return { success: false, message: "User not found" };
+    } catch (error) {
+        Logger.log("Error in changeUserPassword: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
 /*
 @ Load Items with filter and pagination
 */
@@ -280,7 +800,7 @@ function loadItems (filterName = '', filterActive = 'ALL', page = 1, pageSize = 
 /*
 @ Load Accessories by Item IDs
 */
-function loadAccessories (itemIds = [])  {
+function loadAccessories (itemIds = [], includeInactive = false)  {
     itemIds = arrayParser(itemIds);
 
     const cacheKey = `loadAccessories`;
@@ -334,12 +854,19 @@ function loadAccessories (itemIds = [])  {
             }
         }
 
-        // Filter by itemIds
-        
-        accessories = accessories.filter(acc =>
-            itemIds.includes(String(acc.Item_Id).trim()) &&
-            (acc.Active === true || String(acc.Active).toUpperCase() === "TRUE")
-        );
+        // Filter by itemIds and active status
+        if (includeInactive) {
+            // For management page - show all accessories
+            accessories = accessories.filter(acc =>
+                itemIds.includes(String(acc.Item_Id).trim())
+            );
+        } else {
+            // For normal usage - show only active accessories
+            accessories = accessories.filter(acc =>
+                itemIds.includes(String(acc.Item_Id).trim()) &&
+                (acc.Active === true || String(acc.Active).toUpperCase() === "TRUE")
+            );
+        }
 
         const result = {
             data: accessories
