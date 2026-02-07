@@ -23,12 +23,15 @@ function include(filename) {
 // ============================================
 const ITEM_SHEET_NAME = "Items";
 const ACCESSORY_SHEET_NAME = "Accessories";
+const ITEM_ACCESSORY_SHEET_NAME = "Item_Accessory_Mapping"; // Many-to-many mapping
 const REQUEST_SHEET_NAME = "Requests";
 const REQUEST_ITEM_SHEET_NAME = "Request_Item";
 const REQUEST_ITEM_ACCESSORY_SHEET_NAME = "Request_Item_Accessory";
 const STOCK_LEDGER_SHEET_NAME = "StockLedger";
 const USER_SHEET_NAME = "Users";
-const AUDIT_LOG_SHEET_NAME = "Audit_Log";
+const REQUEST_ACTIVITY_SHEET_NAME = "Request_Activity";
+const SYSTEM_ACTIVITY_SHEET_NAME = "System_Activity";
+const INVENTORY_ACTIVITY_SHEET_NAME = "Inventory_Activity";
 const SESSION_SHEET_NAME = "Sessions";
 const DURATION_CACHE_SEC = 15; // 5 minutes
 const ENABLE_CACHE = false; // Set to false to disable caching
@@ -99,11 +102,11 @@ const repairSheets = () => {
   let userSheet = ss.getSheetByName(USER_SHEET_NAME);
   let itemsSheet = ss.getSheetByName(ITEM_SHEET_NAME);
   let accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
+  let itemAccessorySheet = ss.getSheetByName(ITEM_ACCESSORY_SHEET_NAME);
   let requestSheet = ss.getSheetByName(REQUEST_SHEET_NAME);
   let requestItemSheet = ss.getSheetByName(REQUEST_ITEM_SHEET_NAME);
   let requestItemAccessorySheet = ss.getSheetByName(REQUEST_ITEM_ACCESSORY_SHEET_NAME);
   let stockLedgerSheet = ss.getSheetByName(STOCK_LEDGER_SHEET_NAME);
-  let auditLogSheet = ss.getSheetByName(AUDIT_LOG_SHEET_NAME);
   let sessionSheet = ss.getSheetByName(SESSION_SHEET_NAME);
 
     if (!userSheet) {
@@ -127,11 +130,21 @@ const repairSheets = () => {
 
     if (!accessorySheet) {
         accessorySheet = ss.insertSheet(ACCESSORY_SHEET_NAME);
-        accessorySheet.getRange(1,1,1,11).setValues([
-            ["Accessory_Id", "Item_Id","Accessory_Name","Accessory_Desc","Total_Qty","Available_Qty","Active","Created_By","Created_At","Modified_By","Modified_At"]
+        accessorySheet.getRange(1,1,1,10).setValues([
+            ["Accessory_Id","Accessory_Name","Accessory_Desc","Total_Qty","Available_Qty","Active","Created_By","Created_At","Modified_By","Modified_At"]
         ])
 
         Logger.log(`Created sheet: ${ACCESSORY_SHEET_NAME}`);
+    }
+
+    // Item-Accessory Many-to-Many mapping
+    if (!itemAccessorySheet) {
+        itemAccessorySheet = ss.insertSheet(ITEM_ACCESSORY_SHEET_NAME);
+        itemAccessorySheet.getRange(1,1,1,6).setValues([
+            ["Mapping_Id","Item_Id","Accessory_Id","Created_By","Created_At","Active"]
+        ])
+
+        Logger.log(`Created sheet: ${ITEM_ACCESSORY_SHEET_NAME}`);
     }
 
     if (!requestSheet) {
@@ -170,12 +183,32 @@ const repairSheets = () => {
         Logger.log(`Created sheet: ${STOCK_LEDGER_SHEET_NAME}`);
     }
 
-    if (!auditLogSheet) {
-        auditLogSheet = ss.insertSheet(AUDIT_LOG_SHEET_NAME);
-        auditLogSheet.getRange(1,1,1,4).setValues([
+    // Create 3 separate activity sheets
+    let requestActivitySheet = ss.getSheetByName(REQUEST_ACTIVITY_SHEET_NAME);
+    if (!requestActivitySheet) {
+        requestActivitySheet = ss.insertSheet(REQUEST_ACTIVITY_SHEET_NAME);
+        requestActivitySheet.getRange(1,1,1,4).setValues([
             ["Log_Id","Email","Activity","Action_At"]
         ])
-        Logger.log(`Created sheet: ${AUDIT_LOG_SHEET_NAME}`);
+        Logger.log(`Created sheet: ${REQUEST_ACTIVITY_SHEET_NAME}`);
+    }
+
+    let systemActivitySheet = ss.getSheetByName(SYSTEM_ACTIVITY_SHEET_NAME);
+    if (!systemActivitySheet) {
+        systemActivitySheet = ss.insertSheet(SYSTEM_ACTIVITY_SHEET_NAME);
+        systemActivitySheet.getRange(1,1,1,4).setValues([
+            ["Log_Id","Email","Activity","Action_At"]
+        ])
+        Logger.log(`Created sheet: ${SYSTEM_ACTIVITY_SHEET_NAME}`);
+    }
+
+    let inventoryActivitySheet = ss.getSheetByName(INVENTORY_ACTIVITY_SHEET_NAME);
+    if (!inventoryActivitySheet) {
+        inventoryActivitySheet = ss.insertSheet(INVENTORY_ACTIVITY_SHEET_NAME);
+        inventoryActivitySheet.getRange(1,1,1,4).setValues([
+            ["Log_Id","Email","Activity","Action_At"]
+        ])
+        Logger.log(`Created sheet: ${INVENTORY_ACTIVITY_SHEET_NAME}`);
     }
 
     if (!sessionSheet) {
@@ -251,7 +284,7 @@ function createItem(itemData, userEmail) {
             timestamp
         ]);
         
-        auditLog(`Admin ${userEmail} created item: ${itemData.Item_Name} (ID: ${itemId})`);
+        logInventoryActivity(`Admin ${userEmail} created item: ${itemData.Item_Name} (ID: ${itemId})`);
         
         return { success: true, message: "Item created successfully", itemId: itemId };
     } catch (error) {
@@ -296,7 +329,7 @@ function updateItem(itemId, itemData, userEmail) {
                 itemsSheet.getRange(rowNum, 10).setValue(userEmail);
                 itemsSheet.getRange(rowNum, 11).setValue(timestamp);
                 
-                auditLog(`Admin ${userEmail} updated item ID: ${itemId}`);
+                logInventoryActivity(`Admin ${userEmail} updated item ID: ${itemId}`);
                 
                 return { success: true, message: "Item updated successfully" };
             }
@@ -331,7 +364,7 @@ function deleteItem(itemId, userEmail) {
         for (let i = 1; i < data.length; i++) {
             if (data[i][0] == itemId) {
                 itemsSheet.deleteRow(i + 1);
-                auditLog(`Admin ${userEmail} deleted item ID: ${itemId}`);
+                logInventoryActivity(`Admin ${userEmail} deleted item ID: ${itemId}`);
                 return { success: true, message: "Item deleted successfully" };
             }
         }
@@ -344,7 +377,7 @@ function deleteItem(itemId, userEmail) {
 }
 
 /*
-@ Create Accessory (Admin only)
+@ Create Accessory (Admin only) - Now supports many-to-many item mapping
 */
 function createAccessory(accessoryData, userEmail) {
     try {
@@ -354,17 +387,22 @@ function createAccessory(accessoryData, userEmail) {
         
         const ss = getActiveSheet();
         const accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
+        const itemAccessorySheet = ss.getSheetByName(ITEM_ACCESSORY_SHEET_NAME);
         
         if (!accessorySheet) {
             throw new Error(`Sheet "${ACCESSORY_SHEET_NAME}" not found`);
         }
         
+        if (!itemAccessorySheet) {
+            throw new Error(`Sheet "${ITEM_ACCESSORY_SHEET_NAME}" not found`);
+        }
+        
         const accessoryId = getNextId(accessorySheet, 0);
         const timestamp = new Date();
         
+        // Create accessory (no Item_Id column anymore)
         accessorySheet.appendRow([
             accessoryId,
-            accessoryData.Item_Id,
             accessoryData.Accessory_Name,
             accessoryData.Accessory_Desc || '',
             accessoryData.Total_Qty || 0,
@@ -376,7 +414,22 @@ function createAccessory(accessoryData, userEmail) {
             timestamp
         ]);
         
-        auditLog(`Admin ${userEmail} created accessory: ${accessoryData.Accessory_Name} (ID: ${accessoryId})`);
+        // Create mappings if Item_Ids provided
+        if (accessoryData.Item_Ids && Array.isArray(accessoryData.Item_Ids) && accessoryData.Item_Ids.length > 0) {
+            accessoryData.Item_Ids.forEach(itemId => {
+                const mappingId = getNextId(itemAccessorySheet, 0);
+                itemAccessorySheet.appendRow([
+                    mappingId,
+                    itemId,
+                    accessoryId,
+                    userEmail,
+                    timestamp,
+                    true
+                ]);
+            });
+        }
+        
+        logInventoryActivity(`Admin ${userEmail} created accessory: ${accessoryData.Accessory_Name} (ID: ${accessoryId})`);
         
         return { success: true, message: "Accessory created successfully", accessoryId: accessoryId };
     } catch (error) {
@@ -386,7 +439,7 @@ function createAccessory(accessoryData, userEmail) {
 }
 
 /*
-@ Update Accessory (Admin only)
+@ Update Accessory (Admin only) - Now supports updating item mappings
 */
 function updateAccessory(accessoryId, accessoryData, userEmail) {
     try {
@@ -396,9 +449,14 @@ function updateAccessory(accessoryId, accessoryData, userEmail) {
         
         const ss = getActiveSheet();
         const accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
+        const itemAccessorySheet = ss.getSheetByName(ITEM_ACCESSORY_SHEET_NAME);
         
         if (!accessorySheet) {
             throw new Error(`Sheet "${ACCESSORY_SHEET_NAME}" not found`);
+        }
+        
+        if (!itemAccessorySheet) {
+            throw new Error(`Sheet "${ITEM_ACCESSORY_SHEET_NAME}" not found`);
         }
         
         const data = accessorySheet.getDataRange().getValues();
@@ -410,18 +468,41 @@ function updateAccessory(accessoryId, accessoryData, userEmail) {
                 const rowNum = i + 1;
                 const timestamp = new Date();
                 
-                // Update fields
-                if (accessoryData.Item_Id !== undefined) accessorySheet.getRange(rowNum, 2).setValue(accessoryData.Item_Id);
-                if (accessoryData.Accessory_Name !== undefined) accessorySheet.getRange(rowNum, 3).setValue(accessoryData.Accessory_Name);
-                if (accessoryData.Accessory_Desc !== undefined) accessorySheet.getRange(rowNum, 4).setValue(accessoryData.Accessory_Desc);
-                if (accessoryData.Total_Qty !== undefined) accessorySheet.getRange(rowNum, 5).setValue(accessoryData.Total_Qty);
-                if (accessoryData.Available_Qty !== undefined) accessorySheet.getRange(rowNum, 6).setValue(accessoryData.Available_Qty);
-                if (accessoryData.Active !== undefined) accessorySheet.getRange(rowNum, 7).setValue(accessoryData.Active);
+                // Update fields (note: column indices changed after removing Item_Id)
+                if (accessoryData.Accessory_Name !== undefined) accessorySheet.getRange(rowNum, 2).setValue(accessoryData.Accessory_Name);
+                if (accessoryData.Accessory_Desc !== undefined) accessorySheet.getRange(rowNum, 3).setValue(accessoryData.Accessory_Desc);
+                if (accessoryData.Total_Qty !== undefined) accessorySheet.getRange(rowNum, 4).setValue(accessoryData.Total_Qty);
+                if (accessoryData.Available_Qty !== undefined) accessorySheet.getRange(rowNum, 5).setValue(accessoryData.Available_Qty);
+                if (accessoryData.Active !== undefined) accessorySheet.getRange(rowNum, 6).setValue(accessoryData.Active);
                 
-                accessorySheet.getRange(rowNum, 10).setValue(userEmail);
-                accessorySheet.getRange(rowNum, 11).setValue(timestamp);
+                accessorySheet.getRange(rowNum, 9).setValue(userEmail);
+                accessorySheet.getRange(rowNum, 10).setValue(timestamp);
                 
-                auditLog(`Admin ${userEmail} updated accessory ID: ${accessoryId}`);
+                // Update item mappings if provided
+                if (accessoryData.Item_Ids !== undefined && Array.isArray(accessoryData.Item_Ids)) {
+                    // Delete existing mappings for this accessory
+                    const mappingData = itemAccessorySheet.getDataRange().getValues();
+                    for (let j = mappingData.length - 1; j >= 1; j--) {
+                        if (mappingData[j][2] == accessoryId) {
+                            itemAccessorySheet.deleteRow(j + 1);
+                        }
+                    }
+                    
+                    // Create new mappings
+                    accessoryData.Item_Ids.forEach(itemId => {
+                        const mappingId = getNextId(itemAccessorySheet, 0);
+                        itemAccessorySheet.appendRow([
+                            mappingId,
+                            itemId,
+                            accessoryId,
+                            userEmail,
+                            timestamp,
+                            true
+                        ]);
+                    });
+                }
+                
+                logInventoryActivity(`Admin ${userEmail} updated accessory ID: ${accessoryId}`);
                 
                 return { success: true, message: "Accessory updated successfully" };
             }
@@ -445,18 +526,31 @@ function deleteAccessory(accessoryId, userEmail) {
         
         const ss = getActiveSheet();
         const accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
+        const itemAccessorySheet = ss.getSheetByName(ITEM_ACCESSORY_SHEET_NAME);
         
         if (!accessorySheet) {
             throw new Error(`Sheet "${ACCESSORY_SHEET_NAME}" not found`);
         }
         
+        // Delete accessory
         const data = accessorySheet.getDataRange().getValues();
         
         // Find and delete accessory row
         for (let i = 1; i < data.length; i++) {
             if (data[i][0] == accessoryId) {
                 accessorySheet.deleteRow(i + 1);
-                auditLog(`Admin ${userEmail} deleted accessory ID: ${accessoryId}`);
+                
+                // Delete all mappings for this accessory
+                if (itemAccessorySheet) {
+                    const mappingData = itemAccessorySheet.getDataRange().getValues();
+                    for (let j = mappingData.length - 1; j >= 1; j--) {
+                        if (mappingData[j][2] == accessoryId) {
+                            itemAccessorySheet.deleteRow(j + 1);
+                        }
+                    }
+                }
+                
+                logInventoryActivity(`Admin ${userEmail} deleted accessory ID: ${accessoryId}`);
                 return { success: true, message: "Accessory deleted successfully" };
             }
         }
@@ -464,6 +558,110 @@ function deleteAccessory(accessoryId, userEmail) {
         return { success: false, message: "Accessory not found" };
     } catch (error) {
         Logger.log("Error in deleteAccessory: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+/*
+@ Get Item-Accessory Mappings (Admin only)
+*/
+function getItemAccessoryMappings() {
+    try {
+        const ss = getActiveSheet();
+        const itemAccessorySheet = ss.getSheetByName(ITEM_ACCESSORY_SHEET_NAME);
+        const itemsSheet = ss.getSheetByName(ITEM_SHEET_NAME);
+        const accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
+        
+        if (!itemAccessorySheet) {
+            return { success: true, mappings: [] };
+        }
+        
+        const mappingData = itemAccessorySheet.getDataRange().getValues();
+        const itemData = itemsSheet ? itemsSheet.getDataRange().getValues() : [];
+        const accessoryData = accessorySheet ? accessorySheet.getDataRange().getValues() : [];
+        
+        const mappings = [];
+        
+        for (let i = 1; i < mappingData.length; i++) {
+            const mapping = {
+                Mapping_Id: mappingData[i][0],
+                Item_Id: mappingData[i][1],
+                Accessory_Id: mappingData[i][2],
+                Created_By: mappingData[i][3],
+                Created_At: formatDate(mappingData[i][4]),
+                Active: mappingData[i][5]
+            };
+            
+            // Find item name
+            for (let j = 1; j < itemData.length; j++) {
+                if (itemData[j][0] == mapping.Item_Id) {
+                    mapping.Item_Name = itemData[j][1];
+                    break;
+                }
+            }
+            
+            // Find accessory name
+            for (let j = 1; j < accessoryData.length; j++) {
+                if (accessoryData[j][0] == mapping.Accessory_Id) {
+                    mapping.Accessory_Name = accessoryData[j][1];
+                    break;
+                }
+            }
+            
+            mappings.push(mapping);
+        }
+        
+        return { success: true, mappings: mappings };
+    } catch (error) {
+        Logger.log("Error in getItemAccessoryMappings: " + error.toString());
+        return { success: false, message: error.toString(), mappings: [] };
+    }
+}
+
+/*
+@ Link Accessory to Items (Admin only)
+*/
+function linkAccessoryToItems(accessoryId, itemIds, userEmail) {
+    try {
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const itemAccessorySheet = ss.getSheetByName(ITEM_ACCESSORY_SHEET_NAME);
+        
+        if (!itemAccessorySheet) {
+            throw new Error(`Sheet "${ITEM_ACCESSORY_SHEET_NAME}" not found`);
+        }
+        
+        const timestamp = new Date();
+        
+        // Delete existing mappings for this accessory
+        const mappingData = itemAccessorySheet.getDataRange().getValues();
+        for (let j = mappingData.length - 1; j >= 1; j--) {
+            if (mappingData[j][2] == accessoryId) {
+                itemAccessorySheet.deleteRow(j + 1);
+            }
+        }
+        
+        // Create new mappings
+        itemIds.forEach(itemId => {
+            const mappingId = getNextId(itemAccessorySheet, 0);
+            itemAccessorySheet.appendRow([
+                mappingId,
+                itemId,
+                accessoryId,
+                userEmail,
+                timestamp,
+                true
+            ]);
+        });
+        
+        logInventoryActivity(`Admin ${userEmail} linked accessory ${accessoryId} to ${itemIds.length} items`);
+        
+        return { success: true, message: "Accessory linked successfully" };
+    } catch (error) {
+        Logger.log("Error in linkAccessoryToItems: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -550,7 +748,7 @@ function createUser(userData, adminEmail) {
             userData.Active !== false ? true : false
         ]);
         
-        auditLog(`Admin ${adminEmail} created user: ${normalizedEmail}`);
+        logSystemActivity(`Admin ${adminEmail} created user: ${normalizedEmail}`);
         
         return { success: true, message: "User created successfully" };
     } catch (error) {
@@ -599,7 +797,7 @@ function updateUser(originalEmail, userData, adminEmail) {
                     userSheet.getRange(rowNum, 2).setValue(passwordHash);
                 }
                 
-                auditLog(`Admin ${adminEmail} updated user: ${originalEmail}`);
+                logSystemActivity(`Admin ${adminEmail} updated user: ${originalEmail}`);
                 
                 return { success: true, message: "User updated successfully" };
             }
@@ -639,7 +837,7 @@ function toggleUserActive(userEmail, newActiveState, adminEmail) {
                 const rowNum = i + 1;
                 userSheet.getRange(rowNum, 4).setValue(newActiveState);
                 
-                auditLog(`Admin ${adminEmail} ${newActiveState ? 'activated' : 'deactivated'} user: ${data[i][0]}`);
+                logSystemActivity(`Admin ${adminEmail} ${newActiveState ? 'activated' : 'deactivated'} user: ${data[i][0]}`);
                 
                 return { success: true, message: `User ${newActiveState ? 'activated' : 'deactivated'} successfully` };
             }
@@ -687,7 +885,7 @@ function changeUserPassword(userEmail, newPassword, adminEmail) {
                 const passwordHash = hashPassword(newPassword);
                 userSheet.getRange(rowNum, 2).setValue(passwordHash);
                 
-                auditLog(`Admin ${adminEmail} changed password for user: ${data[i][0]}`);
+                logSystemActivity(`Admin ${adminEmail} changed password for user: ${data[i][0]}`);
                 
                 return { success: true, message: "Password changed successfully" };
             }
@@ -813,6 +1011,7 @@ function loadAccessories (itemIds = [], includeInactive = false)  {
             // Get fresh data from sheet
             const ss = SpreadsheetApp.getActiveSpreadsheet();
             const accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
+            const itemAccessorySheet = ss.getSheetByName(ITEM_ACCESSORY_SHEET_NAME);
 
             if (!accessorySheet) {
                 Logger.log(`Sheet "${ACCESSORY_SHEET_NAME}" not found`);
@@ -827,23 +1026,44 @@ function loadAccessories (itemIds = [], includeInactive = false)  {
 
             const headers = data.shift(); // Remove header row
 
-            // Convert to objects
+            // Get item-accessory mappings
+            let mappings = [];
+            if (itemAccessorySheet) {
+                const mappingData = itemAccessorySheet.getDataRange().getValues();
+                mappings = mappingData.slice(1).map(row => ({
+                    Mapping_Id: row[0],
+                    Item_Id: row[1],
+                    Accessory_Id: row[2],
+                    Created_By: row[3],
+                    Created_At: row[4],
+                    Active: row[5]
+                }));
+            }
+
+            // Convert to objects with mapped items
             accessories = data
                 .filter(row => row.some(cell => cell !== "")) // Filter empty rows
                 .map(row => {
                     const accessory = {
                         Accessory_Id: row[0],
-                        Item_Id: row[1],	
-                        Accessory_Name: row[2],
-                        Accessory_Desc: row[3],
-                        Total_Qty: row[4],
-                        Available_Qty: row[5],
-                        Active: row[6],
-                        Created_By: row[7],
-                        Created_At: formatDate(row[8]),
-                        Modified_By: row[9],
-                        Modified_At: formatDate(row[10])
+                        Accessory_Name: row[1],
+                        Accessory_Desc: row[2],
+                        Total_Qty: row[3],
+                        Available_Qty: row[4],
+                        Active: row[5],
+                        Created_By: row[6],
+                        Created_At: formatDate(row[7]),
+                        Modified_By: row[8],
+                        Modified_At: formatDate(row[9]),
+                        Item_Ids: [] // Will be populated from mappings
                     };
+
+                    // Add item IDs from mappings
+                    mappings.forEach(mapping => {
+                        if (mapping.Accessory_Id == accessory.Accessory_Id && mapping.Active) {
+                            accessory.Item_Ids.push(mapping.Item_Id);
+                        }
+                    });
 
                     return accessory;
                 });
@@ -858,17 +1078,18 @@ function loadAccessories (itemIds = [], includeInactive = false)  {
         if (includeInactive) {
             // For management page - show all accessories
             accessories = accessories.filter(acc =>
-                itemIds.includes(String(acc.Item_Id).trim())
+                itemIds.length === 0 || acc.Item_Ids.some(id => itemIds.includes(String(id).trim()))
             );
         } else {
             // For normal usage - show only active accessories
             accessories = accessories.filter(acc =>
-                itemIds.includes(String(acc.Item_Id).trim()) &&
+                (itemIds.length === 0 || acc.Item_Ids.some(id => itemIds.includes(String(id).trim()))) &&
                 (acc.Active === true || String(acc.Active).toUpperCase() === "TRUE")
             );
         }
 
         const result = {
+            success: true,
             data: accessories
         }
 
@@ -879,7 +1100,7 @@ function loadAccessories (itemIds = [], includeInactive = false)  {
     }
     catch (error) {
         Logger.log("Error in loadAccessories: " + error.toString());
-        return { data: [] };
+        return { success: false, message: error.toString(), data: [] };
     }
 }
 
@@ -1130,14 +1351,14 @@ function submitRequest(submitRequestData) {
         }
 
         // ============================================
-        // 1. ดึงข้อมูล Request หลัก
+        // 1. New or Edit Request
         // ============================================
         if (submitRequestData.IsNew) {
             let request = [];
             let requestId = getNextId(requestSheet, 0);
             let status = 'Submit';
             const timestamp = formatDate(new Date());
-            const userName = submitRequestData.Requirer_Name;
+            const userEmail = Session.getActiveUser().getEmail();
 
             // Check stock availability first (before any writes)
             const stockValidation = validateStockAvailable(submitRequestData.Items);
@@ -1154,9 +1375,9 @@ function submitRequest(submitRequestData) {
                 null,
                 submitRequestData.Return_Date,
                 submitRequestData.Remark,
-                userName,
+                userEmail,
                 timestamp,
-                userName,
+                userEmail,
                 timestamp
             ]);
 
@@ -1198,9 +1419,13 @@ function submitRequest(submitRequestData) {
             if (requestItemsAccessories.length > 0)
                 requestItemAccessorySheet.getRange(requestItemAccessorySheet.getLastRow() + 1, 1, requestItemsAccessories.length, requestItemsAccessories[0].length).setValues(requestItemsAccessories);
 
-            auditLog("Submit Request ID " + requestId);
+            logRequestActivity("Create Request");
         } else {
-            auditLog("Edit Request ID " + submitRequestData.Request_Id);
+            // Edit existing request - only allowed if status is 'Submit' (Pending)
+            const result = editRequest(submitRequestData);
+            if (!result.success) {
+                throw new Error(result.message);
+            }
         }
 
         Logger.log("Submit Request Data: " + JSON.stringify(submitRequestData));
@@ -1209,6 +1434,129 @@ function submitRequest(submitRequestData) {
     }
     catch (error) {
         Logger.log("Error in submitRequest: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
+}
+
+/*
+@ Edit Request - Only allowed for requests with status 'Submit' (Pending)
+@ Users can edit their own requests, admins can edit any
+*/
+function editRequest(editRequestData) {
+    try {
+        const userEmail = Session.getActiveUser().getEmail();
+        const ss = getActiveSheet();
+        const requestSheet = ss.getSheetByName(REQUEST_SHEET_NAME);
+        const requestItemSheet = ss.getSheetByName(REQUEST_ITEM_SHEET_NAME);
+        const requestItemAccessorySheet = ss.getSheetByName(REQUEST_ITEM_ACCESSORY_SHEET_NAME);
+
+        // Find the request
+        const requestData = requestSheet.getDataRange().getValues();
+        const headers = requestData[0];
+        const requestIdIndex = headers.indexOf("Request_Id");
+        const statusIndex = headers.indexOf("Status");
+        const createdByIndex = headers.indexOf("Created_By");
+        
+        let rowIndex = -1;
+        let rowData = null;
+
+        for (let i = 1; i < requestData.length; i++) {
+            if (requestData[i][requestIdIndex] == editRequestData.Request_Id) {
+                rowIndex = i + 1;
+                rowData = requestData[i];
+                break;
+            }
+        }
+
+        if (rowIndex === -1) {
+            return { success: false, message: "Request not found" };
+        }
+
+        // Check if request is in editable status
+        if (rowData[statusIndex] !== "Submit") {
+            return { success: false, message: "Only pending requests can be edited" };
+        }
+
+        // Check permission: User can edit own requests, Admin can edit any
+        const isAdmin = checkAdminPermission(userEmail);
+        const createdBy = rowData[createdByIndex];
+        
+        if (!isAdmin && createdBy !== userEmail) {
+            return { success: false, message: "You can only edit your own requests" };
+        }
+
+        // Check stock availability
+        const stockValidation = validateStockAvailable(editRequestData.Items);
+        if (!stockValidation.success) {
+            return { success: false, message: `Insufficient stock: ${stockValidation.message}` };
+        }
+
+        // Delete existing items and accessories for this request
+        const requestItemData = requestItemSheet.getDataRange().getValues();
+        for (let i = requestItemData.length - 1; i >= 1; i--) {
+            if (requestItemData[i][0] == editRequestData.Request_Id) {
+                requestItemSheet.deleteRow(i + 1);
+            }
+        }
+
+        const requestItemAccessoryData = requestItemAccessorySheet.getDataRange().getValues();
+        for (let i = requestItemAccessoryData.length - 1; i >= 1; i--) {
+            if (requestItemAccessoryData[i][0] == editRequestData.Request_Id) {
+                requestItemAccessorySheet.deleteRow(i + 1);
+            }
+        }
+
+        // Update main request
+        const timestamp = formatDate(new Date());
+        requestSheet.getRange(rowIndex, headers.indexOf("Requirer_Name") + 1).setValue(editRequestData.Requirer_Name);
+        requestSheet.getRange(rowIndex, headers.indexOf("Request_Date") + 1).setValue(editRequestData.Request_Date);
+        requestSheet.getRange(rowIndex, headers.indexOf("Return_Date") + 1).setValue(editRequestData.Return_Date);
+        requestSheet.getRange(rowIndex, headers.indexOf("Remark") + 1).setValue(editRequestData.Remark);
+        requestSheet.getRange(rowIndex, headers.indexOf("Modified_By") + 1).setValue(userEmail);
+        requestSheet.getRange(rowIndex, headers.indexOf("Modified_At") + 1).setValue(timestamp);
+
+        // Insert new items
+        let requestItems = [];
+        let requestItemsAccessories = [];
+        const status = 'Submit';
+
+        editRequestData.Items.forEach((item, itemIndex) => {
+            requestItems.push([
+                editRequestData.Request_Id,
+                itemIndex + 1,
+                item.Item_Id,
+                item.Item_Name,
+                item.Qty,
+                0,
+                status
+            ]);
+
+            // insert accessories
+            item.Accessories.forEach((accessory, accessoryIndex) => {
+                requestItemsAccessories.push([
+                    editRequestData.Request_Id,
+                    itemIndex + 1,
+                    accessoryIndex + 1,
+                    accessory.Accessory_Id,
+                    accessory.Accessory_Name,
+                    accessory.Qty,
+                    0,
+                    status
+                ]);
+            });
+        });
+
+        if (requestItems.length > 0)
+            requestItemSheet.getRange(requestItemSheet.getLastRow() + 1, 1, requestItems.length, requestItems[0].length).setValues(requestItems);
+
+        if (requestItemsAccessories.length > 0)
+            requestItemAccessorySheet.getRange(requestItemAccessorySheet.getLastRow() + 1, 1, requestItemsAccessories.length, requestItemsAccessories[0].length).setValues(requestItemsAccessories);
+
+        logRequestActivity("Edit Request");
+
+        return { success: true, message: "Request updated successfully" };
+    } catch (error) {
+        Logger.log("Error in editRequest: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -1375,10 +1723,16 @@ function manageStock(items, action = 'decrease') {
 }
 
 /*
-@ Distribute Request
+@ Distribute Request (Admin only)
 */
 function distributeRequest(request) {
     try {
+        // Check admin permission
+        const userEmail = Session.getActiveUser().getEmail();
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required to distribute requests" };
+        }
+        
         const ss = getActiveSheet();
         const requestSheet = ss.getSheetByName(REQUEST_SHEET_NAME);
         const requestItemSheet = ss.getSheetByName(REQUEST_ITEM_SHEET_NAME);
@@ -1431,7 +1785,7 @@ function distributeRequest(request) {
 
         requestSheet.getRange(rowIndex, statusIndex + 1).setValue("Distributed");
         requestSheet.getRange(rowIndex, distributedDateIndex + 1).setValue(formatDate(new Date(), 'yyyy-MM-dd'));
-        requestSheet.getRange(rowIndex, modifiedByIndex + 1).setValue(Session.getActiveUser().getEmail());
+        requestSheet.getRange(rowIndex, modifiedByIndex + 1).setValue(userEmail);
         requestSheet.getRange(rowIndex, modifiedAtIndex + 1).setValue(formatDate(new Date()));
 
         const requestItemData = requestItemSheet.getDataRange().getValues();
@@ -1455,7 +1809,7 @@ function distributeRequest(request) {
             }
         }
 
-        auditLog("Distribute Request ID " + request.Request_Id);
+        logRequestActivity("Distribute Request");
 
         return { success: true, message: `Request ID ${request.Request_Id} distributed successfully` };
     }
@@ -1508,8 +1862,8 @@ function cancelRequest(requestId) {
 
         const statusIndex = headers.indexOf("Status");
 
-        if (rowData[statusIndex] !== "Distributed") {
-            throw new Error(`Request ID ${requestId} is not in 'Distributed' status`);
+        if (rowData[statusIndex] !== "Submit") {
+            throw new Error(`Request ID ${requestId} is not in 'Submit' status`);
         }
 
         const modifiedByIndex = headers.indexOf("Modified_By");
@@ -1538,7 +1892,7 @@ function cancelRequest(requestId) {
             }
         }
 
-        auditLog("Cancel Request ID " + requestId);
+        logRequestActivity("Cancel Request");
 
         return { success: true, message: `Request ID ${requestId} cancelled successfully` };
     }
@@ -1549,10 +1903,16 @@ function cancelRequest(requestId) {
 }
 
 /*
-@ Return Request: Support partial return
+@ Return Request: Support partial return (Admin only)
 */
 function returnRequest(returnRequestData) {
     try {
+        // Check admin permission
+        const userEmail = Session.getActiveUser().getEmail();
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required to return requests" };
+        }
+        
         const ss = getActiveSheet();
         const requestSheet = ss.getSheetByName(REQUEST_SHEET_NAME);
         const requestItemSheet = ss.getSheetByName(REQUEST_ITEM_SHEET_NAME);
@@ -1710,10 +2070,7 @@ function returnRequest(returnRequestData) {
         }
 
         // Audit log
-        const returnSummary = isPartialReturn ? 
-            `Partial return - Request ID ${returnRequestData.Request_Id}` : 
-            `Full return - Request ID ${returnRequestData.Request_Id}`;
-        auditLog(returnSummary);
+        logRequestActivity("Return Request");
 
         return { 
             success: true, 
@@ -1725,7 +2082,7 @@ function returnRequest(returnRequestData) {
     }
     catch (error) {
         Logger.log("Error in returnRequest: " + error.toString());
-        throw new Error(error.toString());
+        return { success: false, message: error.toString() };
     }
 }
 
@@ -1741,7 +2098,6 @@ function getDashboardStats() {
     const itemsSheet = ss.getSheetByName(ITEM_SHEET_NAME);
     const accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
     const requestSheet = ss.getSheetByName(REQUEST_SHEET_NAME);
-    const auditLogSheet = ss.getSheetByName(AUDIT_LOG_SHEET_NAME);
 
     let totalItems = 0;
     let remainItems = 0;
@@ -1764,12 +2120,12 @@ function getDashboardStats() {
     const totalAccessoryTypes = accessorySheet ? accessorySheet.getDataRange().getValues().filter((row, index) => {
         if (index === 0) return false;
 
-        if(row[6] === true || row[6] === 'TRUE') {
-            totalAccessories += row[4]; // Assuming 'Total_Qty' is in the 5th column (index 4)
-            remainAccessories += row[5]; // Assuming 'Available_Qty' is in the 6th column (index 5)
+        if(row[5] === true || row[5] === 'TRUE') {
+            totalAccessories += row[3]; // Total_Qty is in the 4th column (index 3)
+            remainAccessories += row[4]; // Available_Qty is in the 5th column (index 4)
         }
 
-        return row[6] === true || row[6] === 'TRUE'; // Assuming 'Active' is in the 7th column (index 6)
+        return row[5] === true || row[5] === 'TRUE'; // Active is in the 6th column (index 5)
     }).length : 0;
 
     const submitRequestCount = requestSheet ? requestSheet.getDataRange().getValues().filter((row, index) => {
@@ -1781,11 +2137,6 @@ function getDashboardStats() {
         if (index === 0) return false;
         return row[2] === 'Distributed'; // Assuming 'Status' is in the 3rd column (index 2)
     }).length : 0;
-
-    const top50_recentlyActivity = auditLogSheet.getDataRange().getValues().slice(1) // Skip header row
-        .sort((a, b) => new Date(b[3]) - new Date(a[3])) // Sort by Action_At descending
-        .slice(0, 50)
-
 
     const result = {
         success: true,
@@ -1800,13 +2151,7 @@ function getDashboardStats() {
             remainAccessories: remainAccessories,
             // request
             submitRequestCount: submitRequestCount,
-            waitingReturnCount: waitingReturnCount,
-            top50_recentlyActivity: top50_recentlyActivity.map((row, index) => ({
-                Log_Id: index + 1,
-                Email: row[1],
-                Activity: row[2],
-                Action_At: formatDate(row[3])
-            }))
+            waitingReturnCount: waitingReturnCount
         }
     };
 
@@ -1815,27 +2160,269 @@ function getDashboardStats() {
     return result;
 }
 
-
-/**
-@ Audit Log
+/*
+@ Get Request Activity - Shows all request movements (All users)
 */
-function auditLog(actionType) {
+function getRequestActivity(page = 1, pageSize = 50) {
     try {
         const ss = getActiveSheet();
-        const auditLogSheet = ss.getSheetByName(AUDIT_LOG_SHEET_NAME);
-        if (!auditLogSheet) {
-            throw new Error(`Sheet "${AUDIT_LOG_SHEET_NAME}" not found`);
+        const requestActivitySheet = ss.getSheetByName(REQUEST_ACTIVITY_SHEET_NAME);
+        
+        if (!requestActivitySheet) {
+            return { success: true, data: [], total: 0, page: 1, pageSize: pageSize, totalPages: 0 };
+        }
+        
+        const data = requestActivitySheet.getDataRange().getValues();
+        const headers = data[0];
+        
+        // Get all request activities (no filtering needed since sheet is dedicated)
+        const requestActivities = [];
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0]) { // Check if row has data
+                requestActivities.push({
+                    Log_Id: data[i][0],
+                    Email: data[i][1],
+                    Activity: data[i][2],
+                    Action_At: formatDate(data[i][3])
+                });
+            }
+        }
+        
+        // Sort by Action_At descending
+        requestActivities.sort((a, b) => {
+            const dateA = new Date(a.Action_At);
+            const dateB = new Date(b.Action_At);
+            return dateB - dateA;
+        });
+        
+        // Pagination
+        const total = requestActivities.length;
+        const totalPages = Math.ceil(total / pageSize);
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const paginatedData = requestActivities.slice(startIndex, endIndex);
+        
+        console.log("Request Activities Paginated Data: " + JSON.stringify(paginatedData));
+
+        return {
+            success: true,
+            data: paginatedData,
+            total: total,
+            page: page,
+            pageSize: pageSize,
+            totalPages: totalPages
+        };
+    } catch (error) {
+        Logger.log("Error in getRequestActivity: " + error.toString());
+        return { success: false, message: error.toString(), data: [] };
+    }
+}
+
+/*
+@ Get System Activity - Shows login/logout activities (Admin only)
+*/
+function getSystemActivity(page = 1, pageSize = 50) {
+    try {
+        const userEmail = Session.getActiveUser().getEmail();
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const systemActivitySheet = ss.getSheetByName(SYSTEM_ACTIVITY_SHEET_NAME);
+        const sessionSheet = ss.getSheetByName(SESSION_SHEET_NAME);
+        
+        if (!systemActivitySheet) {
+            return { success: true, data: [], total: 0, page: 1, pageSize: pageSize, totalPages: 0 };
+        }
+        
+        const data = systemActivitySheet.getDataRange().getValues();
+        const sessionData = sessionSheet ? sessionSheet.getDataRange().getValues() : [];
+        
+        // Get system activities from dedicated sheet
+        const systemActivities = [];
+        
+        // From system activity log
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0]) { // Check if row has data
+                systemActivities.push({
+                    Log_Id: data[i][0],
+                    Email: data[i][1],
+                    Activity: data[i][2],
+                    Action_At: formatDate(data[i][3]),
+                    Type: 'System'
+                });
+            }
+        }
+        
+        // From sessions (active sessions)
+        for (let i = 1; i < sessionData.length; i++) {
+            systemActivities.push({
+                Log_Id: 'SESSION-' + sessionData[i][0], // Use string format to unify with Log_Id
+                Email: sessionData[i][1],
+                Activity: `Active Session - Permission: ${sessionData[i][2]}`,
+                Action_At: formatDate(sessionData[i][4]),
+                Type: 'Session'
+            });
+        }
+        
+        // Sort by Action_At descending
+        systemActivities.sort((a, b) => {
+            const dateA = new Date(a.Action_At);
+            const dateB = new Date(b.Action_At);
+            return dateB - dateA;
+        });
+        
+        // Pagination
+        const total = systemActivities.length;
+        const totalPages = Math.ceil(total / pageSize);
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const paginatedData = systemActivities.slice(startIndex, endIndex);
+        
+        console.log("System Activities Paginated Data: " + JSON.stringify(paginatedData));
+        return {
+            success: true,
+            data: paginatedData,
+            total: total,
+            page: page,
+            pageSize: pageSize,
+            totalPages: totalPages
+        };
+    } catch (error) {
+        Logger.log("Error in getSystemActivity: " + error.toString());
+        return { success: false, message: error.toString(), data: [] };
+    }
+}
+
+/*
+@ Get Inventory Activity - Shows item/accessory changes (Admin only)
+*/
+function getInventoryActivity(page = 1, pageSize = 50) {
+    try {
+        const userEmail = Session.getActiveUser().getEmail();
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        const ss = getActiveSheet();
+        const inventoryActivitySheet = ss.getSheetByName(INVENTORY_ACTIVITY_SHEET_NAME);
+        
+        if (!inventoryActivitySheet) {
+            return { success: true, data: [], total: 0, page: 1, pageSize: pageSize, totalPages: 0 };
+        }
+        
+        const data = inventoryActivitySheet.getDataRange().getValues();
+        
+        // Get all inventory activities (no filtering needed since sheet is dedicated)
+        const inventoryActivities = [];
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][0]) { // Check if row has data
+                inventoryActivities.push({
+                    Log_Id: data[i][0],
+                    Email: data[i][1],
+                    Activity: data[i][2],
+                    Action_At: formatDate(data[i][3])
+                });
+            }
+        }
+        
+        // Sort by Action_At descending
+        inventoryActivities.sort((a, b) => {
+            const dateA = new Date(a.Action_At);
+            const dateB = new Date(b.Action_At);
+            return dateB - dateA;
+        });
+        
+        // Pagination
+        const total = inventoryActivities.length;
+        const totalPages = Math.ceil(total / pageSize);
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const paginatedData = inventoryActivities.slice(startIndex, endIndex);
+        
+        console.log("Inventory Activities Paginated Data: " + JSON.stringify(paginatedData));
+        return {
+            success: true,
+            data: paginatedData,
+            total: total,
+            page: page,
+            pageSize: pageSize,
+            totalPages: totalPages
+        };
+    } catch (error) {
+        Logger.log("Error in getInventoryActivity: " + error.toString());
+        return { success: false, message: error.toString(), data: [] };
+    }
+}
+
+
+/**
+@ Log Request Activity
+*/
+function logRequestActivity(actionType) {
+    try {
+        const ss = getActiveSheet();
+        const requestActivitySheet = ss.getSheetByName(REQUEST_ACTIVITY_SHEET_NAME);
+        if (!requestActivitySheet) {
+            throw new Error(`Sheet "${REQUEST_ACTIVITY_SHEET_NAME}" not found`);
         }
 
         const email = Session.getActiveUser().getEmail();
         const timestamp = formatDate(new Date());
-        const logId = getNextId(auditLogSheet, 0);
+        const logId = getNextId(requestActivitySheet, 0);
 
-        auditLogSheet.appendRow([logId, email, actionType, timestamp]);
+        requestActivitySheet.appendRow([logId, email, actionType, timestamp]);
 
-        Logger.log(`Audit log recorded: ${email} - ${actionType} at ${timestamp}`);
+        Logger.log(`Request activity logged: ${email} - ${actionType} at ${timestamp}`);
     } catch (error) {
-        Logger.log("Error in auditLog: " + error.toString());
+        Logger.log("Error in logRequestActivity: " + error.toString());
+    }
+}
+
+/**
+@ Log System Activity
+*/
+function logSystemActivity(actionType, userEmail = null) {
+    try {
+        const ss = getActiveSheet();
+        const systemActivitySheet = ss.getSheetByName(SYSTEM_ACTIVITY_SHEET_NAME);
+        if (!systemActivitySheet) {
+            throw new Error(`Sheet "${SYSTEM_ACTIVITY_SHEET_NAME}" not found`);
+        }
+
+        const email = userEmail || Session.getActiveUser().getEmail();
+        const timestamp = formatDate(new Date());
+        const logId = getNextId(systemActivitySheet, 0);
+
+        systemActivitySheet.appendRow([logId, email, actionType, timestamp]);
+
+        Logger.log(`System activity logged: ${email} - ${actionType} at ${timestamp}`);
+    } catch (error) {
+        Logger.log("Error in logSystemActivity: " + error.toString());
+    }
+}
+
+/**
+@ Log Inventory Activity
+*/
+function logInventoryActivity(actionType) {
+    try {
+        const ss = getActiveSheet();
+        const inventoryActivitySheet = ss.getSheetByName(INVENTORY_ACTIVITY_SHEET_NAME);
+        if (!inventoryActivitySheet) {
+            throw new Error(`Sheet "${INVENTORY_ACTIVITY_SHEET_NAME}" not found`);
+        }
+
+        const email = Session.getActiveUser().getEmail();
+        const timestamp = formatDate(new Date());
+        const logId = getNextId(inventoryActivitySheet, 0);
+
+        inventoryActivitySheet.appendRow([logId, email, actionType, timestamp]);
+
+        Logger.log(`Inventory activity logged: ${email} - ${actionType} at ${timestamp}`);
+    } catch (error) {
+        Logger.log("Error in logInventoryActivity: " + error.toString());
     }
 }
 
@@ -1907,4 +2494,280 @@ function arrayParser(input) {
 
     input = input.map(id => String(id).trim());
     return input;
+}
+
+// ============================================
+// Initial Data Import Function
+// ============================================
+
+/*
+@ Initialize Data with Real Data from Sheets
+@ This function clears old data and imports real items, accessories, and their mappings
+@ Should be run only once for initial setup
+*/
+function initializeDataFromReference() {
+    try {
+        const userEmail = Session.getActiveUser().getEmail();
+        
+        // Check admin permission
+        if (!checkAdminPermission(userEmail)) {
+            return { success: false, message: "Unauthorized: Admin permission required" };
+        }
+        
+        // Ensure all sheets exist before proceeding
+        repairSheets();
+        
+        const ss = getActiveSheet();
+        const itemsSheet = ss.getSheetByName(ITEM_SHEET_NAME);
+        const accessorySheet = ss.getSheetByName(ACCESSORY_SHEET_NAME);
+        const itemAccessorySheet = ss.getSheetByName(ITEM_ACCESSORY_SHEET_NAME);
+        const requestSheet = ss.getSheetByName(REQUEST_SHEET_NAME);
+        const requestItemSheet = ss.getSheetByName(REQUEST_ITEM_SHEET_NAME);
+        const requestItemAccessorySheet = ss.getSheetByName(REQUEST_ITEM_ACCESSORY_SHEET_NAME);
+        const userSheet = ss.getSheetByName(USER_SHEET_NAME);
+        const stockLedgerSheet = ss.getSheetByName(STOCK_LEDGER_SHEET_NAME);
+        const requestActivitySheet = ss.getSheetByName(REQUEST_ACTIVITY_SHEET_NAME);
+        const systemActivitySheet = ss.getSheetByName(SYSTEM_ACTIVITY_SHEET_NAME);
+        const inventoryActivitySheet = ss.getSheetByName(INVENTORY_ACTIVITY_SHEET_NAME);
+        const sessionSheet = ss.getSheetByName(SESSION_SHEET_NAME);
+        
+        // Clear existing data from all sheets (keep headers)
+        if (itemsSheet && itemsSheet.getLastRow() > 1) {
+            itemsSheet.deleteRows(2, itemsSheet.getLastRow() - 1);
+        }
+        if (accessorySheet && accessorySheet.getLastRow() > 1) {
+            accessorySheet.deleteRows(2, accessorySheet.getLastRow() - 1);
+        }
+        if (itemAccessorySheet && itemAccessorySheet.getLastRow() > 1) {
+            itemAccessorySheet.deleteRows(2, itemAccessorySheet.getLastRow() - 1);
+        }
+        if (requestSheet && requestSheet.getLastRow() > 1) {
+            requestSheet.deleteRows(2, requestSheet.getLastRow() - 1);
+        }
+        if (requestItemSheet && requestItemSheet.getLastRow() > 1) {
+            requestItemSheet.deleteRows(2, requestItemSheet.getLastRow() - 1);
+        }
+        if (requestItemAccessorySheet && requestItemAccessorySheet.getLastRow() > 1) {
+            requestItemAccessorySheet.deleteRows(2, requestItemAccessorySheet.getLastRow() - 1);
+        }
+        if (userSheet && userSheet.getLastRow() > 1) {
+            userSheet.deleteRows(2, userSheet.getLastRow() - 1);
+        }
+        if (stockLedgerSheet && stockLedgerSheet.getLastRow() > 1) {
+            stockLedgerSheet.deleteRows(2, stockLedgerSheet.getLastRow() - 1);
+        }
+        if (requestActivitySheet && requestActivitySheet.getLastRow() > 1) {
+            requestActivitySheet.deleteRows(2, requestActivitySheet.getLastRow() - 1);
+        }
+        if (systemActivitySheet && systemActivitySheet.getLastRow() > 1) {
+            systemActivitySheet.deleteRows(2, systemActivitySheet.getLastRow() - 1);
+        }
+        if (inventoryActivitySheet && inventoryActivitySheet.getLastRow() > 1) {
+            inventoryActivitySheet.deleteRows(2, inventoryActivitySheet.getLastRow() - 1);
+        }
+        if (sessionSheet && sessionSheet.getLastRow() > 1) {
+            sessionSheet.deleteRows(2, sessionSheet.getLastRow() - 1);
+        }
+        
+        const timestamp = new Date();
+        let itemsImported = 0;
+        let accessoriesImported = 0;
+        let mappingsImported = 0;
+        let usersImported = 0;
+        
+        // Real Items Data from InventoryManagement - Items.csv (49 items)
+        const realItems = [
+            ["841 Titrando", "2.841.0010 (เสีย)", 1, 1, "https://image2url.com/r2/default/images/1770110030781-3b71ec6a-8388-44b3-9596-c990f34d08c8.png"],
+            ["907 Titrando", "2.907.0010", 1, 1, "https://image2url.com/r2/default/images/1770111189839-f57eadea-d8f7-4b94-b143-44fabb67fa84.png"],
+            ["808 Titrando", "2.808.0010", 1, 1, "https://image2url.com/r2/default/images/1770086412243-2f877e15-cec7-4120-bf1e-b3b7abec07cf.png"],
+            ["852 Titrando", "2.852.0010", 1, 1, "https://image2url.com/r2/default/images/1770110600497-eb4fe05b-c636-45c1-8e49-8ebc28558c7c.png"],
+            ["905 Titrando", "2.905.0010", 1, 1, "https://image2url.com/r2/default/images/1770111364183-40464f56-82bf-4197-97b8-06e18af778b5.png"],
+            ["801 stirrer", "2.801.0010", 1, 1, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTe5Bn4YioHHchJzvH3cDtShPfcJM_k1U9m-g&s"],
+            ["916 Ti-touch", "2.916.0010", 2, 2, "https://image2url.com/r2/default/images/1770170012397-d921dca7-55a3-4d90-b9e5-5a1f158fd98d.png"],
+            ["Eco Titrator", "2.1008.0010", 2, 2, "https://metrohm.scene7.com/is/image/metrohm/4840?$xh-544$&bfc=on"],
+            ["904 Titrando", "2.904.0010", 1, 1, "https://image2url.com/r2/default/images/1770172036979-d384469b-d3b1-47ab-9ddd-b806e736b998.png"],
+            ["900 Touch control", "2.900.0010", 1, 1, "https://static-data2.manualslib.com/product-images/1b6/2342664/metrohm-900-touch-control.jpg"],
+            ["Eco Dosimat", "2.1007.0010", 1, 1, "https://image2url.com/r2/default/images/1770169561855-e1213163-8b8d-45b9-9677-f73dbcf151da.png"],
+            ["859 Titrothrem", "2.859.0010", 1, 1, "https://image2url.com/r2/default/images/1770170225456-4d9376fd-0842-46c9-b322-ea5c1c2dde34.png"],
+            ["800 Dosino", "2.800.0010", 4, 4, "https://metrohm.scene7.com/is/image/metrohm/2127_s?$xh-1280$&bfc=on"],
+            ["803 Ti Stand", "2.803.0010", 1, 1, "https://image2url.com/r2/default/images/1770085759392-64db9849-5016-4a77-aca5-99c7e0837be4.jpg"],
+            ["805 Dosimat", "2.805.0010", 1, 1, "https://metrohm.scene7.com/is/image/metrohm/1378_s?$xh-1280$&bfc=on"],
+            ["802 Rod stirrer", "2.802.0010", 6, 6, "https://images.offerup.com/8Zo1b7oifuxDUjKDMQmM8GNXAJI=/1440x1920/ebd7/ebd7f5271c354489a4acff5019a9cb09.jpg"],
+            ["728 stirrer without stand", "2.728.0010", 1, 1, "https://image2url.com/r2/default/images/1770174227483-8d86ddd5-d534-4235-9efd-1275d23507dd.png"],
+            ["Omnis Dosing Module without stirrer", "2.1003.0010", 1, 1, "https://metrohm.scene7.com/is/image/metrohm/4249?$xh-1280$&bfc=on"],
+            ["Omnis Dosing Module with stirrer", "2.1003.0110", 1, 1, "https://metrohm.scene7.com/is/image/metrohm/4250?$xh-1280$&bfc=on"],
+            ["OMNIS sample robot", "", 1, 1, "https://image2url.com/r2/default/images/1770170628931-928392be-245f-4902-9680-de6288be283a.png"],
+            ["OMNIS Titrator with stirrer", "2.1001.0020", 2, 2, "https://metrohm.scene7.com/is/image/metrohm/4248?$xh-544$&bfc=on"],
+            ["OMNIS coulometer with stirrer", "2.1018.0020", 1, 1, "https://metrohm.scene7.com/is/image/metrohm/210180020_FV?$xh-1280$&bfc=on"],
+            ["Eco KF Titrator", "2.1027.0010", 1, 1, "https://metrohm.scene7.com/is/image/metrohm/1102800010?$xh-544$&bfc=on"],
+            ["860 KF Thermoprep", "2.860.0010", 1, 1, "https://image2url.com/r2/default/images/1770111576358-30724e7c-556c-4633-ae0a-559a9c919c1c.png"],
+            ["832 KF Thermoprep", "2.832.0010", 1, 1, "https://image2url.com/r2/default/images/1770111749313-ba0cfa3a-5dd1-4e3d-9749-82f21bc68bd3.png"],
+            ["899 Coulometer", "2.899.0010", 1, 1, "https://metrohm.scene7.com/is/image/metrohm/3553_s?$xh-1280$&bfc=on"],
+            ["756 KF Coulometer", "2.756.0010", 1, 1, "https://www.ntc-tech.com/cdn/shop/products/ukRoN5p-m0Hh60lV7KpDtMODpG0qG3lLXohGGtdK0_BXveWcrQ6OJ21Hu23eLWkYIy7FlFHCNh0s5jcP0NDfn_asIvdDo4k_s4470.jpg"],
+            ["831 KF Coulometer", "2.831.0010", 1, 1, "https://metrohm.scene7.com/is/image/metrohm/1498_s?$xh-1280$&bfc=on"],
+            ["808 Touch control", "2.808.0010", 1, 1, "https://image2url.com/r2/default/images/1770112064025-95265755-5393-4adf-9cd6-bf611c96837f.png"],
+            ["885 compact oven sc", "2.885.0010", 1, 1, "https://image2url.com/r2/default/images/1770111926027-af5b978d-fc87-4772-b245-5241839c1949.png"],
+            ["915 KF Ti-Touch", "2.915.0010", 1, 1, "https://image2url.com/r2/default/images/1770112334125-53b1d506-d9ac-4d0f-b7e4-c5e13f15bd79.png"],
+            ["862 compact Titrosampler", "2.862.0010", 1, 1, "https://image2url.com/r2/default/images/1770112210246-b11ec0de-4491-4454-bbd0-dddc319d1089.png"],
+            ["870 KF Titrino plus", "2.870.0010", 1, 1, "https://image2url.com/r2/default/images/1770112548836-996ed91b-afd7-4817-bbf3-251d99a4cd5f.png"],
+            ["848 Titrino plus", "2.848.0010", 1, 1, "https://image2url.com/r2/default/images/1770112869227-0c00e97c-21e7-40e0-8622-52c67403ca37.png"],
+            ["Eco coulometer", "2.1028.0010", 1, 1, "https://metrohm.scene7.com/is/image/metrohm/1102800010?$xh-544$&bfc=on"],
+            ["solvent pump", "2.1029.0010", 1, 1, "https://image2url.com/r2/default/images/1770169307529-2ce27fd1-14b2-4ecb-a416-57e0751a1bb7.png"],
+            ["914 pH/conductomer", "2.914.0020", 1, 1, "https://image2url.com/r2/default/images/1770113012483-86a1e09d-9c7c-4f36-96bc-7baca9036ebc.png"],
+            ["912 Conductometer", "2.912.0010", 1, 1, "https://image2url.com/r2/default/images/1770113078469-c9f491b4-5594-4c9b-940e-c60e4d079b6a.png"],
+            ["913 pH meter", "2.913.0010", 1, 1, "https://image2url.com/r2/default/images/1770113144119-c332b957-6231-44d8-80ae-1c3135995589.png"],
+            ["867 pH module", "2.867.0010", 1, 1, "https://image2url.com/r2/default/images/1770109167866-45310e93-f7d2-4d57-8685-d18b2e904eaf.jpg"],
+            ["826 pH mobile", "2.826.0010", 1, 1, "https://image2url.com/r2/default/images/1770109355002-ac532c7b-6458-48e7-8482-7173c71a13f6.jpg"],
+            ["949 pH meter", "2.949.0010", 1, 1, "https://image2url.com/r2/default/images/1770113371736-0201045c-5bf5-4d6e-8012-c8629166b787.png"],
+            ["827 pH lab", "2.827.0010", 1, 1, "https://image2url.com/r2/default/images/1770113243494-dfc740ae-32d1-4ed2-b2ae-412c963112be.png"],
+            ["781 pH/Ion Meter", "2.781.0010", 1, 1, "https://image2url.com/r2/default/images/1770173212831-2a45cab4-a75b-4db7-aa9f-808db2804ea6.png"],
+            ["856 Conductivity module", "2.856.0010", 1, 1, "https://image2url.com/r2/default/images/1770173367571-183417fa-9ccc-410d-9407-183f29ec9a6d.png"],
+            ["704 pH meter", "2.704.0010", 1, 1, "https://image2url.com/r2/default/images/1770173654721-4936e03b-6816-40db-8b3b-0fd36e32e58f.png"],
+            ["890 Titrando", "2.890.0010", 1, 1, "https://image2url.com/r2/default/images/1770172406088-5e939ffb-2e2b-4218-908e-ca983823dbe1.png"],
+            ["892 Professional Rancimat", "2.892.0010", 1, 1, "https://metrohm.scene7.com/is/image/metrohm/3571_s?$xh-1280$&bfc=on"],
+            ["743 Rancimat", "2.743.0010", 1, 1, "https://image2url.com/r2/default/images/1770171916935-bac81e4e-8b2a-4ea8-8c17-96d6f7de664d.png"]
+        ];
+        
+        // Import Items
+        for (let i = 0; i < realItems.length; i++) {
+            const item = realItems[i];
+            const itemId = i + 1;
+            
+            itemsSheet.appendRow([
+                itemId,
+                item[0],      // Item_Name
+                item[1],      // Item_Desc
+                item[2],      // Total_Qty
+                item[3],      // Available_Qty
+                item[4],      // Image
+                true,         // Active
+                "system",     // Created_By
+                timestamp,    // Created_At
+                "system",     // Modified_By
+                timestamp     // Modified_At
+            ]);
+            
+            itemsImported++;
+        }
+        
+        // Real Accessories Data from InventoryManagement - Accessories.csv (30 accessories)
+        // Note: Filtered out empty rows (IDs 10-55, 61, 65, 72-73) that had no name/data
+        const realAccessories = [
+            ["stirrering proppeller 104mm", "", 1, 1],
+            ["stirrering prop. intensive 104mm", "", 1, 1],
+            ["stirrering propeller 94mm", "", 0, 0],
+            ["Dosing unit 2 mL", "", 0, 0],
+            ["Dosing unit 10 mL", "", 0, 0],
+            ["Dosing unit 20 mL", "", 0, 0],
+            ["Dosing unit 50 mL", "", 0, 0],
+            ["OMNIS Dosing 10 mL", "", 0, 0],
+            ["OMNIS Dosing 20 mL", "", 0, 0],
+            ["Dosing unit 10 mL", "6.1580.210", 5, 3],
+            ["Dosing unit 20 mL", "6.1580.220", 2, 2],
+            ["Dosing unit 2 mL", "6.1580.120", 2, 2],
+            ["Dosing unit 50 mL", "6.1580.250", 2, 2],
+            ["Holding clip for bottles", "6.2043.005", 24, 23],
+            ["Power cable", "สายPower ต่อกับเครื่อง", 38, 37],
+            ["Controller cable", "สาย controller เชื่อม software กับตัวเครื่อง", 4, 3],
+            ["SET PC OMNIS", "CPU, Keyboard, mouse, power cable, Screen", 1, 0],
+            ["Rod stand + lock camp", "แท่งเหล็ก + ตัวล็อค", 39, 38],
+            ["Magnetic bar", "มีน้อยใช้สอยอย่างประหยัด", 14, 13],
+            ["Electrode holder", "6.2021.020 Electrode holder for 4 electrodes and 2 buret tips", 6, 5],
+            ["SET Tubing for Dosing unit", "1 Tubing, Tip, Microvalve", 10, 9],
+            ["Brown glass bottle", "ขวดเปล่า", 15, 14],
+            ["Electrod cable /1 m /F", "", 11, 10],
+            ["2 Lan cable + Hub box + 1 Hub Power cacle", "สายแลนเหลือง 2 + กล่อง Hub + สายชาร์จ Hub", 1, 1],
+            ["OMNIS Dosing unit 10 mL", "6.01508.210", 3, 3],
+            ["OMNIS Dosing unit 20 mL", "6.01508.220", 2, 2],
+            ["OMNIS Holder", "", 3, 3],
+            ["OMNIS Molecular sieve with Cap", "", 3, 3],
+            ["Red cable OMNIS", "สายสีแดงใช้กับ Temp senser to plug F", 1, 1],
+            ["Blue cable OMNIS", "สายสีน้ำเงินใช้กับ Polarized electrode to plug F (เป็นขั้วโลหะและเป็นแง่ง หรือ Pt sheet)", 1, 1],
+            ["Green cable OMNIS", "สายสีเขียวใช้กับ Electrode ทั่วไป to plug F (ทุกประเภท General)", 1, 1]
+        ];
+        
+        // Import Accessories
+        for (let i = 0; i < realAccessories.length; i++) {
+            const accessory = realAccessories[i];
+            const accessoryId = i + 1;
+            
+            accessorySheet.appendRow([
+                accessoryId,
+                accessory[0], // Accessory_Name
+                accessory[1], // Accessory_Desc
+                accessory[2], // Total_Qty
+                accessory[3], // Available_Qty
+                true,         // Active
+                "system",     // Created_By
+                timestamp,    // Created_At
+                "system",     // Modified_By
+                timestamp     // Modified_At
+            ]);
+            
+            accessoriesImported++;
+        }
+        
+        // Real Item-Accessory Mappings from InventoryManagement - Item_Accessory_Mapping.csv (50 mappings)
+        const realMappings = [
+            [1, 1], [1, 2], [1, 4], [2, 1], [2, 2], [2, 5], [3, 1], [3, 3],
+            [4, 1], [4, 2], [5, 1], [5, 2], [6, 1], [6, 3], [7, 1], [7, 2],
+            [8, 4], [8, 5], [9, 1], [9, 2], [10, 1], [11, 4], [11, 5], [12, 1],
+            [13, 4], [13, 5], [13, 6], [14, 1], [15, 5], [15, 6], [16, 1], [16, 3],
+            [17, 1], [17, 3], [18, 8], [18, 9], [19, 8], [19, 9], [19, 1], [20, 8],
+            [21, 8], [21, 9], [21, 1], [22, 1], [23, 4], [24, 4], [25, 4], [26, 4],
+            [27, 4], [28, 4]
+        ];
+        
+        // Import Mappings
+        for (let i = 0; i < realMappings.length; i++) {
+            const mapping = realMappings[i];
+            const mappingId = i + 1;
+            
+            itemAccessorySheet.appendRow([
+                mappingId,
+                mapping[0],   // Item_Id
+                mapping[1],   // Accessory_Id
+                "system",     // Created_By
+                timestamp,    // Created_At
+                true          // Active
+            ]);
+            
+            mappingsImported++;
+        }
+        
+        // Initial Users Data (4 columns: Email, Password, Permission, Active)
+        const initialUsers = [
+            ["modmastei2@gmail.com", "b7766cf93f0fcbcfa13adcc202419a4e5f21816f70360b6e76fd18342b56fdd8", "Admin", true],
+            ["admin@admin.com", "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9", "Admin", true]
+        ];
+        
+        // Import Users
+        for (let i = 0; i < initialUsers.length; i++) {
+            const user = initialUsers[i];
+            
+            userSheet.appendRow([
+                user[0],      // Email
+                user[1],      // Password (hashed)
+                user[2],      // Permission
+                user[3]       // Active
+            ]);
+            
+            usersImported++;
+        }
+        
+        // Log the import
+        logSystemActivity(`Initialized real data: ${itemsImported} items, ${accessoriesImported} accessories, ${mappingsImported} mappings, ${usersImported} users`, 'system');
+        
+        return {
+            success: true,
+            message: "Real data initialized successfully from sheets folder",
+            itemsImported: itemsImported,
+            accessoriesImported: accessoriesImported,
+            mappingsImported: mappingsImported,
+            usersImported: usersImported
+        };
+    } catch (error) {
+        Logger.log("Error in initializeDataFromReference: " + error.toString());
+        return { success: false, message: error.toString() };
+    }
 }

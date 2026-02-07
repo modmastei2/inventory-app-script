@@ -1,0 +1,50 @@
+Item_Id,Item_Name,Item_Desc,Total_Qty,Available_Qty,Image,Active,Created_By,Created_At,Modified_By,Modified_At
+1,841 Titrando,2.841.0010 (เสีย),1,1,https://image2url.com/r2/default/images/1770110030781-3b71ec6a-8388-44b3-9596-c990f34d08c8.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+2,907 Titrando,2.907.0010,1,1,https://image2url.com/r2/default/images/1770111189839-f57eadea-d8f7-4b94-b143-44fabb67fa84.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+3,808 Titrando,2.808.0010,1,1,https://image2url.com/r2/default/images/1770086412243-2f877e15-cec7-4120-bf1e-b3b7abec07cf.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+4,852 Titrando,2.852.0010,1,1,https://image2url.com/r2/default/images/1770110600497-eb4fe05b-c636-45c1-8e49-8ebc28558c7c.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+5,905 Titrando,2.905.0010,1,1,https://image2url.com/r2/default/images/1770111364183-40464f56-82bf-4197-97b8-06e18af778b5.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+6,801 stirrer,2.801.0010,1,1,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTe5Bn4YioHHchJzvH3cDtShPfcJM_k1U9m-g&s,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+7,916 Ti-touch,2.916.0010,2,2,https://image2url.com/r2/default/images/1770170012397-d921dca7-55a3-4d90-b9e5-5a1f158fd98d.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+8,Eco Titrator,2.1008.0010,2,2,https://metrohm.scene7.com/is/image/metrohm/4840?$xh-544$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+9,904 Titrando,2.904.0010,1,1,https://image2url.com/r2/default/images/1770172036979-d384469b-d3b1-47ab-9ddd-b806e736b998.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+10,900 Touch control,2.900.0010,1,1,https://static-data2.manualslib.com/product-images/1b6/2342664/metrohm-900-touch-control.jpg,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+11,Eco Dosimat,2.1007.0010,1,1,https://image2url.com/r2/default/images/1770169561855-e1213163-8b8d-45b9-9677-f73dbcf151da.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+12,859 Titrothrem,2.859.0010,1,1,https://image2url.com/r2/default/images/1770170225456-4d9376fd-0842-46c9-b322-ea5c1c2dde34.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+13,800 Dosino,2.800.0010,4,4,https://metrohm.scene7.com/is/image/metrohm/2127_s?$xh-1280$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+14,803 Ti Stand,2.803.0010,1,1,https://image2url.com/r2/default/images/1770085759392-64db9849-5016-4a77-aca5-99c7e0837be4.jpg,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+15,805 Dosimat,2.805.0010,1,1,https://metrohm.scene7.com/is/image/metrohm/1378_s?$xh-1280$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+16,802 Rod stirrer,2.802.0010,6,6,https://images.offerup.com/8Zo1b7oifuxDUjKDMQmM8GNXAJI=/1440x1920/ebd7/ebd7f5271c354489a4acff5019a9cb09.jpg,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+17,728 stirrer without stand,2.728.0010,1,1,https://image2url.com/r2/default/images/1770174227483-8d86ddd5-d534-4235-9efd-1275d23507dd.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+18,Omnis Dosing Module without stirrer,2.1003.0010,1,1,https://metrohm.scene7.com/is/image/metrohm/4249?$xh-1280$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+19,Omnis Dosing Module with stirrer,2.1003.0110,1,1,https://metrohm.scene7.com/is/image/metrohm/4250?$xh-1280$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+20,OMNIS sample robot,,1,1,https://image2url.com/r2/default/images/1770170628931-928392be-245f-4902-9680-de6288be283a.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+21,OMNIS Titrator with stirrer,2.1001.0020,2,2,https://metrohm.scene7.com/is/image/metrohm/4248?$xh-544$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+22,OMNIS coulometer with stirrer,2.1018.0020,1,1,https://metrohm.scene7.com/is/image/metrohm/210180020_FV?$xh-1280$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+23,Eco KF Titrator,2.1027.0010,1,1,https://metrohm.scene7.com/is/image/metrohm/1102800010?$xh-544$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+24,860 KF Thermoprep,2.860.0010,1,1,https://image2url.com/r2/default/images/1770111576358-30724e7c-556c-4633-ae0a-559a9c919c1c.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+25,832 KF Thermoprep,2.832.0010,1,1,https://image2url.com/r2/default/images/1770111749313-ba0cfa3a-5dd1-4e3d-9749-82f21bc68bd3.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+26,899 Coulometer,2.899.0010,1,1,https://metrohm.scene7.com/is/image/metrohm/3553_s?$xh-1280$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+27,756 KF Coulometer,2.756.0010,1,1,https://www.ntc-tech.com/cdn/shop/products/ukRoN5p-m0Hh60lV7KpDtMODpG0qG3lLXohGGtdK0_BXveWcrQ6OJ21Hu23eLWkYIy7FlFHCNh0s5jcP0NDfn_asIvdDo4k_s4470.jpg,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+28,831 KF Coulometer,2.831.0010,1,1,https://metrohm.scene7.com/is/image/metrohm/1498_s?$xh-1280$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+29,808 Touch control,2.808.0010,1,1,https://image2url.com/r2/default/images/1770112064025-95265755-5393-4adf-9cd6-bf611c96837f.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+30,885 compact oven sc,2.885.0010,1,1,https://image2url.com/r2/default/images/1770111926027-af5b978d-fc87-4772-b245-5241839c1949.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+31,915 KF Ti-Touch,2.915.0010,1,1,https://image2url.com/r2/default/images/1770112334125-53b1d506-d9ac-4d0f-b7e4-c5e13f15bd79.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+32,862 compact Titrosampler,2.862.0010,1,1,https://image2url.com/r2/default/images/1770112210246-b11ec0de-4491-4454-bbd0-dddc319d1089.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+33,870 KF Titrino plus,2.870.0010,1,1,https://image2url.com/r2/default/images/1770112548836-996ed91b-afd7-4817-bbf3-251d99a4cd5f.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+34,848 Titrino plus,2.848.0010,1,1,https://image2url.com/r2/default/images/1770112869227-0c00e97c-21e7-40e0-8622-52c67403ca37.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+35,Eco coulometer,2.1028.0010,1,1,https://metrohm.scene7.com/is/image/metrohm/1102800010?$xh-544$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+36,solvent pump,2.1029.0010,1,1,https://image2url.com/r2/default/images/1770169307529-2ce27fd1-14b2-4ecb-a416-57e0751a1bb7.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+37,914 pH/conductomer,2.914.0020,1,1,https://image2url.com/r2/default/images/1770113012483-86a1e09d-9c7c-4f36-96bc-7baca9036ebc.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+38,912 Conductometer,2.912.0010,1,1,https://image2url.com/r2/default/images/1770113078469-c9f491b4-5594-4c9b-940e-c60e4d079b6a.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+39,913 pH meter,2.913.0010,1,1,https://image2url.com/r2/default/images/1770113144119-c332b957-6231-44d8-80ae-1c3135995589.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+40,867 pH module,2.867.0010,1,1,https://image2url.com/r2/default/images/1770109167866-45310e93-f7d2-4d57-8685-d18b2e904eaf.jpg,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+41,826 pH mobile,2.826.0010,1,1,https://image2url.com/r2/default/images/1770109355002-ac532c7b-6458-48e7-8482-7173c71a13f6.jpg,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+42,949 pH meter,2.949.0010,1,1,https://image2url.com/r2/default/images/1770113371736-0201045c-5bf5-4d6e-8012-c8629166b787.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+43,827 pH lab,2.827.0010,1,1,https://image2url.com/r2/default/images/1770113243494-dfc740ae-32d1-4ed2-b2ae-412c963112be.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+44,781 pH/Ion Meter,2.781.0010,1,1,https://image2url.com/r2/default/images/1770173212831-2a45cab4-a75b-4db7-aa9f-808db2804ea6.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+45,856 Conductivity module,2.856.0010,1,1,https://image2url.com/r2/default/images/1770173367571-183417fa-9ccc-410d-9407-183f29ec9a6d.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+46,704 pH meter,2.704.0010,1,1,https://image2url.com/r2/default/images/1770173654721-4936e03b-6816-40db-8b3b-0fd36e32e58f.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+47,890 Titrando,2.890.0010,1,1,https://image2url.com/r2/default/images/1770172406088-5e939ffb-2e2b-4218-908e-ca983823dbe1.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+48,892 Professional Rancimat,2.892.0010,1,1,https://metrohm.scene7.com/is/image/metrohm/3571_s?$xh-1280$&bfc=on,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+49,743 Rancimat,2.743.0010,1,1,https://image2url.com/r2/default/images/1770171916935-bac81e4e-8b2a-4ea8-8c17-96d6f7de664d.png,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58

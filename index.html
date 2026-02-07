@@ -62,6 +62,9 @@
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body class="min-h-screen dx-viewport bg-gradient-to-br from-slate-50 to-slate-100">
@@ -355,63 +358,74 @@
 
         <!-- Page: Daily Request -->
         <div id="page-daily" class="hidden page-content">
-            <div class="mb-2 flex items-center justify-between">
+            <div class="mb-6">
                 <h2 class="mb-2 text-2xl font-bold text-slate-800">Daily Request</h2>
-                <button onclick="getRequestList()"
-                    class="px-1.5 py-1 text-sm text-blue-600 transition border border-blue-600 rounded-lg hover:bg-blue-700 hover:text-white cursor-pointer">
-                    <i class="fa-solid fa-arrows-rotate"></i>
-                </button>
+                <p class="text-slate-600">Manage all equipment requests</p>
             </div>
 
-            <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="border-b bg-slate-100 border-slate-200">
-                            <tr>
-                                <th class="px-2 w-8"></th>
-                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Request
-                                    ID</th>
-                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
-                                    Requirer Name</th>
-                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Request
-                                    Date</th>
-                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Return
-                                    Date</th>
-                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Amount
-                                </th>
-                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Status
-                                </th>
-                                <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="dailyRequestsBody" class="divide-y divide-slate-200 touch">
-                            <!-- Daily requests will be inserted here -->
-                        </tbody>
-                    </table>
+            <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800">Requests List</h3>
+                    <button onclick="getRequestList()"
+                        class="px-3 py-1 text-sm font-medium text-blue-600 transition-colors bg-blue-100 rounded-lg hover:bg-blue-200">
+                        <i class="fas fa-sync-alt mr-1"></i> Reload
+                    </button>
                 </div>
-            </div>
-            <div class="flex text-xs items-center justify-end gap-2 mt-2">
-                <span class="flex items-center justify-center font-normal gap-1">
-                    <span class="w-6 h-6 text-white bg-blue-500 rounded flex items-center justify-center">
-                        <i class="fa-solid fa-dolly"></i>
-                    </span>
-                    <span>Distribute Request</span>
-                </span>
 
-                <span class="flex items-center justify-center font-normal gap-1">
-                    <span class="w-6 h-6 text-white bg-orange-500 rounded flex items-center justify-center">
-                        <i class="fa-solid fa-rotate-left"></i>
-                    </span>
-                    <span>Return Request</span>
-                </span>
+                <!-- Icon Legend -->
+                <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
+                    <div class="flex items-center gap-1">
+                        <i class="fa-solid fa-dolly text-blue-500 text-base"></i>
+                        <span>Distribute</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-left text-orange-500 text-base"></i>
+                        <span>Return</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fa-solid fa-xmark text-red-500 text-base"></i>
+                        <span>Cancel</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fa-solid fa-pen-to-square text-green-500 text-base"></i>
+                        <span>Edit</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded">Submit</span>
+                        <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded">Distributed</span>
+                        <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Returned</span>
+                        <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded">Cancelled</span>
+                    </div>
+                </div>
 
-                <span class="flex items-center justify-center font-normal gap-1">
-                    <span class="w-6 h-6 text-white bg-red-500 rounded flex items-center justify-center">
-                        <i class="fa-solid fa-xmark"></i>
-                    </span>
-                    <span>Cancel Request</span>
-                </span>
+                <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="border-b bg-slate-100 border-slate-200">
+                                <tr>
+                                    <th class="px-2 w-8"></th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Request
+                                        ID</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                        Requirer Name</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Request
+                                        Date</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Return
+                                        Date</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Amount
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Status
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="dailyRequestsBody" class="divide-y divide-slate-200 touch">
+                                <!-- Daily requests will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -575,7 +589,31 @@
 
             <!-- Recent Activity -->
             <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 mb-4" id="recent-activity-container">
-                <h3 class="mb-4 text-lg font-semibold text-slate-800">Recent Activity</h3>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800">Recent Activity (Request Activity)</h3>
+                    <button onclick="loadRecentActivity()" class="px-3 py-1 text-sm font-medium text-blue-600 transition-colors bg-blue-100 rounded-lg hover:bg-blue-200">
+                        <i class="fas fa-sync-alt mr-1"></i> Reload
+                    </button>
+                </div>
+                <!-- Icon Legend -->
+                <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-plus-circle text-blue-500"></i>
+                        <span>Create Request</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-edit text-amber-500"></i>
+                        <span>Edit Request</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <span>Distribute</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-undo text-purple-500"></i>
+                        <span>Return</span>
+                    </div>
+                </div>
                 <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
                     <div class="overflow-x-auto">
                         <table class="w-full">
@@ -597,12 +635,34 @@
                         </table>
                     </div>
                 </div>
+                <!-- Pagination -->
+                <div id="recent-activity-pagination" class="flex justify-center gap-2 mt-4"></div>
             </div>
 
             <!-- System Activity-->
-            <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 hidden"
+            <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 mb-4 hidden"
                 id="system-activity-container">
-                <h3 class="mb-4 text-lg font-semibold text-slate-800">System Activity</h3>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800">System Activity - Admin Only</h3>
+                    <button onclick="loadSystemActivity()" class="px-3 py-1 text-sm font-medium text-green-600 transition-colors bg-green-100 rounded-lg hover:bg-green-200">
+                        <i class="fas fa-sync-alt mr-1"></i> Reload
+                    </button>
+                </div>
+                <!-- Icon Legend -->
+                <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-sign-in-alt text-green-500"></i>
+                        <span>Login</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-sign-out-alt text-red-500"></i>
+                        <span>Logout</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-clock text-blue-500"></i>
+                        <span>Session</span>
+                    </div>
+                </div>
                 <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
                     <div class="overflow-x-auto">
                         <table class="w-full">
@@ -624,6 +684,61 @@
                         </table>
                     </div>
                 </div>
+                <!-- Pagination -->
+                <div id="system-activity-pagination" class="flex justify-center gap-2 mt-4"></div>
+            </div>
+
+            <!-- Inventory Activity -->
+            <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 mb-4 hidden"
+                id="inventory-activity-container">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800">Inventory Activity - Admin Only</h3>
+                    <button onclick="loadInventoryActivity()" class="px-3 py-1 text-sm font-medium text-purple-600 transition-colors bg-purple-100 rounded-lg hover:bg-purple-200">
+                        <i class="fas fa-sync-alt mr-1"></i> Reload
+                    </button>
+                </div>
+                <!-- Icon Legend -->
+                <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-plus-circle text-green-500"></i>
+                        <span>Create Item/Accessory</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-edit text-blue-500"></i>
+                        <span>Update Item/Accessory</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-trash-alt text-red-500"></i>
+                        <span>Delete Item/Accessory</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-link text-purple-500"></i>
+                        <span>Link Accessory</span>
+                    </div>
+                </div>
+                <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="border-b bg-slate-100 border-slate-200">
+                                <tr>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Log
+                                        Id</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                        Email</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                        Activity</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
+                                        Action At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryActivity" class="divide-y divide-slate-200">
+                                <!-- Activity items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Pagination -->
+                <div id="inventory-activity-pagination" class="flex justify-center gap-2 mt-4"></div>
             </div>
         </div>
 
@@ -638,7 +753,11 @@
             <div class="flex gap-2 mb-6 border-b border-slate-200">
                 <button onclick="switchManagementTab('items')" id="mgmt-tab-items" 
                     class="px-4 py-2 font-medium text-blue-600 border-b-2 border-blue-600 cursor-pointer">
-                    Items & Accessories
+                    Items
+                </button>
+                <button onclick="switchManagementTab('accessories')" id="mgmt-tab-accessories"
+                    class="px-4 py-2 font-medium text-slate-600 hover:text-slate-800 cursor-pointer">
+                    Accessories
                 </button>
                 <button onclick="switchManagementTab('users')" id="mgmt-tab-users"
                     class="px-4 py-2 font-medium text-slate-600 hover:text-slate-800 cursor-pointer">
@@ -648,57 +767,471 @@
 
             <!-- Items Management -->
             <div id="mgmt-items" class="mgmt-section">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-slate-800">Items List</h3>
-                    <button onclick="openItemModal()" 
-                        class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
-                        <i class="fas fa-plus mr-2"></i>Add Item
-                    </button>
-                </div>
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-slate-800">Items List</h3>
+                        <div class="flex gap-2">
+                            <button onclick="loadManagementItems()" 
+                                class="px-3 py-1 text-sm font-medium text-blue-600 transition-colors bg-blue-100 rounded-lg hover:bg-blue-200">
+                                <i class="fas fa-sync-alt mr-1"></i> Reload
+                            </button>
+                            <button onclick="openItemModal()" 
+                                class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                                <i class="fas fa-plus mr-2"></i>Add Item
+                            </button>
+                        </div>
+                    </div>
 
-                <div class="overflow-x-auto bg-white border shadow-md rounded-xl border-slate-200">
-                    <table class="w-full">
-                        <thead class="bg-slate-50">
-                            <tr>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">ID</th>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Name</th>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Total Qty</th>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Available Qty</th>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Active</th>
-                                <th class="px-4 py-3 text-center text-sm font-semibold text-slate-700">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="mgmt-items-tbody">
-                            <!-- Items will be loaded here -->
-                        </tbody>
-                    </table>
+                    <!-- Icon Legend -->
+                    <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-edit text-blue-500"></i>
+                            <span>Edit</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-trash-alt text-red-500"></i>
+                            <span>Delete</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Active</span>
+                            <span>/</span>
+                            <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded">Inactive</span>
+                        </div>
+                    </div>
+
+                    <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="border-b bg-slate-100 border-slate-200">
+                                    <tr>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">ID</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Name</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Total Qty</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Available Qty</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Status</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mgmt-items-tbody" class="divide-y divide-slate-200">
+                                    <!-- Items will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accessories Management -->
+            <div id="mgmt-accessories" class="hidden mgmt-section">
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-slate-800">Accessories List</h3>
+                        <div class="flex gap-2">
+                            <button onclick="loadManagementAccessories()" 
+                                class="px-3 py-1 text-sm font-medium text-purple-600 transition-colors bg-purple-100 rounded-lg hover:bg-purple-200">
+                                <i class="fas fa-sync-alt mr-1"></i> Reload
+                            </button>
+                            <button onclick="openMgmtAccessoryModal()" 
+                                class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                                <i class="fas fa-plus mr-2"></i>Create Accessory
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Icon Legend -->
+                    <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-link text-blue-500"></i>
+                            <span>Linked Items Count</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-edit text-green-500"></i>
+                            <span>Edit</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-trash-alt text-red-500"></i>
+                            <span>Delete</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Active</span>
+                            <span>/</span>
+                            <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded">Inactive</span>
+                        </div>
+                    </div>
+
+                    <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="border-b bg-slate-100 border-slate-200">
+                                    <tr>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">ID</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Name</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Description</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Quantity</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Linked Items</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Status</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mgmt-accessories-tbody" class="divide-y divide-slate-200">
+                                    <!-- Accessories will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Users Management -->
             <div id="mgmt-users" class="hidden mgmt-section">
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-slate-800">Users List</h3>
+                        <div class="flex gap-2">
+                            <button onclick="loadManagementUsers()" 
+                                class="px-3 py-1 text-sm font-medium text-blue-600 transition-colors bg-blue-100 rounded-lg hover:bg-blue-200">
+                                <i class="fas fa-sync-alt mr-1"></i> Reload
+                            </button>
+                            <button onclick="openUserModal()" 
+                                class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                                <i class="fas fa-plus mr-2"></i>Add User
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Icon Legend -->
+                    <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-key text-blue-500"></i>
+                            <span>Change Password</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-toggle-on text-green-500"></i>
+                            <span>Toggle Active</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-edit text-purple-500"></i>
+                            <span>Edit</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded">Admin</span>
+                            <span>/</span>
+                            <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded">User</span>
+                        </div>
+                    </div>
+
+                    <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="border-b bg-slate-100 border-slate-200">
+                                    <tr>
+                                        <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Email</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Permission</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Status</th>
+                                        <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mgmt-users-tbody" class="divide-y divide-slate-200">
+                                    <!-- Users will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Accessories Management -->
+        <div id="page-accessories" class="hidden page-content">
+            <div class="mb-6">
+                <h2 class="mb-2 text-2xl font-bold text-slate-800">Accessories Management</h2>
+                <p class="text-slate-600">Manage all accessories and link them to items</p>
+            </div>
+
+            <!-- Accessory Form Section (Show/Hide) -->
+            <div id="standalone-accessory-form" class="hidden mb-6 p-6 bg-white border shadow-md rounded-xl border-slate-200">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-slate-800">Users List</h3>
-                    <button onclick="openUserModal()" 
-                        class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
-                        <i class="fas fa-plus mr-2"></i>Add User
+                    <h3 class="text-lg font-semibold text-slate-800" id="standalone-form-title">Create New Accessory</h3>
+                    <button onclick="closeStandaloneAccessoryForm()" class="p-2 transition rounded-lg hover:bg-slate-100">
+                        <i class="fas fa-times text-slate-600"></i>
                     </button>
+                </div>
+
+                <form id="standalone-accessory-form-content" onsubmit="saveStandaloneAccessory(event)" class="space-y-4">
+                    <input type="hidden" id="standalone-accessory-id" value="">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-slate-700">Accessory Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="standalone-accessory-name" required
+                                class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-slate-700">Total Quantity <span class="text-red-500">*</span></label>
+                            <input type="number" id="standalone-accessory-total-qty" required min="0"
+                                class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block mb-2 text-sm font-medium text-slate-700">Description</label>
+                            <textarea id="standalone-accessory-desc" rows="3"
+                                class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-slate-700">Available Quantity <span class="text-red-500">*</span></label>
+                            <input type="number" id="standalone-accessory-available-qty" required min="0"
+                                class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div class="flex items-center">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="standalone-accessory-active" checked class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-medium text-slate-700">Active</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Link to Items Section -->
+                    <div class="border-t pt-4">
+                        <label class="block mb-3 text-sm font-semibold text-slate-700">
+                            <i class="fas fa-link mr-2"></i>Link to Items (Optional)
+                        </label>
+                        <div id="standalone-item-selection-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 max-h-60 overflow-y-auto p-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <!-- Item checkboxes will be inserted here -->
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 pt-4">
+                        <button type="submit"
+                            class="flex-1 px-4 py-3 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                            <i class="fas fa-save mr-2"></i>Save Accessory
+                        </button>
+                        <button type="button" onclick="closeStandaloneAccessoryForm()"
+                            class="px-6 py-3 font-medium transition rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Accessories List -->
+            <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800">Accessories List</h3>
+                    <div class="flex gap-2">
+                        <button onclick="loadAccessoriesList()" 
+                            class="px-3 py-1 text-sm font-medium text-purple-600 transition-colors bg-purple-100 rounded-lg hover:bg-purple-200">
+                            <i class="fas fa-sync-alt mr-1"></i> Reload
+                        </button>
+                        <button onclick="openStandaloneAccessoryForm()" 
+                            class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
+                            <i class="fas fa-plus mr-2"></i>Create Accessory
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Icon Legend -->
+                <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-link text-blue-500"></i>
+                        <span>Linked Items Count</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-edit text-green-500"></i>
+                        <span>Edit</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-trash-alt text-red-500"></i>
+                        <span>Delete</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Active</span>
+                        <span>/</span>
+                        <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded">Inactive</span>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="border-b bg-slate-100 border-slate-200">
+                                <tr>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">ID</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Name</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">Description</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Quantity</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Linked Items</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Status</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accessories-list-tbody" class="divide-y divide-slate-200">
+                                <!-- Accessories will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Dashboard -->
+        <div id="page-dashboard" class="hidden page-content">
+            <div class="mb-2">
+                <h2 class="mb-2 text-2xl font-bold text-slate-800">Dashboard</h2>
+                <!-- <p class="text-slate-600">ภาพรวมระบบจัดการคลังอุปกรณ์</p> -->
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 lg:grid-cols-4">
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Total Item Types</p>
+                            <p class="mt-2 text-3xl font-bold text-blue-800" id="totalItemTypes">0</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Available Items</p>
+                            <p class="mt-2 text-3xl font-bold text-green-600" id="availableItems">0</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Total Accessory Types</p>
+                            <p class="mt-2 text-3xl font-bold text-blue-800" id="totalAccessoryTypes">0</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Available Accessories</p>
+                            <p class="mt-2 text-3xl font-bold text-green-600" id="availableAccessories">0</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 lg:grid-cols-4">
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Submit Requests</p>
+                            <p class="mt-2 text-3xl font-bold text-amber-600" id="submitRequest">0</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-amber-100">
+                            <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Waiting Returns</p>
+                            <p class="mt-2 text-3xl font-bold text-red-600" id="waitingReturn">0</p>
+                        </div>
+                        <div class="p-3 bg-red-100 rounded-lg">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="p-6 bg-white border shadow-md rounded-xl border-slate-200 mb-4" id="recent-activity-container">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800">Recent Activity (Request Activity)</h3>
+                    <button onclick="loadRecentActivity()" class="px-3 py-1 text-sm font-medium text-blue-600 transition-colors bg-blue-100 rounded-lg hover:bg-blue-200">
+                        <i class="fas fa-sync-alt mr-1"></i> Reload
+                    </button>
+                </div>
+                <!-- Icon Legend -->
+                <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-plus-circle text-blue-500"></i>
+                        <span>Create Request</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-edit text-amber-500"></i>
+                        <span>Edit Request</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <span>Distribute</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-undo text-purple-500"></i>
+                        <span>Return</span>
+                    </div>
+                </div>
+                <div class="overflow-hidden bg-white border shadow-md rounded-xl border-slate-200">
+                        <div><i class="fas fa-edit mr-2"></i>Update - Item/accessory modified</div>
+                        <div><i class="fas fa-trash mr-2"></i>Delete - Item/accessory removed</div>
+                        <div><i class="fas fa-link mr-2"></i>Link - Accessory linked to item</div>
+                        <div><i class="fas fa-warehouse mr-2"></i>Stock - Inventory changes</div>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto bg-white border shadow-md rounded-xl border-slate-200">
                     <table class="w-full">
                         <thead class="bg-slate-50">
                             <tr>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Email</th>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Permission</th>
-                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Active</th>
-                                <th class="px-4 py-3 text-center text-sm font-semibold text-slate-700">Actions</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Log ID</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Admin</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Activity</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-slate-700">Date/Time</th>
                             </tr>
                         </thead>
-                        <tbody id="mgmt-users-tbody">
-                            <!-- Users will be loaded here -->
+                        <tbody id="activity-inventory-tbody" class="divide-y divide-slate-200">
+                            <!-- Inventory activities will be loaded here -->
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Pagination -->
+                <div id="activity-inventory-pagination" class="mt-4 flex justify-center gap-2">
+                    <!-- Pagination buttons will be added here -->
                 </div>
             </div>
         </div>
@@ -828,6 +1361,15 @@
                                 <label class="block mb-1 text-sm font-medium text-slate-700">Available Quantity <span class="text-red-500">*</span></label>
                                 <input type="number" id="accessory-available-qty" required min="0"
                                     class="w-full px-3 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block mb-1 text-sm font-medium text-slate-700">
+                                Linked Items <span class="text-blue-500 text-xs">(Select items this accessory works with)</span>
+                            </label>
+                            <div id="item-selection-container" class="p-3 border rounded-lg border-slate-200 bg-white max-h-40 overflow-y-auto">
+                                <!-- Items checkboxes will be loaded here -->
                             </div>
                         </div>
 
@@ -1017,7 +1559,7 @@
     <div id="requestModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 bg-black/75">
         <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div class="sticky top-0 flex items-center justify-between p-4 bg-white border-b border-slate-200">
-                <h3 class="text-xl font-bold text-slate-800">ส่งคำขอยืมอุปกรณ์</h3>
+                <h3 id="modal-title" class="text-xl font-bold text-slate-800">ส่งคำขอยืมอุปกรณ์</h3>
                 <button onclick="closeRequestModal()"
                     class="p-2 transition rounded-lg cursor-pointer hover:bg-slate-100">
                     <i class="fa-solid fa-xmark"></i>
@@ -1164,6 +1706,91 @@
         </div>
     </div>
 
+    <!-- Management Accessory Modal -->
+    <div id="mgmt-accessory-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/50">
+        <div class="w-full max-w-4xl mx-4 overflow-hidden bg-white shadow-2xl rounded-xl">
+            <div class="flex items-center justify-between p-6 border-b border-slate-200 bg-slate-50">
+                <h2 id="mgmt-accessory-modal-title" class="text-xl font-bold text-slate-800">Create Accessory</h2>
+                <button onclick="closeMgmtAccessoryModal()" class="p-2 transition rounded-lg hover:bg-slate-200">
+                    <i class="text-xl fas fa-times text-slate-600"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto max-h-[70vh]">
+                <form id="mgmt-accessory-form" onsubmit="saveMgmtAccessory(event)">
+                    <input type="hidden" id="mgmt-accessory-id" value="">
+
+                    <div class="space-y-4">
+                        <!-- Name & Total Qty -->
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-slate-700">
+                                    Accessory Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="mgmt-accessory-name" required
+                                    class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-slate-700">
+                                    Total Quantity <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" id="mgmt-accessory-total-qty" required min="0"
+                                    class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-slate-700">Description</label>
+                            <textarea id="mgmt-accessory-desc" rows="3"
+                                class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+
+                        <!-- Available Qty & Active -->
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-slate-700">
+                                    Available Quantity <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" id="mgmt-accessory-available-qty" required min="0"
+                                    class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="flex items-center">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="mgmt-accessory-active" checked
+                                        class="w-4 h-4 text-blue-600 rounded">
+                                    <span class="text-sm font-medium text-slate-700">Active</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Link to Items -->
+                        <div class="pt-4 border-t">
+                            <label class="block mb-3 text-sm font-semibold text-slate-700">
+                                <i class="mr-2 fas fa-link"></i>Link to Items (Optional)
+                            </label>
+                            <div id="mgmt-item-selection-container"
+                                class="grid grid-cols-1 gap-2 p-4 overflow-y-auto border rounded-lg md:grid-cols-2 lg:grid-cols-3 max-h-60 bg-slate-50 border-slate-200">
+                                <div class="text-center text-slate-500">Loading items...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 pt-6 border-t border-slate-200 mt-6">
+                        <button type="submit"
+                            class="flex-1 px-6 py-3 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700">
+                            <i class="mr-2 fas fa-save"></i>Save Accessory
+                        </button>
+                        <button type="button" onclick="closeMgmtAccessoryModal()"
+                            class="px-6 py-3 font-medium transition rounded-lg text-slate-600 hover:bg-slate-100">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Overlay -->
     <div id="overlay" class="fixed inset-0 z-40 hidden bg-black/75" onclick="toggleCart()"></div>
 
@@ -1188,6 +1815,7 @@
     let modalItemsData = [];
     let itemList = [];
     let accessoriesList = [];
+    let allAccessories = [];
 
     // active requests
     let activeRequest = [];
@@ -1257,11 +1885,19 @@
     }
     
     function handleLogout() {
-        if (!confirm('Are you sure you want to logout?')) {
-            return;
-        }
-        
-        showLoader();
+        Swal.fire({
+            title: 'Logout',
+            text: 'Are you sure you want to logout?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, logout',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+            
+            showLoader();
         google.script.run
             .withSuccessHandler((response) => {
                 // Clear session
@@ -1283,10 +1919,11 @@
                 hideLoader();
             })
             .withFailureHandler((error) => {
-                alert('Logout failed: ' + error.message);
+                Swal.fire('Error', 'Logout failed: ' + error.message, 'error');
                 hideLoader();
             })
             .logout(currentSession.sessionId);
+        });
     }
     
     function checkSession() {
@@ -1294,7 +1931,6 @@
         
         if (!savedSession) {
             // No session, show login
-            console.log('No saved session found');
             hideLoader();
             document.getElementById('login-screen').classList.remove('hidden');
             document.getElementById('main-app').classList.add('hidden');
@@ -1303,7 +1939,6 @@
         
         try {
             currentSession = JSON.parse(savedSession);
-            console.log('Validating session:', currentSession.sessionId);
         } catch (e) {
             console.error('Invalid session data:', e);
             localStorage.removeItem('session');
@@ -1317,7 +1952,6 @@
         showLoader();
         google.script.run
             .withSuccessHandler((response) => {
-                console.log('Session validation response:', response);
                 if (response.valid) {
                     // Update session with latest permission from server
                     currentSession.email = response.email;
@@ -1335,7 +1969,6 @@
                     // Initialize app
                     initializeApp();
                 } else {
-                    console.log('Session invalid:', response.message);
                     // Session invalid, clear and show login
                     localStorage.removeItem('session');
                     document.getElementById('login-screen').classList.remove('hidden');
@@ -1360,16 +1993,23 @@
         
         // Hide all permission-based elements by default
         const systemActivityContainer = document.getElementById('system-activity-container');
+        const inventoryActivityContainer = document.getElementById('inventory-activity-container');
         const cartButton = document.getElementById('cart-button');
         const managementTab = document.getElementById('tab-management');
         const managementTabMobile = document.getElementById('tab-management-mobile');
         
-        console.log('Current permission:', permission);
+        // Activity tab elements (for Activities page)
+        const activityTabSystem = document.getElementById('activity-tab-system');
+        const activityTabInventory = document.getElementById('activity-tab-inventory');
+        
         switch (permission) {
             case 'Admin':
                 // Admin can see everything
                 if (systemActivityContainer) {
                     systemActivityContainer.classList.remove('hidden');
+                }
+                if (inventoryActivityContainer) {
+                    inventoryActivityContainer.classList.remove('hidden');
                 }
                 if (cartButton) {
                     cartButton.classList.remove('hidden');
@@ -1379,6 +2019,13 @@
                 }
                 if (managementTabMobile) {
                     managementTabMobile.classList.remove('hidden');
+                }
+                // Show admin-only activity tabs (for Activities page)
+                if (activityTabSystem) {
+                    activityTabSystem.classList.remove('hidden');
+                }
+                if (activityTabInventory) {
+                    activityTabInventory.classList.remove('hidden');
                 }
                 break;
             case 'User':
@@ -1394,6 +2041,7 @@
         
         // Load initial data
         loadItems();
+        getDashboardStats(); // Load dashboard stats on app initialization
         hideLoader();
     }
 
@@ -1414,7 +2062,6 @@
     }
     // Page Navigation
     const navigatePage = (page) => {
-        console.log('Show page:', page);
         switch (page) {
             case 'items':
                 document.title = 'Items - Inventory Management';
@@ -1433,6 +2080,10 @@
             case 'management':
                 document.title = 'Management - Inventory Management';
                 switchManagementTab('items');
+                break;
+            case 'accessories':
+                document.title = 'Accessories - Inventory Management';
+                loadAccessoriesList();
                 break;
             default:
                 document.title = 'Inventory Management';
@@ -1500,14 +2151,16 @@
 
     function openRequestModal() {
         if (cart.length === 0) {
-            alert('กรุณาเพิ่มอุปกรณ์ลงในตระกร้า');
+            Swal.fire('แจ้งเตือน', 'กรุณาเพิ่มอุปกรณ์ลงในตระกร้า', 'warning');
             return;
         }
+
+        // Reset modal title for new request
+        document.getElementById('modal-title').textContent = 'ส่งคำขอยืมอุปกรณ์';
 
         // Set today's date as borrow date
         // const today = new Date().toISOString().split('T')[0];
         const today = moment().format('YYYY-MM-DD');
-        console.log('TODAY:', today);
         document.getElementById('requestDate').value = today;
 
         // Clear previous data
@@ -1518,8 +2171,6 @@
         showLoader();
         google.script.run
             .withSuccessHandler((acc) => {
-                console.log("Loaded accessories:", acc.data);
-
                 accessoriesList = acc.data
 
                 // Initialize modal items data
@@ -1538,6 +2189,7 @@
             })
             .withFailureHandler((error) => {
                 console.error(error);
+                Swal.fire('ข้อผิดพลาด', error.message || 'เกิดข้อผิดพลาดในการโหลดอุปกรณ์เสริม', 'error');
                 hideLoader();
             })
             .loadAccessories(cart.map(i => i.Item_Id));
@@ -1553,25 +2205,19 @@
         const itemContainer = document.createElement('div');
 
         modalItemsData.forEach((item, idx) => {
+            // Filter accessories that are linked to this item
+            const linkedAccessories = accessoriesList.filter(a => {
+                // Check if this accessory has Item_Ids array that includes current item
+                return a.Item_Ids && Array.isArray(a.Item_Ids) && a.Item_Ids.includes(item.Item_Id) && a.Active;
+            });
+
             const div = document.createElement('div');
 
             div.className = 'p-4 border rounded-lg border-slate-200 bg-slate-50';
 
-            div.innerHTML = `
-                    <div class="flex items-center mb-4 space-x-4">
-                        <img src="${item.Image}" alt="${item.Item_Name}" class="object-cover w-20 h-20 rounded-lg">
-                        <div class="flex-1">
-                            <h5 class="font-semibold text-slate-800">${item.Item_Name}</h5>
-                            <div class="flex items-center mt-2 space-x-2">
-                                <span class="text-sm text-slate-600">จำนวน:</span>
-                                <button onclick="updateModalItemQty(${idx}, -1)" class="flex items-center justify-center transition bg-white border rounded w-7 h-7 border-slate-300 hover:bg-slate-100 cursor-pointer">-</button>
-                                <input type="number" value="${item.Qty}" onchange="setModalItemQty(${idx}, this.value)" class="w-16 px-2 py-1 text-center border rounded border-slate-300" min="1">
-                                <button onclick="updateModalItemQty(${idx}, 1)" class="flex items-center justify-center transition bg-white border rounded w-7 h-7 border-slate-300 hover:bg-slate-100 cursor-pointer">+</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-2">
+            // Only show accessories section if there are linked accessories
+            const accessoriesSection = linkedAccessories.length > 0 ? `
+                    <div class="space-y-2 mt-4">
                         <div class="flex items-center justify-between">
                             <label class="text-sm font-semibold text-slate-700">อุปกรณ์เสริม</label>
                             <button onclick="addAccessoryToItem(${idx})" class="text-sm font-medium text-blue-600 hover:text-blue-700 cursor-pointer">+ เพิ่มอุปกรณ์</button>
@@ -1581,7 +2227,7 @@
                                 <div class="flex items-center p-2 space-x-2 bg-white border rounded border-slate-200">
                                     <select onchange="updateAccessoryType(${idx}, ${accIdx}, this.value)" class="flex-1 px-2 py-1 text-sm border rounded border-slate-300">
                                         <option value="">เลือกอุปกรณ์</option>
-                                        ${accessoriesList.filter(a => a.Item_Id === item.Item_Id && a.Active).map(a => `<option value="${a.Accessory_Id}" ${acc.Accessory_Id === a.Accessory_Id ? 'selected' : ''}>${a.Accessory_Name} (คงเหลือ: ${a.Available_Qty})</option>`).join('')}
+                                        ${linkedAccessories.map(a => `<option value="${a.Accessory_Id}" ${acc.Accessory_Id === a.Accessory_Id ? 'selected' : ''}>${a.Accessory_Name} (คงเหลือ: ${a.Available_Qty})</option>`).join('')}
                                     </select>
                                     ${acc.Accessory_Id
                     ? `
@@ -1597,6 +2243,23 @@
                             `).join('')}
                         </div>
                     </div>
+            ` : '';
+
+            div.innerHTML = `
+                    <div class="flex items-center mb-4 space-x-4">
+                        <img src="${item.Image}" alt="${item.Item_Name}" class="object-cover w-20 h-20 rounded-lg">
+                        <div class="flex-1">
+                            <h5 class="font-semibold text-slate-800">${item.Item_Name}</h5>
+                            <div class="flex items-center mt-2 space-x-2">
+                                <span class="text-sm text-slate-600">จำนวน:</span>
+                                <button onclick="updateModalItemQty(${idx}, -1)" class="flex items-center justify-center transition bg-white border rounded w-7 h-7 border-slate-300 hover:bg-slate-100 cursor-pointer">-</button>
+                                <input type="number" value="${item.Qty}" onchange="setModalItemQty(${idx}, this.value)" class="w-16 px-2 py-1 text-center border rounded border-slate-300" min="1">
+                                <button onclick="updateModalItemQty(${idx}, 1)" class="flex items-center justify-center transition bg-white border rounded w-7 h-7 border-slate-300 hover:bg-slate-100 cursor-pointer">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${accessoriesSection}
             `
 
             itemContainer.appendChild(div);
@@ -1679,48 +2342,49 @@
             })
             .withFailureHandler((error) => {
                 console.error(error);
-                alert(error.message || 'เกิดข้อผิดพลาดในการส่งคำขอ กรุณาลองใหม่อีกครั้ง');
+                Swal.fire('Error', error.message || 'เกิดข้อผิดพลาดในการส่งคำขอ กรุณาลองใหม่อีกครั้ง', 'error');
             })
             .getRowRequest(requestId);
     }
 
     function submitBorrowRequest() {
-        console.log(modalItemsData)
         const requirerName = document.getElementById('borrowerName').value.trim();
         const requestDate = document.getElementById('requestDate').value;
         const returnDate = document.getElementById('returnDate').value;
         const remark = document.getElementById('remark').value.trim();
 
         if (!requirerName) {
-            alert('กรุณากรอกชื่อผู้ยืม');
+            Swal.fire('แจ้งเตือน', 'กรุณากรอกชื่อผู้ยืม', 'warning');
             return;
         }
-        console.log(returnDate)
         if (!returnDate) {
-            alert('กรุณาเลือกวันที่คืน');
+            Swal.fire('แจ้งเตือน', 'กรุณาเลือกวันที่คืน', 'warning');
             return;
         }
 
         modalItemsData.forEach(item => {
             if (item.Qty <= 0) {
-                alert('จำนวนอุปกรณ์ต้องมากกว่า 0');
+                Swal.fire('แจ้งเตือน', 'จำนวนอุปกรณ์ต้องมากกว่า 0', 'warning');
                 throw new Error('Invalid item quantity');
             }
             item.Accessories.forEach(acc => {
                 if (!acc.Accessory_Id) {
-                    alert('กรุณาเลือกอุปกรณ์เสริมให้ครบถ้วน');
+                    Swal.fire('แจ้งเตือน', 'กรุณาเลือกอุปกรณ์เสริมให้ครบถ้วน', 'warning');
                     throw new Error('Invalid accessory selection');
                 }
                 if (acc.Qty <= 0) {
-                    alert('จำนวนอุปกรณ์เสริมต้องมากกว่า 0');
+                    Swal.fire('แจ้งเตือน', 'จำนวนอุปกรณ์เสริมต้องมากกว่า 0', 'warning');
                     throw new Error('Invalid accessory quantity');
                 }
             });
         });
 
+        // Check if editing existing request
+        const isEdit = modalItemsData.length > 0 && modalItemsData[0].Request_Id;
+        
         let submitRequestData = {
-            IsNew: true,
-            Request_Id: null,
+            IsNew: !isEdit,
+            Request_Id: isEdit ? modalItemsData[0].Request_Id : null,
             Requirer_Name: requirerName,
             Status: 'Submit',
             Request_Date: moment(requestDate).format('YYYY-MM-DD'),
@@ -1751,25 +2415,40 @@
             submitRequestData.Items.push(submitItem);
         });
 
-        console.log("Submitting items:", submitRequestData);
-
         showLoader();
         google.script.run
             .withSuccessHandler((response) => {
-                alert('ส่งคำขอยืมสำเร็จ!\nรหัสคำขอ: ' + response.Request_Id);
+                if (response.success) {
+                    const successMessage = isEdit 
+                        ? 'แก้ไขคำขอสำเร็จ!<br>รหัสคำขอ: ' + submitRequestData.Request_Id
+                        : 'ส่งคำขอยืมสำเร็จ!';
+                        
+                    Swal.fire('สำเร็จ!', response.message || successMessage, 'success');
 
-                cart = [];
-                modalItemsData = [];
-                updateCart();
-                closeRequestModal();
-                toggleCart();
-                resetLoadedItems();
-                loadItems();
+                    cart = [];
+                    modalItemsData = [];
+                    updateCart();
+                    closeRequestModal();
+                    if (!isEdit) {
+                        toggleCart();
+                    }
+                    resetLoadedItems();
+                    loadItems();
+                    getRequestList(); // Refresh daily requests list
+                } else {
+                    const errorMessage = isEdit 
+                        ? 'เกิดข้อผิดพลาดในการแก้ไขคำขอ: '
+                        : 'เกิดข้อผิดพลาดในการส่งคำขอ: ';
+                    Swal.fire('เกิดข้อผิดพลาด', errorMessage + (response.message || 'กรุณาลองใหม่อีกครั้ง'), 'error');
+                }
                 hideLoader();
             })
             .withFailureHandler((error) => {
                 console.error(error);
-                alert(error.message || 'เกิดข้อผิดพลาดในการส่งคำขอ กรุณาลองใหม่อีกครั้ง');
+                const errorMessage = isEdit 
+                    ? 'เกิดข้อผิดพลาดในการแก้ไขคำขอ กรุณาลองใหม่อีกครั้ง'
+                    : 'เกิดข้อผิดพลาดในการส่งคำขอ กรุณาลองใหม่อีกครั้ง';
+                Swal.fire('เกิดข้อผิดพลาด', error.message || errorMessage, 'error');
                 hideLoader();
             })
             .submitRequest(submitRequestData);
@@ -1807,12 +2486,9 @@
                 //     sentinelLoad.classList.add('hidden');
                 // }
 
-                // console.log("Items Data: ", items.data)
                 clearSkeletonItems();
-                console.log(items.data)
                 renderItems(items.data);
                 itemList = itemList.concat(items.data);
-                // console.log("Items List:", itemList)
 
                 const itemCount = document.getElementById('item-count');
                 if (itemList.length > 0) {
@@ -1827,6 +2503,7 @@
             })
             .withFailureHandler((error) => {
                 console.error(error);
+                Swal.fire('ข้อผิดพลาด', error.message || 'เกิดข้อผิดพลาดในการโหลดรายการอุปกรณ์', 'error');
                 clearSkeletonItems();
                 loadingItems = false;
                 hideLoader();
@@ -1955,7 +2632,7 @@
             if (cartItem.Qty < item.Available_Qty) {
                 cartItem.Qty++;
             } else {
-                alert('ไม่สามารถเพิ่มได้เนื่องจากอุปกรณ์ไม่เพียงพอ');
+                Swal.fire('แจ้งเตือน', 'ไม่สามารถเพิ่มได้เนื่องจากอุปกรณ์ไม่เพียงพอ', 'warning');
                 return;
             }
         } else {
@@ -2019,8 +2696,6 @@
 
     const removeFromCart = (itemId) => {
         cart = cart.filter(item => item.Item_Id !== +itemId);
-        console.log(cart);
-        console.log(itemId);
         document.getElementById('item-list').innerHTML = '';
         updateCart();
         renderItems(itemList)
@@ -2028,7 +2703,6 @@
 
     const updateCartQty = (itemId, change) => {
         const cartItem = cart.find(c => c.Item_Id === +itemId);
-        console.log(cart);
         if (cartItem) {
             const NewQty = cartItem.Qty + change;
             if (NewQty > 0 && NewQty <= cartItem.MaxQty) {
@@ -2066,75 +2740,96 @@
             })
             .withFailureHandler((error) => {
                 console.error(error);
+                Swal.fire('ข้อผิดพลาด', error.message || 'เกิดข้อผิดพลาดในการโหลดรายการคำขอ', 'error');
                 hideLoader();
             })
             .getRequestList();
     }
 
     function distributeRequest(requestId) {
-        if (!confirm('ยืนยันการจ่ายอุปกรณ์สำหรับคำขอ ' + requestId + '?')) {
-            return;
-        }
+        Swal.fire({
+            title: 'ยืนยันการจ่ายอุปกรณ์',
+            text: 'ยืนยันการจ่ายอุปกรณ์สำหรับคำขอ ' + requestId + '?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
 
         const requestData = activeRequest.find(r => r.Request_Id === +requestId);
 
         if (!requestData) {
-            alert('ไม่พบคำขอที่ระบุ');
+            Swal.fire('ข้อผิดพลาด', 'ไม่พบคำขอที่ระบุ', 'error');
             return;
         }
-
-        console.log(requestData)
 
         showLoader();
         google.script.run
             .withSuccessHandler((response) => {
-                alert('จ่ายอุปกรณ์สำเร็จสำหรับคำขอ ' + requestId);
-                getRequestList();
+                if (response.success) {
+                    Swal.fire('สำเร็จ!', response.message || 'จ่ายอุปกรณ์สำเร็จสำหรับคำขอ ' + requestId, 'success');
+                    getRequestList();
+                } else {
+                    Swal.fire('ข้อผิดพลาด', response.message || 'เกิดข้อผิดพลาดในการจ่ายอุปกรณ์', 'error');
+                }
                 hideLoader();
             })
             .withFailureHandler((error) => {
                 console.error(error);
-                alert(error.message || 'เกิดข้อผิดพลาดในการจ่ายอุปกรณ์ กรุณาลองใหม่อีกครั้ง');
+                Swal.fire('ข้อผิดพลาด', error.message || 'เกิดข้อผิดพลาดในการจ่ายอุปกรณ์ กรุณาลองใหม่อีกครั้ง', 'error');
                 hideLoader();
             })
             .distributeRequest(requestData);
+        });
     }
 
     function cancelRequest(requestId) {
-        if (!confirm('ยืนยันการยกเลิกคำขอ ' + requestId + '?')) {
-            return;
-        }
+        Swal.fire({
+            title: 'ยืนยันการยกเลิก',
+            text: 'ยืนยันการยกเลิกคำขอ ' + requestId + '?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'ยืนยันยกเลิก',
+            cancelButtonText: 'ย้อนกลับ'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
 
         const requestData = activeRequest.find(r => r.Request_Id === +requestId);
 
         if (!requestData) {
-            alert('ไม่พบคำขอที่ระบุ');
+            Swal.fire('ข้อผิดพลาด', 'ไม่พบคำขอที่ระบุ', 'error');
             return;
         }
-
-        console.log(requestData)
 
         showLoader();
         google.script.run
             .withSuccessHandler((response) => {
-                alert('ยกเลิกคำขอสำเร็จสำหรับคำขอ ' + requestId);
-                getRequestList();
+                if (response.success) {
+                    Swal.fire('สำเร็จ!', response.message || 'ยกเลิกคำขอสำเร็จสำหรับคำขอ ' + requestId, 'success');
+                    getRequestList();
+                } else {
+                    Swal.fire('ข้อผิดพลาด', response.message || 'เกิดข้อผิดพลาดในการยกเลิกคำขอ', 'error');
+                }
                 hideLoader();
             })
             .withFailureHandler((error) => {
                 console.error(error);
-                alert(error.message || 'เกิดข้อผิดพลาดในการยกเลิกคำขอ กรุณาลองใหม่อีกครั้ง');
+                Swal.fire('ข้อผิดพลาด', error.message || 'เกิดข้อผิดพลาดในการยกเลิกคำขอ กรุณาลองใหม่อีกครั้ง', 'error');
                 hideLoader();
             })
             .cancelRequest(requestId);
+        });
     }
 
     function openReturnModal(requestId) {
         showLoader();
         google.script.run
             .withSuccessHandler((response) => {
-                console.log(response)
-
                 const requestData = response.data;
 
                 // Set display info
@@ -2172,7 +2867,62 @@
             })
             .withFailureHandler((error) => {
                 console.error(error);
-                alert(error.message || 'เกิดข้อผิดพลาดในการส่งคำขอ กรุณาลองใหม่อีกครั้ง');
+                Swal.fire('Error', error.message || 'เกิดข้อผิดพลาดในการส่งคำขอ กรุณาลองใหม่อีกครั้ง', 'error');
+            })
+            .getRowRequest(requestId);
+    }
+
+    function openEditRequestModal(requestId) {
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                const requestData = response.data;
+
+                // Set modal title
+                document.getElementById('modal-title').textContent = 'Edit Request - ID: ' + requestData.Request_Id;
+                
+                // Set form values
+                document.getElementById('borrowerName').value = requestData.Requirer_Name;
+                document.getElementById('requestDate').value = moment(requestData.Request_Date).format('YYYY-MM-DD');
+                document.getElementById('returnDate').value = moment(requestData.Return_Date).format('YYYY-MM-DD');
+                document.getElementById('remark').value = requestData.Remark || '';
+
+                // Load accessories for these items
+                const itemIds = requestData.Items.map(item => item.Item_Id);
+                google.script.run
+                    .withSuccessHandler((acc) => {
+                        accessoriesList = acc.data;
+
+                        // Initialize modal items data with existing request data
+                        modalItemsData = requestData.Items.map(item => ({
+                            Item_Id: item.Item_Id,
+                            Item_Name: item.Item_Name,
+                            Item_Image: item.Item_Image,
+                            Qty: item.Qty,
+                            MaxQty: item.Item_Available_Qty + item.Qty, // Available + currently borrowed
+                            Request_Id: requestData.Request_Id, // Mark as edit mode
+                            Accessories: item.Accessories.map(acc => ({
+                                Accessory_Id: acc.Accessory_Id,
+                                Accessory_Name: acc.Accessory_Name,
+                                Qty: acc.Qty
+                            }))
+                        }));
+
+                        renderModalItems();
+                        document.getElementById('requestModal').classList.remove('hidden');
+                        hideLoader();
+                    })
+                    .withFailureHandler((error) => {
+                        console.error(error);
+                        Swal.fire('Error', 'Failed to load accessories', 'error');
+                        hideLoader();
+                    })
+                    .loadAccessories(itemIds);
+            })
+            .withFailureHandler((error) => {
+                console.error(error);
+                Swal.fire('Error', error.message || 'เกิดข้อผิดพลาดในการโหลดคำขอ', 'error');
+                hideLoader();
             })
             .getRowRequest(requestId);
     }
@@ -2305,8 +3055,6 @@
     }
 
     function submitReturn() {
-        console.log('Return Items Data:', returnItemsData);
-
         const requestId = +document.getElementById('displayRequestId').textContent;
         const requirerName = document.getElementById('displayBorrowerName').textContent.trim();
         const returnDate = document.getElementById('actualReturnDate').value;
@@ -2314,7 +3062,7 @@
         const remark = document.getElementById('returnRemark').value.trim();
 
         if (!returnDate) {
-            alert('กรุณาระบุวันที่คืน');
+            Swal.fire('แจ้งเตือน', 'กรุณาระบุวันที่คืน', 'warning');
             return;
         }
 
@@ -2325,7 +3073,7 @@
                 sum + item.Accessories.reduce((accSum, acc) => accSum + acc.Return_Qty, 0), 0);
 
             if (totalItemsReturned === 0 && totalAccessoriesReturned === 0) {
-                alert('กรุณาระบุจำนวนที่ต้องการคืนอย่างน้อย 1 รายการ');
+                Swal.fire('แจ้งเตือน', 'กรุณาระบุจำนวนที่ต้องการคืนอย่างน้อย 1 รายการ', 'warning');
                 return;
             }
         }
@@ -2363,22 +3111,25 @@
             submitReturnData.Items.push(submitItem);
         });
 
-        console.log("Submitting return data:", submitReturnData);
         showLoader();
         google.script.run
             .withSuccessHandler((response) => {
-                alert('คืนอุปกรณ์สำเร็จ!');
-                
-                closeReturnModal();
-                returnItemsData = [];
-                
-                getRequestList();
+                if (response.success) {
+                    Swal.fire('สำเร็จ!', response.message || 'คืนอุปกรณ์สำเร็จ!', 'success');
+                    
+                    closeReturnModal();
+                    returnItemsData = [];
+                    
+                    getRequestList();
+                } else {
+                    Swal.fire('ข้อผิดพลาด', response.message || 'เกิดข้อผิดพลาดในการคืนอุปกรณ์', 'error');
+                }
                 hideLoader();
-                // Refresh data
             })
             .withFailureHandler((error) => {
                 console.error(error);
-                alert('เกิดข้อผิดพลาดในการคืนอุปกรณ์');
+                Swal.fire('ข้อผิดพลาด', error.message || 'เกิดข้อผิดพลาดในการคืนอุปกรณ์', 'error');
+                hideLoader();
             })
             .returnRequest(submitReturnData);
 
@@ -2485,21 +3236,40 @@
 
     // Helper function for action buttons
     function getActionButtons(request) {
+        // Check permission for action buttons
+        const permission = currentSession.permission;
+        
         if (request.Status === 'Submit') {
-            return `
+            let buttons = '';
+            
+            // Edit button - available for Admin and User (requester)
+            if (permission === 'Admin' || permission === 'User') {
+                buttons += `
+            <button onclick="openEditRequestModal('${request.Request_Id}')" class="px-1.5 py-1 text-sm font-normal text-center text-white bg-amber-500 rounded mr-2 cursor-pointer" title="Edit Request">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>`;
+            }
+            
+            // Distribute and Cancel buttons - Admin only
+            if (permission === 'Admin') {
+                buttons += `
             <button onclick="distributeRequest('${request.Request_Id}')" class="px-1.5 py-1 text-sm font-normal text-center text-white bg-blue-500 rounded mr-2 cursor-pointer" title="Distribute Request">
                 <i class="fa-solid fa-dolly"></i>
             </button>
             <button onclick="cancelRequest('${request.Request_Id}')" class="px-1.5 py-1 text-sm font-normal text-center text-white bg-red-500 rounded mr-2 cursor-pointer" title="Cancel Request">
                 <i class="fa-solid fa-xmark"></i>
-            </button>
-        `;
+            </button>`;
+            }
+            
+            return buttons;
         } else if (request.Status === 'Distributed' || request.Status === 'Partial_Returned') {
-            return `
+            // Return button - Admin only
+            if (permission === 'Admin') {
+                return `
             <button onclick="openReturnModal('${request.Request_Id}')" class="px-1.5 py-1 text-sm font-normal text-center text-white bg-orange-500 rounded mr-2 cursor-pointer" title="Return Request">
                 <i class="fa-solid fa-rotate-left"></i>
-            </button>
-        `;
+            </button>`;
+            }
         }
         return '';
     }
@@ -2516,7 +3286,6 @@
         showLoader();
         google.script.run
             .withSuccessHandler((response) => {
-                console.log("Dashboard Stats:", response);
                 const stats = response.data || {};
 
                 // items
@@ -2531,23 +3300,202 @@
                 document.getElementById('submitRequest').textContent = stats.submitRequestCount || 0;
                 document.getElementById('waitingReturn').textContent = stats.waitingReturnCount || 0;
 
-                // system
-                document.getElementById('recentActivity').innerHTML = stats.top50_recentlyActivity.map(activity => `
-                    <tr class="bg-white hover:bg-slate-50">
-                        <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Log_Id}</td>
-                        <td class="px-4 py-3 text-sm text-left text-slate-700">${activity.Email}</td>
-                        <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Activity}</td>
-                        <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Action_At}</td>
-                    </tr>
-                `).join('');
-
                 hideLoader();
+                
+                // Load activities
+                loadRecentActivity();
+                if (currentSession && currentSession.permission === 'Admin') {
+                    loadSystemActivity();
+                    loadInventoryActivity();
+                }
             })
             .withFailureHandler((error) => {
                 console.error(error);
+                Swal.fire('ข้อผิดพลาด', error.message || 'เกิดข้อผิดพลาดในการโหลดข้อมูลสถิติ', 'error');
                 hideLoader();
             })
             .getDashboardStats();
+    }
+
+    function loadRecentActivity(page = 1) {
+        google.script.run
+            .withSuccessHandler((response) => {
+                if (response.success) {
+                    renderRecentActivity(response.data);
+                    renderDashboardPagination('recent-activity', page, response.totalPages, 'loadRecentActivity');
+                } else {
+                    console.error('Recent Activity failed:', response.message);
+                    Swal.fire('ข้อผิดพลาด', response.message || 'เกิดข้อผิดพลาดในการโหลดประวัติกิจกรรม', 'error');
+                    document.getElementById('recentActivity').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">Error: ' + (response.message || 'Failed to load activities') + '</td></tr>';
+                }
+            })
+            .withFailureHandler((error) => {
+                console.error('Error loading recent activity:', error);
+                Swal.fire('ข้อผิดพลาด', error.message || 'เกิดข้อผิดพลาดในการโหลดประวัติกิจกรรม', 'error');
+                document.getElementById('recentActivity').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">Error loading activities</td></tr>';
+            })
+            .getRequestActivity(page, 20);
+    }
+
+    function renderRecentActivity(activities) {
+        if (!activities || activities.length === 0) {
+            document.getElementById('recentActivity').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-slate-500">No recent activities</td></tr>';
+            return;
+        }
+        
+        const activityIcons = {
+            'Create Request': '<i class="fas fa-plus-circle text-blue-500"></i>',
+            'Edit Request': '<i class="fas fa-edit text-amber-500"></i>',
+            'Distribute Request': '<i class="fas fa-check-circle text-green-500"></i>',
+            'Return Request': '<i class="fas fa-undo text-purple-500"></i>',
+            'Cancel Request': '<i class="fas fa-times-circle text-red-500"></i>',
+        };
+
+        document.getElementById('recentActivity').innerHTML = activities.map(activity => {
+            const icon = activityIcons[activity.Activity] || '<i class="fas fa-info-circle text-slate-500"></i>';
+            return `
+                <tr class="bg-white hover:bg-slate-50">
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Log_Id}</td>
+                    <td class="px-4 py-3 text-sm text-left text-slate-700">${activity.Email}</td>
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">
+                        ${icon} ${activity.Activity}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Action_At}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function loadSystemActivity(page = 1) {
+        google.script.run
+            .withSuccessHandler((response) => {
+                if (response.success) {
+                    renderSystemActivity(response.data);
+                    renderDashboardPagination('system-activity', page, response.totalPages, 'loadSystemActivity');
+                } else {
+                    console.error('System Activity failed:', response.message);
+                    Swal.fire('ข้อผิดพลาด', response.message || 'เกิดข้อผิดพลาดในการโหลดประวัติระบบ', 'error');
+                    document.getElementById('systemActivity').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">Error: ' + (response.message || 'Failed to load activities') + '</td></tr>';
+                }
+            })
+            .withFailureHandler((error) => {
+                console.error('Error loading system activity:', error);
+                Swal.fire('ข้อผิดพลาด', error.message || 'เกิดข้อผิดพลาดในการโหลดประวัติระบบ', 'error');
+                document.getElementById('systemActivity').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">Error loading activities</td></tr>';
+            })
+            .getSystemActivity(page, 20);
+    }
+
+    function renderSystemActivity(activities) {
+        if (!activities || activities.length === 0) {
+            document.getElementById('systemActivity').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-slate-500">No system activities</td></tr>';
+            return;
+        }
+        
+        const activityIcons = {
+            'Login': '<i class="fas fa-sign-in-alt text-green-500"></i>',
+            'Logout': '<i class="fas fa-sign-out-alt text-red-500"></i>',
+            'Session Created': '<i class="fas fa-clock text-blue-500"></i>',
+            'Session Validated': '<i class="fas fa-clock text-blue-500"></i>',
+        };
+
+        document.getElementById('systemActivity').innerHTML = activities.map(activity => {
+            const icon = activityIcons[activity.Activity] || '<i class="fas fa-info-circle text-slate-500"></i>';
+            return `
+                <tr class="bg-white hover:bg-slate-50">
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Log_Id}</td>
+                    <td class="px-4 py-3 text-sm text-left text-slate-700">${activity.Email}</td>
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">
+                        ${icon} ${activity.Activity}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Action_At}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function loadInventoryActivity(page = 1) {
+        google.script.run
+            .withSuccessHandler((response) => {
+                if (response.success) {
+                    renderInventoryActivity(response.data);
+                    renderDashboardPagination('inventory-activity', page, response.totalPages, 'loadInventoryActivity');
+                } else {
+                    console.error('Inventory Activity failed:', response.message);
+                    Swal.fire('ข้อผิดพลาด', response.message || 'เกิดข้อผิดพลาดในการโหลดประวัติคลัง', 'error');
+                    document.getElementById('inventoryActivity').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">Error: ' + (response.message || 'Failed to load activities') + '</td></tr>';
+                }
+            })
+            .withFailureHandler((error) => {
+                console.error('Error loading inventory activity:', error);
+                Swal.fire('ข้อผิดพลาด', error.message || 'เกิดข้อผิดพลาดในการโหลดประวัติคลัง', 'error');
+                document.getElementById('inventoryActivity').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">Error loading activities</td></tr>';
+            })
+            .getInventoryActivity(page, 20);
+    }
+
+    function renderInventoryActivity(activities) {
+        if (!activities || activities.length === 0) {
+            document.getElementById('inventoryActivity').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-slate-500">No inventory activities</td></tr>';
+            return;
+        }
+        
+        const activityIcons = {
+            'Create Item': '<i class="fas fa-plus-circle text-green-500"></i>',
+            'Update Item': '<i class="fas fa-edit text-blue-500"></i>',
+            'Delete Item': '<i class="fas fa-trash-alt text-red-500"></i>',
+            'Create Accessory': '<i class="fas fa-plus-circle text-green-500"></i>',
+            'Update Accessory': '<i class="fas fa-edit text-blue-500"></i>',
+            'Delete Accessory': '<i class="fas fa-trash-alt text-red-500"></i>',
+            'Link Accessory': '<i class="fas fa-link text-purple-500"></i>',
+        };
+
+        document.getElementById('inventoryActivity').innerHTML = activities.map(activity => {
+            const icon = activityIcons[activity.Activity] || '<i class="fas fa-info-circle text-slate-500"></i>';
+            return `
+                <tr class="bg-white hover:bg-slate-50">
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Log_Id}</td>
+                    <td class="px-4 py-3 text-sm text-left text-slate-700">${activity.Email}</td>
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">
+                        ${icon} ${activity.Activity}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">${activity.Action_At}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function renderDashboardPagination(containerId, currentPage, totalPages, functionName) {
+        const container = document.getElementById(containerId + '-pagination');
+        
+        if (!container || totalPages <= 1) {
+            if (container) container.innerHTML = '';
+            return;
+        }
+        
+        let html = '<div class="flex items-center gap-2">';
+        
+        // Previous button
+        if (currentPage > 1) {
+            html += `<button onclick="${functionName}(${currentPage - 1})" 
+                class="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+                <i class="fas fa-chevron-left"></i>
+            </button>`;
+        }
+        
+        // Page info
+        html += `<span class="text-sm text-slate-600">Page ${currentPage} of ${totalPages}</span>`;
+        
+        // Next button
+        if (currentPage < totalPages) {
+            html += `<button onclick="${functionName}(${currentPage + 1})" 
+                class="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+                <i class="fas fa-chevron-right"></i>
+            </button>`;
+        }
+        
+        html += '</div>';
+        container.innerHTML = html;
     }
 
     function resetLoadedItems() {
@@ -2614,13 +3562,22 @@
         });
         
         // Show selected section
-        document.getElementById('mgmt-' + tab).classList.remove('hidden');
-        document.getElementById('mgmt-tab-' + tab).classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
-        document.getElementById('mgmt-tab-' + tab).classList.remove('text-slate-600');
+        const section = document.getElementById('mgmt-' + tab);
+        if (section) {
+            section.classList.remove('hidden');
+        }
+        
+        const tabButton = document.getElementById('mgmt-tab-' + tab);
+        if (tabButton) {
+            tabButton.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+            tabButton.classList.remove('text-slate-600');
+        }
         
         // Load data for the selected tab
         if (tab === 'items') {
             loadManagementItems();
+        } else if (tab === 'accessories') {
+            loadManagementAccessories();
         } else if (tab === 'users') {
             loadManagementUsers();
         }
@@ -2636,7 +3593,7 @@
             })
             .withFailureHandler((error) => {
                 console.error('Error loading items:', error);
-                alert('Error loading items: ' + error.message);
+                Swal.fire('Error', 'Error loading items: ' + error.message, 'error');
                 hideLoader();
             })
             .loadItems('', 'ALL', 1, 1000);
@@ -2662,9 +3619,6 @@
                     </span>
                 </td>
                 <td class="px-4 py-3 text-center">
-                    <button onclick="openAccessoryModal(${item.Item_Id}, '${item.Item_Name}')" class="px-2 py-1 text-xs font-medium text-purple-600 bg-purple-50 hover:bg-purple-100 rounded mr-1 cursor-pointer" title="Manage Accessories">
-                        <i class="fas fa-puzzle-piece"></i> Accessories
-                    </button>
                     <button onclick="editItem(${item.Item_Id})" class="px-2 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded cursor-pointer" title="Edit">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -2730,16 +3684,16 @@
             google.script.run
                 .withSuccessHandler((response) => {
                     if (response.success) {
-                        alert('Item updated successfully');
+                        Swal.fire('Success', 'Item updated successfully', 'success');
                         closeItemModal();
                         loadManagementItems();
                     } else {
-                        alert('Error: ' + response.message);
+                        Swal.fire('Error', 'Error: ' + response.message, 'error');
                         hideLoader();
                     }
                 })
                 .withFailureHandler((error) => {
-                    alert('Error: ' + error.message);
+                    Swal.fire('Error', 'Error: ' + error.message, 'error');
                     hideLoader();
                 })
                 .updateItem(parseInt(itemId), itemData, currentSession.email);
@@ -2748,16 +3702,16 @@
             google.script.run
                 .withSuccessHandler((response) => {
                     if (response.success) {
-                        alert('Item created successfully');
+                        Swal.fire('Success', 'Item created successfully', 'success');
                         closeItemModal();
                         loadManagementItems();
                     } else {
-                        alert('Error: ' + response.message);
+                        Swal.fire('Error', 'Error: ' + response.message, 'error');
                         hideLoader();
                     }
                 })
                 .withFailureHandler((error) => {
-                    alert('Error: ' + error.message);
+                    Swal.fire('Error', 'Error: ' + error.message, 'error');
                     hideLoader();
                 })
                 .createItem(itemData, currentSession.email);
@@ -2768,26 +3722,35 @@
         const item = managementItems.find(i => i.Item_Id === itemId);
         if (!item) return;
         
-        if (!confirm(`Are you sure you want to delete "${item.Item_Name}"?`)) {
-            return;
-        }
-        
-        showLoader();
-        google.script.run
-            .withSuccessHandler((response) => {
-                if (response.success) {
-                    alert('Item deleted successfully');
-                    loadManagementItems();
-                } else {
-                    alert('Error: ' + response.message);
+        Swal.fire({
+            title: 'Confirm Delete',
+            text: `Are you sure you want to delete "${item.Item_Name}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+            
+            showLoader();
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        Swal.fire('Deleted!', 'Item deleted successfully', 'success');
+                        loadManagementItems();
+                    } else {
+                        Swal.fire('Error', 'Error: ' + response.message, 'error');
+                        hideLoader();
+                    }
+                })
+                .withFailureHandler((error) => {
+                    Swal.fire('Error', 'Error: ' + error.message, 'error');
                     hideLoader();
-                }
-            })
-            .withFailureHandler((error) => {
-                alert('Error: ' + error.message);
-                hideLoader();
-            })
-            .deleteItem(itemId, currentSession.email);
+                })
+                .deleteItem(itemId, currentSession.email);
+        });
     }
 
     // Accessory Modal Functions
@@ -2821,7 +3784,7 @@
             })
             .withFailureHandler((error) => {
                 console.error('Error loading accessories:', error);
-                alert('Error loading accessories: ' + error.message);
+                Swal.fire('Error', 'Error loading accessories: ' + error.message, 'error');
                 hideLoader();
             })
             .loadAccessories([itemId], true); // true = include inactive accessories for management
@@ -2869,6 +3832,9 @@
         form.reset();
         formContainer.classList.remove('hidden');
         
+        // Load all items for selection
+        loadItemsForSelection(accessoryId);
+        
         if (accessoryId) {
             formTitle.textContent = 'Edit Accessory';
             document.getElementById('accessory-id').value = accessoryId;
@@ -2886,6 +3852,54 @@
             document.getElementById('accessory-id').value = '';
             document.getElementById('accessory-active').checked = true;
         }
+    }
+    
+    function loadItemsForSelection(accessoryId = null) {
+        const container = document.getElementById('item-selection-container');
+        container.innerHTML = '<div class="text-center py-2"><i class="fas fa-spinner fa-spin"></i> Loading items...</div>';
+        
+        google.script.run
+            .withSuccessHandler((response) => {
+                const items = response.data || [];
+                
+                if (items.length === 0) {
+                    container.innerHTML = '<div class="text-center py-2 text-slate-500">No items available</div>';
+                    return;
+                }
+                
+                // Get linked item IDs for this accessory
+                let linkedItemIds = [];
+                if (accessoryId) {
+                    const accessory = currentItemAccessories.find(a => a.Accessory_Id === accessoryId);
+                    linkedItemIds = accessory ? (accessory.Item_Ids || []) : [];
+                } else {
+                    // For new accessory, pre-select current item if available
+                    const currentItemId = document.getElementById('current-item-id').value;
+                    if (currentItemId) {
+                        linkedItemIds = [parseInt(currentItemId)];
+                    }
+                }
+                
+                // Render checkboxes
+                container.innerHTML = items.map(item => {
+                    const isChecked = linkedItemIds.includes(item.Item_Id);
+                    return `
+                        <label class="flex items-center gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                            <input type="checkbox" 
+                                   name="item-selection" 
+                                   value="${item.Item_Id}" 
+                                   ${isChecked ? 'checked' : ''}
+                                   class="w-4 h-4 text-blue-600 rounded">
+                            <span class="text-sm text-slate-700">${item.Item_Name} (ID: ${item.Item_Id})</span>
+                        </label>
+                    `;
+                }).join('');
+            })
+            .withFailureHandler((error) => {
+                container.innerHTML = '<div class="text-center py-2 text-red-500">Error loading items</div>';
+                console.error('Error loading items:', error);
+            })
+            .loadItems('', 'ALL', 1, 1000);
     }
     
     function cancelAccessoryForm() {
@@ -2908,10 +3922,19 @@
     function saveAccessory(event) {
         event.preventDefault();
         
+        // Collect selected item IDs
+        const selectedCheckboxes = document.querySelectorAll('input[name="item-selection"]:checked');
+        const selectedItemIds = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
+        
+        if (selectedItemIds.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item for this accessory', 'warning');
+            return;
+        }
+        
         const accessoryId = document.getElementById('accessory-id').value;
         const itemId = parseInt(document.getElementById('current-item-id').value);
         const accessoryData = {
-            Item_Id: itemId,
+            Item_Ids: selectedItemIds,  // Changed from Item_Id to Item_Ids (array)
             Accessory_Name: document.getElementById('accessory-name').value,
             Accessory_Desc: document.getElementById('accessory-desc').value,
             Total_Qty: parseInt(document.getElementById('accessory-total-qty').value),
@@ -2926,16 +3949,16 @@
             google.script.run
                 .withSuccessHandler((response) => {
                     if (response.success) {
-                        alert('Accessory updated successfully');
+                        Swal.fire('Success', 'Accessory updated successfully', 'success');
                         cancelAccessoryForm();
                         loadAccessoriesForItem(itemId);
                     } else {
-                        alert('Error: ' + response.message);
+                        Swal.fire('Error', 'Error: ' + response.message, 'error');
                         hideLoader();
                     }
                 })
                 .withFailureHandler((error) => {
-                    alert('Error: ' + error.message);
+                    Swal.fire('Error', 'Error: ' + error.message, 'error');
                     hideLoader();
                 })
                 .updateAccessory(parseInt(accessoryId), accessoryData, currentSession.email);
@@ -2944,16 +3967,16 @@
             google.script.run
                 .withSuccessHandler((response) => {
                     if (response.success) {
-                        alert('Accessory created successfully');
+                        Swal.fire('Success', 'Accessory created successfully', 'success');
                         cancelAccessoryForm();
                         loadAccessoriesForItem(itemId);
                     } else {
-                        alert('Error: ' + response.message);
+                        Swal.fire('Error', 'Error: ' + response.message, 'error');
                         hideLoader();
                     }
                 })
                 .withFailureHandler((error) => {
-                    alert('Error: ' + error.message);
+                    Swal.fire('Error', 'Error: ' + error.message, 'error');
                     hideLoader();
                 })
                 .createAccessory(accessoryData, currentSession.email);
@@ -2964,28 +3987,133 @@
         const accessory = currentItemAccessories.find(a => a.Accessory_Id === accessoryId);
         if (!accessory) return;
         
-        if (!confirm(`Are you sure you want to delete "${accessory.Accessory_Name}"?`)) {
-            return;
-        }
-        
-        const itemId = parseInt(document.getElementById('current-item-id').value);
+        Swal.fire({
+            title: 'Confirm Delete',
+            text: `Are you sure you want to delete "${accessory.Accessory_Name}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+            
+            const itemId = parseInt(document.getElementById('current-item-id').value);
 
+            showLoader();
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        Swal.fire('Deleted!', 'Accessory deleted successfully', 'success');
+                        loadAccessoriesForItem(itemId);
+                    } else {
+                        Swal.fire('Error', 'Error: ' + response.message, 'error');
+                        hideLoader();
+                    }
+                })
+                .withFailureHandler((error) => {
+                    Swal.fire('Error', 'Error: ' + error.message, 'error');
+                    hideLoader();
+                })
+                .deleteAccessory(accessoryId, currentSession.email);
+        });
+    }
+
+    function loadManagementAccessories() {
         showLoader();
         google.script.run
             .withSuccessHandler((response) => {
                 if (response.success) {
-                    alert('Accessory deleted successfully');
-                    loadAccessoriesForItem(itemId);
+                    allAccessories = response.data || [];
+                    renderManagementAccessories(allAccessories);
                 } else {
-                    alert('Error: ' + response.message);
-                    hideLoader();
+                    Swal.fire('Error', 'Error: ' + (response.message || 'Failed to load accessories'), 'error');
                 }
-            })
-            .withFailureHandler((error) => {
-                alert('Error: ' + error.message);
                 hideLoader();
             })
-            .deleteAccessory(accessoryId, currentSession.email);
+            .withFailureHandler((error) => {
+                console.error('Error loading accessories:', error);
+                Swal.fire('Error', 'Error loading accessories: ' + error.message, 'error');
+                hideLoader();
+            })
+            .loadAccessories([], true);
+    }
+
+    function renderManagementAccessories(accessories) {
+        const tbody = document.getElementById('mgmt-accessories-tbody');
+        
+        if (!accessories || accessories.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="px-6 py-8 text-center text-slate-500">
+                        <i class="fas fa-inbox text-4xl mb-2"></i>
+                        <p>No accessories found</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        try {
+            tbody.innerHTML = accessories.map(accessory => {
+                // Handle Item_Ids which can be an array or object
+                let linkedItemsCount = 0;
+                if (accessory.Item_Ids) {
+                    if (Array.isArray(accessory.Item_Ids)) {
+                        linkedItemsCount = accessory.Item_Ids.length;
+                    } else if (typeof accessory.Item_Ids === 'object') {
+                        linkedItemsCount = Object.keys(accessory.Item_Ids).length;
+                    }
+                }
+                
+                const statusBadge = accessory.Active 
+                    ? '<span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">Active</span>'
+                    : '<span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Inactive</span>';
+                
+                // Escape special characters in name
+                const safeName = String(accessory.Accessory_Name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-3 text-sm text-center text-slate-700">${accessory.Accessory_Id}</td>
+                        <td class="px-4 py-3 text-sm text-slate-800 font-medium">${accessory.Accessory_Name || ''}</td>
+                        <td class="px-4 py-3 text-sm text-slate-600">${accessory.Accessory_Desc || '-'}</td>
+                        <td class="px-4 py-3 text-sm text-center text-slate-700">
+                            <span class="font-semibold">${accessory.Available_Qty || 0}</span> / ${accessory.Total_Qty || 0}
+                        </td>
+                        <td class="px-4 py-3 text-sm text-center">
+                            <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
+                                <i class="fas fa-link mr-1"></i>${linkedItemsCount} items
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-center">${statusBadge}</td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex justify-center gap-2">
+                                <button onclick="openMgmtAccessoryModal(${accessory.Accessory_Id})" 
+                                    class="p-2 transition rounded-lg text-blue-600 hover:bg-blue-50 cursor-pointer" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteMgmtAccessoryConfirm(${accessory.Accessory_Id}, '${safeName}')" 
+                                    class="p-2 transition rounded-lg text-red-600 hover:bg-red-50 cursor-pointer" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        } catch (error) {
+            console.error('Error rendering accessories:', error);
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="px-6 py-8 text-center text-red-500">
+                        <i class="fas fa-exclamation-triangle text-4xl mb-2"></i>
+                        <p>Error rendering accessories: ${error.message}</p>
+                    </td>
+                </tr>
+            `;
+        }
     }
 
     // ============================================
@@ -3002,7 +4130,7 @@
             })
             .withFailureHandler((error) => {
                 console.error('Error loading users:', error);
-                alert('Error loading users: ' + error.message);
+                Swal.fire('Error', 'Error loading users: ' + error.message, 'error');
                 hideLoader();
             })
             .getUsers();
@@ -3063,7 +4191,7 @@
             // Edit mode
             const user = managementUsers.find(u => u.Email === userEmail);
             if (!user) {
-                alert('User not found');
+                Swal.fire('Error', 'User not found', 'error');
                 return;
             }
             
@@ -3140,14 +4268,14 @@
             const emailInput = document.getElementById('user-email-input');
             
             if (!emailInput) {
-                alert('Email input field not found');
+                Swal.fire('Error', 'Email input field not found', 'error');
                 return;
             }
             
             // Check if the field is hidden
             const emailInputField = document.getElementById('email-input-field');
             if (emailInputField && emailInputField.classList.contains('hidden')) {
-                alert('Email field is hidden. Please close and reopen the modal.');
+                Swal.fire('Error', 'Email field is hidden. Please close and reopen the modal.', 'error');
                 return;
             }
             
@@ -3155,7 +4283,7 @@
             email = emailValue.trim();
             
             if (!email) {
-                alert('Please enter an email address');
+                Swal.fire('Warning', 'Please enter an email address', 'warning');
                 return;
             }
             
@@ -3165,7 +4293,7 @@
             // Check for duplicate
             const emailExists = managementUsers.some(u => u.Email.toLowerCase() === email);
             if (emailExists) {
-                alert('This email already exists. Please use a different email address.');
+                Swal.fire('Warning', 'This email already exists. Please use a different email address.', 'warning');
                 return;
             }
         }
@@ -3175,7 +4303,7 @@
         
         const permission = permissionSelect.value;
         if (!permission) {
-            alert('Please select a permission level');
+            Swal.fire('Warning', 'Please select a permission level', 'warning');
             return;
         }
         
@@ -3192,17 +4320,17 @@
             const confirmPassword = document.getElementById('user-confirm-password').value;
             
             if (!password) {
-                alert('Please enter a password');
+                Swal.fire('Warning', 'Please enter a password', 'warning');
                 return;
             }
             
             if (password.length < 6) {
-                alert('Password must be at least 6 characters long');
+                Swal.fire('Warning', 'Password must be at least 6 characters long', 'warning');
                 return;
             }
             
             if (password !== confirmPassword) {
-                alert('Passwords do not match!');
+                Swal.fire('Warning', 'Passwords do not match!', 'warning');
                 return;
             }
             
@@ -3217,16 +4345,16 @@
                 .withSuccessHandler((response) => {
                     hideLoader();
                     if (response.success) {
-                        alert('User updated successfully');
+                        Swal.fire('Success', 'User updated successfully', 'success');
                         closeUserModal();
                         loadManagementUsers();
                     } else {
-                        alert('Error: ' + (response.message || 'Failed to update user'));
+                        Swal.fire('Error', 'Error: ' + (response.message || 'Failed to update user'), 'error');
                     }
                 })
                 .withFailureHandler((error) => {
                     hideLoader();
-                    alert('Error: ' + (error.message || 'Failed to update user'));
+                    Swal.fire('Error', 'Error: ' + (error.message || 'Failed to update user'), 'error');
                 })
                 .updateUser(originalEmail, userData, currentSession.email);
         } else {
@@ -3235,42 +4363,51 @@
                 .withSuccessHandler((response) => {
                     hideLoader();
                     if (response.success) {
-                        alert('User created successfully');
+                        Swal.fire('Success', 'User created successfully', 'success');
                         closeUserModal();
                         loadManagementUsers();
                     } else {
-                        alert('Error: ' + (response.message || 'Failed to create user'));
+                        Swal.fire('Error', 'Error: ' + (response.message || 'Failed to create user'), 'error');
                     }
                 })
                 .withFailureHandler((error) => {
                     hideLoader();
-                    alert('Error: ' + (error.message || 'Failed to create user'));
+                    Swal.fire('Error', 'Error: ' + (error.message || 'Failed to create user'), 'error');
                 })
                 .createUser(userData, currentSession.email);
         }
     }
 
     function toggleUserActive(userEmail, newActiveState) {
-        if (!confirm(`Are you sure you want to ${newActiveState ? 'activate' : 'deactivate'} user "${userEmail}"?`)) {
-            return;
-        }
-        
-        showLoader();
-        google.script.run
-            .withSuccessHandler((response) => {
-                if (response.success) {
-                    alert(`User ${newActiveState ? 'activated' : 'deactivated'} successfully`);
-                    loadManagementUsers();
-                } else {
-                    alert('Error: ' + response.message);
+        Swal.fire({
+            title: 'Confirm Action',
+            text: `Are you sure you want to ${newActiveState ? 'activate' : 'deactivate'} user "${userEmail}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, proceed',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+            
+            showLoader();
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        Swal.fire('Success', `User ${newActiveState ? 'activated' : 'deactivated'} successfully`, 'success');
+                        loadManagementUsers();
+                    } else {
+                        Swal.fire('Error', 'Error: ' + response.message, 'error');
+                        hideLoader();
+                    }
+                })
+                .withFailureHandler((error) => {
+                    Swal.fire('Error', 'Error: ' + error.message, 'error');
                     hideLoader();
-                }
-            })
-            .withFailureHandler((error) => {
-                alert('Error: ' + error.message);
-                hideLoader();
-            })
-            .toggleUserActive(userEmail, newActiveState, currentSession.email);
+                })
+                .toggleUserActive(userEmail, newActiveState, currentSession.email);
+        });
     }
 
     function openChangePasswordModal(userEmail) {
@@ -3295,13 +4432,13 @@
         
         // Validate passwords match
         if (newPassword !== confirmPassword) {
-            alert('Passwords do not match!');
+            Swal.fire('Warning', 'Passwords do not match!', 'warning');
             return;
         }
         
         // Validate minimum length
         if (newPassword.length < 6) {
-            alert('Password must be at least 6 characters long!');
+            Swal.fire('Warning', 'Password must be at least 6 characters long!', 'warning');
             return;
         }
         
@@ -3309,18 +4446,500 @@
         google.script.run
             .withSuccessHandler((response) => {
                 if (response.success) {
-                    alert('Password changed successfully');
+                    Swal.fire('Success', 'Password changed successfully', 'success');
                     closeChangePasswordModal();
                 } else {
-                    alert('Error: ' + response.message);
+                    Swal.fire('Error', 'Error: ' + response.message, 'error');
                 }
                 hideLoader();
             })
             .withFailureHandler((error) => {
-                alert('Error: ' + error.message);
+                Swal.fire('Error', 'Error: ' + error.message, 'error');
                 hideLoader();
             })
             .changeUserPassword(userEmail, newPassword, currentSession.email);
+    }
+
+    // ============================================
+    // Activity Functions
+    // ============================================
+
+    let currentActivityPage = { request: 1, system: 1, inventory: 1 };
+
+    function loadRequestActivity(page = 1) {
+        showLoader();
+        currentActivityPage.request = page;
+        
+        google.script.run
+            .withSuccessHandler((response) => {
+                if (response.success) {
+                    renderRequestActivity(response.data);
+                    renderActivityPagination('request', response.page, response.totalPages);
+                } else {
+                    Swal.fire('Error', 'Error: ' + response.message, 'error');
+                }
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error('Error loading request activity:', error);
+                Swal.fire('Error', 'Error loading request activity: ' + error.message, 'error');
+                hideLoader();
+            })
+            .getRequestActivity(page, 50);
+    }
+
+    function renderRequestActivity(activities) {
+        const tbody = document.getElementById('activity-request-tbody');
+        
+        if (activities.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-slate-500">No activities found</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = activities.map(activity => {
+            let icon = 'fa-info-circle';
+            let colorClass = 'text-slate-600';
+            
+            if (activity.Activity.includes('Submit')) {
+                icon = 'fa-plus-circle';
+                colorClass = 'text-green-600';
+            } else if (activity.Activity.includes('Edit')) {
+                icon = 'fa-edit';
+                colorClass = 'text-blue-600';
+            } else if (activity.Activity.includes('Distribute')) {
+                icon = 'fa-check-circle';
+                colorClass = 'text-purple-600';
+            } else if (activity.Activity.includes('Return') || activity.Activity.includes('return')) {
+                icon = 'fa-undo';
+                colorClass = 'text-orange-600';
+            } else if (activity.Activity.includes('Cancel')) {
+                icon = 'fa-ban';
+                colorClass = 'text-red-600';
+            }
+            
+            return `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-4 py-3 text-sm text-slate-700">${activity.Log_Id}</td>
+                    <td class="px-4 py-3 text-sm text-slate-700">${activity.Email}</td>
+                    <td class="px-4 py-3 text-sm text-slate-700">
+                        <i class="fas ${icon} ${colorClass} mr-2"></i>${activity.Activity}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-slate-600">${activity.Action_At}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // ==========================================
+    // Management Accessories Functions
+    // ==========================================
+
+    function openMgmtAccessoryModal(accessoryId = null) {
+        const modal = document.getElementById('mgmt-accessory-modal');
+        const form = document.getElementById('mgmt-accessory-form');
+        const modalTitle = document.getElementById('mgmt-accessory-modal-title');
+        
+        // Reset form
+        form.reset();
+        document.getElementById('mgmt-accessory-id').value = '';
+        document.getElementById('mgmt-accessory-active').checked = true;
+        
+        if (accessoryId) {
+            modalTitle.textContent = 'Edit Accessory';
+            const accessory = allAccessories.find(acc => acc.Accessory_Id === accessoryId);
+            if (accessory) {
+                document.getElementById('mgmt-accessory-id').value = accessory.Accessory_Id;
+                document.getElementById('mgmt-accessory-name').value = accessory.Accessory_Name;
+                document.getElementById('mgmt-accessory-desc').value = accessory.Accessory_Desc || '';
+                document.getElementById('mgmt-accessory-total-qty').value = accessory.Total_Qty;
+                document.getElementById('mgmt-accessory-available-qty').value = accessory.Available_Qty;
+                document.getElementById('mgmt-accessory-active').checked = accessory.Active;
+            }
+        } else {
+            modalTitle.textContent = 'Create Accessory';
+        }
+        
+        // Load items for selection
+        loadItemsForMgmtSelection(accessoryId);
+        
+        modal.classList.remove('hidden');
+    }
+
+    function closeMgmtAccessoryModal() {
+        document.getElementById('mgmt-accessory-modal').classList.add('hidden');
+    }
+
+    function loadItemsForMgmtSelection(accessoryId = null) {
+        const container = document.getElementById('mgmt-item-selection-container');
+        container.innerHTML = '<div class="text-center py-2 col-span-full text-slate-500"><i class="fas fa-spinner fa-spin"></i> Loading items...</div>';
+        
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                const items = response.data || [];
+                
+                if (items.length === 0) {
+                    container.innerHTML = '<div class="text-center py-2 col-span-full text-slate-500">No items available</div>';
+                    hideLoader();
+                    return;
+                }
+                
+                // Get linked item IDs for this accessory
+                let linkedItemIds = [];
+                if (accessoryId) {
+                    const accessory = allAccessories.find(a => a.Accessory_Id === accessoryId);
+                    linkedItemIds = accessory ? (accessory.Item_Ids || []) : [];
+                }
+                
+                // Render checkboxes
+                container.innerHTML = items.map(item => {
+                    const isChecked = linkedItemIds.includes(item.Item_Id);
+                    return `
+                        <label class="flex items-center gap-2 p-2 rounded cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" name="mgmt-item-selection" value="${item.Item_Id}" ${isChecked ? 'checked' : ''}
+                                class="w-4 h-4 text-blue-600 rounded">
+                            <span class="text-sm text-slate-700">${item.Item_Name}</span>
+                        </label>
+                    `;
+                }).join('');
+                
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                container.innerHTML = '<div class="text-center py-2 col-span-full text-red-500">Error loading items</div>';
+                console.error('Error loading items:', error);
+                hideLoader();
+            })
+            .loadItems('', 'ALL', 1, 1000);
+    }
+
+    function saveMgmtAccessory(event) {
+        event.preventDefault();
+        
+        // Collect selected item IDs
+        const selectedCheckboxes = document.querySelectorAll('input[name="mgmt-item-selection"]:checked');
+        const selectedItemIds = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
+        
+        const accessoryId = document.getElementById('mgmt-accessory-id').value;
+        const accessoryData = {
+            Item_Ids: selectedItemIds,
+            Accessory_Name: document.getElementById('mgmt-accessory-name').value,
+            Accessory_Desc: document.getElementById('mgmt-accessory-desc').value,
+            Total_Qty: parseInt(document.getElementById('mgmt-accessory-total-qty').value),
+            Available_Qty: parseInt(document.getElementById('mgmt-accessory-available-qty').value),
+            Active: document.getElementById('mgmt-accessory-active').checked
+        };
+        
+        showLoader();
+        
+        if (accessoryId) {
+            // Update
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        Swal.fire('Success', 'Accessory updated successfully', 'success');
+                        closeMgmtAccessoryModal();
+                        loadManagementAccessories();
+                    } else {
+                        Swal.fire('Error', 'Error: ' + response.message, 'error');
+                        hideLoader();
+                    }
+                })
+                .withFailureHandler((error) => {
+                    Swal.fire('Error', 'Error: ' + error.message, 'error');
+                    hideLoader();
+                })
+                .updateAccessory(parseInt(accessoryId), accessoryData, currentSession.email);
+        } else {
+            // Create
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        Swal.fire('Success', 'Accessory created successfully', 'success');
+                        closeMgmtAccessoryModal();
+                        loadManagementAccessories();
+                    } else {
+                        Swal.fire('Error', 'Error: ' + response.message, 'error');
+                        hideLoader();
+                    }
+                })
+                .withFailureHandler((error) => {
+                    Swal.fire('Error', 'Error: ' + error.message, 'error');
+                    hideLoader();
+                })
+                .createAccessory(accessoryData, currentSession.email);
+        }
+    }
+
+    function deleteMgmtAccessoryConfirm(accessoryId, accessoryName) {
+        Swal.fire({
+            title: 'Confirm Delete',
+            text: `Are you sure you want to delete "${accessoryName}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            showLoader();
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        Swal.fire('Deleted!', 'Accessory deleted successfully', 'success');
+                        loadManagementAccessories();
+                    } else {
+                        Swal.fire('Error', 'Error: ' + response.message, 'error');
+                        hideLoader();
+                    }
+                })
+                .withFailureHandler((error) => {
+                    Swal.fire('Error', 'Error: ' + error.message, 'error');
+                    hideLoader();
+                })
+                .deleteAccessory(accessoryId, currentSession.email);
+        });
+    }
+
+    // ==========================================
+    // Accessories Page Functions (separate from Management)
+    // ==========================================
+
+    function openStandaloneAccessoryForm(accessoryId = null) {
+        const form = document.getElementById('standalone-accessory-form');
+        const formTitle = document.getElementById('standalone-form-title');
+        
+        // Reset form
+        document.getElementById('standalone-accessory-form-content').reset();
+        document.getElementById('standalone-accessory-id').value = '';
+        document.getElementById('standalone-accessory-active').checked = true;
+        
+        if (accessoryId) {
+            formTitle.textContent = 'Edit Accessory';
+            // Load accessory data
+            const accessory = allAccessories.find(acc => acc.Accessory_Id === accessoryId);
+            if (accessory) {
+                document.getElementById('standalone-accessory-id').value = accessory.Accessory_Id;
+                document.getElementById('standalone-accessory-name').value = accessory.Accessory_Name;
+                document.getElementById('standalone-accessory-desc').value = accessory.Accessory_Desc || '';
+                document.getElementById('standalone-accessory-total-qty').value = accessory.Total_Qty;
+                document.getElementById('standalone-accessory-available-qty').value = accessory.Available_Qty;
+                document.getElementById('standalone-accessory-active').checked = accessory.Active;
+            }
+        } else {
+            formTitle.textContent = 'Create New Accessory';
+        }
+        
+        // Load items for selection
+        loadItemsForStandaloneSelection(accessoryId);
+        form.classList.remove('hidden');
+        form.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeStandaloneAccessoryForm() {
+        document.getElementById('standalone-accessory-form').classList.add('hidden');
+    }
+
+    function loadItemsForStandaloneSelection(accessoryId) {
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                const container = document.getElementById('standalone-item-selection-container');
+                const items = response.data || [];
+                
+                // Get linked item IDs for this accessory
+                let linkedItemIds = [];
+                if (accessoryId) {
+                    const accessory = allAccessories.find(acc => acc.Accessory_Id === accessoryId);
+                    linkedItemIds = accessory ? accessory.Item_Ids : [];
+                }
+                
+                container.innerHTML = items.map(item => `
+                    <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-100 cursor-pointer">
+                        <input type="checkbox" name="item-selection-standalone" value="${item.Item_Id}" 
+                            ${linkedItemIds.includes(item.Item_Id) ? 'checked' : ''} 
+                            class="w-4 h-4 text-blue-600 rounded">
+                        <span class="text-sm text-slate-700">${item.Item_Name}</span>
+                    </label>
+                `).join('');
+                
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                console.error('Error loading items:', error);
+                hideLoader();
+            })
+            .loadItems(1, 1000, '', 'ALL'); // Load all items
+    }
+
+    function saveStandaloneAccessory(event) {
+        event.preventDefault();
+        
+        const accessoryId = document.getElementById('standalone-accessory-id').value;
+        const accessoryName = document.getElementById('standalone-accessory-name').value;
+        const accessoryDesc = document.getElementById('standalone-accessory-desc').value;
+        const totalQty = parseInt(document.getElementById('standalone-accessory-total-qty').value);
+        const availableQty = parseInt(document.getElementById('standalone-accessory-available-qty').value);
+        const active = document.getElementById('standalone-accessory-active').checked;
+        
+        // Get selected items
+        const selectedCheckboxes = document.querySelectorAll('input[name="item-selection-standalone"]:checked');
+        const selectedItemIds = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
+        
+        const accessoryData = {
+            Accessory_Id: accessoryId || null,
+            Accessory_Name: accessoryName,
+            Accessory_Desc: accessoryDesc,
+            Total_Qty: totalQty,
+            Available_Qty: availableQty,
+            Active: active,
+            Item_Ids: selectedItemIds
+        };
+        
+        showLoader();
+        
+        if (accessoryId) {
+            // Update existing accessory
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        Swal.fire('Success', 'Accessory updated successfully', 'success');
+                        closeStandaloneAccessoryForm();
+                        loadAccessoriesList();
+                    } else {
+                        Swal.fire('Error', response.message || 'Failed to update accessory', 'error');
+                    }
+                    hideLoader();
+                })
+                .withFailureHandler((error) => {
+                    Swal.fire('Error', error.message || 'Failed to update accessory', 'error');
+                    hideLoader();
+                })
+                .updateAccessory(parseInt(accessoryId), accessoryData, currentSession.email);
+        } else {
+            // Create new accessory
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        Swal.fire('Success', 'Accessory created successfully', 'success');
+                        closeStandaloneAccessoryForm();
+                        loadAccessoriesList();
+                    } else {
+                        Swal.fire('Error', response.message || 'Failed to create accessory', 'error');
+                    }
+                    hideLoader();
+                })
+                .withFailureHandler((error) => {
+                    Swal.fire('Error', error.message || 'Failed to create accessory', 'error');
+                    hideLoader();
+                })
+                .createAccessory(accessoryData, currentSession.email);
+        }
+    }
+
+    function loadAccessoriesList() {
+        showLoader();
+        google.script.run
+            .withSuccessHandler((response) => {
+                if (response.success) {
+                    allAccessories = response.data;
+                    renderAccessoriesList(response.data);
+                } else {
+                    Swal.fire('Error', response.message || 'Failed to load accessories', 'error');
+                }
+                hideLoader();
+            })
+            .withFailureHandler((error) => {
+                Swal.fire('Error', error.message || 'Failed to load accessories', 'error');
+                hideLoader();
+            })
+            .loadAccessories([], true);
+    }
+
+    function renderAccessoriesList(accessories) {
+        const tbody = document.getElementById('accessories-list-tbody');
+        
+        if (!accessories || accessories.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="px-6 py-8 text-center text-slate-500">
+                        <i class="fas fa-inbox text-4xl mb-2"></i>
+                        <p>No accessories found</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = accessories.map(accessory => {
+            const linkedItems = accessory.Item_Names || [];
+            const linkedItemsDisplay = linkedItems.length > 0 
+                ? linkedItems.join(', ') 
+                : '<span class="text-slate-400">No items linked</span>';
+            
+            const statusBadge = accessory.Active 
+                ? '<span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">Active</span>'
+                : '<span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Inactive</span>';
+            
+            return `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">${accessory.Accessory_Id}</td>
+                    <td class="px-4 py-3 text-sm text-slate-800 font-medium">${accessory.Accessory_Name}</td>
+                    <td class="px-4 py-3 text-sm text-slate-600">${accessory.Accessory_Desc || '-'}</td>
+                    <td class="px-4 py-3 text-sm text-center text-slate-700">
+                        <span class="font-semibold">${accessory.Available_Qty}</span> / ${accessory.Total_Qty}
+                    </td>
+                    <td class="px-4 py-3 text-xs text-slate-600">${linkedItemsDisplay}</td>
+                    <td class="px-4 py-3 text-center">${statusBadge}</td>
+                    <td class="px-4 py-3 text-center">
+                        <div class="flex justify-center gap-2">
+                            <button onclick="openStandaloneAccessoryForm(${accessory.Accessory_Id})" 
+                                class="px-3 py-1 text-sm font-medium text-blue-600 transition bg-blue-100 rounded hover:bg-blue-200">
+                                <i class="fas fa-edit mr-1"></i>Edit
+                            </button>
+                            <button onclick="deleteAccessoryConfirm(${accessory.Accessory_Id}, '${accessory.Accessory_Name}')" 
+                                class="px-3 py-1 text-sm font-medium text-red-600 transition bg-red-100 rounded hover:bg-red-200">
+                                <i class="fas fa-trash mr-1"></i>Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function deleteAccessoryConfirm(accessoryId, accessoryName) {
+        Swal.fire({
+            title: 'Confirm Delete',
+            text: `Are you sure you want to delete accessory "${accessoryName}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+            
+            showLoader();
+            google.script.run
+                .withSuccessHandler((response) => {
+                    if (response.success) {
+                        Swal.fire('Success', 'Accessory deleted successfully', 'success');
+                        loadAccessoriesList();
+                    } else {
+                        Swal.fire('Error', response.message || 'Failed to delete accessory', 'error');
+                    }
+                    hideLoader();
+                })
+                .withFailureHandler((error) => {
+                    Swal.fire('Error', error.message || 'Failed to delete accessory', 'error');
+                    hideLoader();
+                })
+                .deleteAccessory(accessoryId, currentSession.email);
+        });
     }
 
 

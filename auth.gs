@@ -120,7 +120,7 @@ function login(email, password) {
             now
         ]);
 
-        auditLog(`User ${email} logged in`);
+        logSystemActivity(`User ${email} logged in`, email);
 
         return {
             success: true,
@@ -220,8 +220,9 @@ function logout(sessionId) {
         // Find and delete session
         for (let i = 1; i < sessionData.length; i++) {
             if (sessionData[i][0] == sessionId) {
+                const userEmail = sessionData[i][1];
                 sessionSheet.deleteRow(i + 1);
-                auditLog(`User ${sessionData[i][1]} logged out`);
+                logSystemActivity(`User ${userEmail} logged out`, userEmail);
                 return { success: true, message: "Logged out successfully" };
             }
         }

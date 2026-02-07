@@ -1,0 +1,32 @@
+Accessory_Id,Accessory_Name,Accessory_Desc,Total_Qty,Available_Qty,Active,Created_By,Created_At,Modified_By,Modified_At
+1,stirrering proppeller 104mm,,1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+2,stirrering prop. intensive 104mm,,1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+3,stirrering propeller 94mm,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+4,Dosing unit 2 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+5,Dosing unit 10 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+6,Dosing unit 20 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+7,Dosing unit 50 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+8,OMNIS Dosing 10 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+9,OMNIS Dosing 20 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+10,Dosing unit 10 mL,6.1580.210,5,3,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+11,Dosing unit 20 mL,6.1580.220,2,2,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+12,Dosing unit 2 mL,6.1580.120,2,2,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+13,Dosing unit 50 mL,6.1580.250,2,2,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+14,Holding clip for bottles,6.2043.005,24,23,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+15,Power cable,สายPower ต่อกับเครื่อง,38,37,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+16,Controller cable,สาย controller เชื่อม software กับตัวเครื่อง,4,3,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+17,SET PC OMNIS,"CPU, Keyboard, mouse, power cable, Screen",1,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+18,Rod stand + lock camp,แท่งเหล็ก + ตัวล็อค,39,38,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+19,Magnetic bar,มีน้อยใช้สอยอย่างประหยัด,14,13,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+20,Electrode holder,6.2021.020 Electrode holder for 4 electrodes and 2 buret tips,6,5,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+21,SET Tubing for Dosing unit,"1 Tubing, Tip, Microvalve",10,9,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+22,Brown glass bottle,ขวดเปล่า,15,14,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+23,Electrod cable /1 m /F,,11,10,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+24,2 Lan cable + Hub box + 1 Hub Power cacle,สายแลนเหลือง 2 + กล่อง Hub + สายชาร์จ Hub,1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+25,OMNIS Dosing unit 10 mL,6.01508.210,3,3,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+26,OMNIS Dosing unit 20 mL,6.01508.220,2,2,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+27,OMNIS Holder,,3,3,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+28,OMNIS Molecular sieve with Cap,,3,3,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+29,Red cable OMNIS,สายสีแดงใช้กับ Temp senser to plug F,1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+30,Blue cable OMNIS,สายสีน้ำเงินใช้กับ Polarized electrode to plug F (เป็นขั้วโลหะและเป็นแง่ง หรือ Pt sheet),1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+31,Green cable OMNIS,สายสีเขียวใช้กับ Electrode ทั่วไป to plug F (ทุกประเภท General),1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
