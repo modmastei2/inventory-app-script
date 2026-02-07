@@ -1,0 +1,29 @@
+Log_Id,Email,Activity,Action_At
+1,system,"Initialized real data: 49 items, 31 accessories, 50 mappings, 2 users",2026-02-05 9:07:41
+2,modmastei2@gmail.com,User modmastei2@gmail.com logged in,2026-02-05 9:08:05
+3,admin@admin.com,User admin@admin.com logged in,2026-02-05 9:10:03
+4,admin@admin.com,User admin@admin.com logged in,2026-02-05 9:13:19
+5,admin@admin.com,User admin@admin.com logged in,2026-02-05 9:15:13
+6,admin@admin.com,User admin@admin.com logged out,2026-02-05 9:17:12
+7,,Admin admin@admin.com created user: warangkana.jenny13@gmail.com,2026-02-05 9:17:40
+8,warangkana.jenny13@gmail.com,User warangkana.jenny13@gmail.com logged in,2026-02-05 9:18:45
+9,warangkana.jenny13@gmail.com,User warangkana.jenny13@gmail.com logged out,2026-02-05 9:21:21
+10,admin@admin.com,User admin@admin.com logged in,2026-02-05 9:21:58
+11,admin@admin.com,User admin@admin.com logged in,2026-02-05 9:23:56
+12,admin@admin.com,User admin@admin.com logged in,2026-02-05 9:27:34
+13,admin@admin.com,User admin@admin.com logged in,2026-02-05 9:29:25
+14,modmastei2@gmail.com,User modmastei2@gmail.com logged in,2026-02-05 9:33:34
+15,admin@admin.com,User admin@admin.com logged in,2026-02-05 9:54:16
+16,admin@admin.com,User admin@admin.com logged in,2026-02-05 9:59:03
+17,modmastei2@gmail.com,User modmastei2@gmail.com logged in,2026-02-05 10:28:59
+18,admin@admin.com,User admin@admin.com logged in,2026-02-05 11:04:37
+19,admin@admin.com,User admin@admin.com logged in,2026-02-05 11:43:04
+20,admin@admin.com,User admin@admin.com logged in,2026-02-05 12:56:13
+21,admin@admin.com,User admin@admin.com logged in,2026-02-05 14:35:42
+22,admin@admin.com,User admin@admin.com logged in,2026-02-05 14:55:39
+23,admin@admin.com,User admin@admin.com logged in,2026-02-06 14:43:43
+24,,Admin admin@admin.com created user: sales@sales.com,2026-02-06 14:55:11
+25,admin@admin.com,User admin@admin.com logged out,2026-02-06 14:55:25
+26,sales@sales.com,User sales@sales.com logged in,2026-02-06 14:56:10
+27,sales@sales.com,User sales@sales.com logged out,2026-02-06 14:57:22
+28,admin@admin.com,User admin@admin.com logged in,2026-02-06 14:58:12

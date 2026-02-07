@@ -1,32 +1,56 @@
 Accessory_Id,Accessory_Name,Accessory_Desc,Total_Qty,Available_Qty,Active,Created_By,Created_At,Modified_By,Modified_At
-1,stirrering proppeller 104mm,,1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-2,stirrering prop. intensive 104mm,,1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-3,stirrering propeller 94mm,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-4,Dosing unit 2 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-5,Dosing unit 10 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-6,Dosing unit 20 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-7,Dosing unit 50 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-8,OMNIS Dosing 10 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-9,OMNIS Dosing 20 mL,,0,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-10,Dosing unit 10 mL,6.1580.210,5,3,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-11,Dosing unit 20 mL,6.1580.220,2,2,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-12,Dosing unit 2 mL,6.1580.120,2,2,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-13,Dosing unit 50 mL,6.1580.250,2,2,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-14,Holding clip for bottles,6.2043.005,24,23,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-15,Power cable,สายPower ต่อกับเครื่อง,38,37,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-16,Controller cable,สาย controller เชื่อม software กับตัวเครื่อง,4,3,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-17,SET PC OMNIS,"CPU, Keyboard, mouse, power cable, Screen",1,0,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-18,Rod stand + lock camp,แท่งเหล็ก + ตัวล็อค,39,38,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-19,Magnetic bar,มีน้อยใช้สอยอย่างประหยัด,14,13,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-20,Electrode holder,6.2021.020 Electrode holder for 4 electrodes and 2 buret tips,6,5,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-21,SET Tubing for Dosing unit,"1 Tubing, Tip, Microvalve",10,9,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-22,Brown glass bottle,ขวดเปล่า,15,14,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-23,Electrod cable /1 m /F,,11,10,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-24,2 Lan cable + Hub box + 1 Hub Power cacle,สายแลนเหลือง 2 + กล่อง Hub + สายชาร์จ Hub,1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-25,OMNIS Dosing unit 10 mL,6.01508.210,3,3,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-26,OMNIS Dosing unit 20 mL,6.01508.220,2,2,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-27,OMNIS Holder,,3,3,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-28,OMNIS Molecular sieve with Cap,,3,3,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-29,Red cable OMNIS,สายสีแดงใช้กับ Temp senser to plug F,1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-30,Blue cable OMNIS,สายสีน้ำเงินใช้กับ Polarized electrode to plug F (เป็นขั้วโลหะและเป็นแง่ง หรือ Pt sheet),1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
-31,Green cable OMNIS,สายสีเขียวใช้กับ Electrode ทั่วไป to plug F (ทุกประเภท General),1,1,TRUE,system,2/5/2026 6:56:58,system,2/5/2026 6:56:58
+1,stirrering proppeller 104mm,,1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 9:37:51
+3,stirrering propeller 96mm,,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 9:35:28
+4,Dosing unit 2 mL for Titrate,6.1580.120,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:07:01
+5,Dosing unit 10 mL for Titrate,6.1580.210,5,5,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:06:32
+6,Dosing unit 20 mL for Titrate,6.1580.220,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:07:24
+7,Dosing unit 50 mL for Titrate,6.1580.250,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:07:45
+8,OMNIS Dosing 10 mL ,6.01503.210,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:12:03
+9,OMNIS Dosing 20 mL,6.01503.220,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:12:40
+14,Holding clip for bottles,6.2043.005,24,24,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:18:01
+15,Power cable,สายPower อย่างเดียวต่อกับเครื่อง,38,38,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:27:43
+16,Controller cable,สาย controller เชื่อม software กับตัวเครื่อง,4,4,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:35:37
+17,SET PC OMNIS,"CPU, Keyboard, mouse, power cable, Screen",1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:38:59
+18,Rod stand + lock camp,แท่งเหล็ก + ตัวล็อค,39,39,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:45:45
+20,Electrode holder,6.2021.020 Electrode holder for 4 electrodes and 2 buret tips,6,6,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:50:08
+21,SET Tubing for Dosing unit,"1 Tubing เขียว, Tip, Microvalve
+1 Tubing ใส+จุกใส, Molecular sieve ",10,10,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 11:08:46
+22,Brown glass bottle,ขวดเปล่า,15,15,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:54:58
+23,Electrod cable /1 m /F,6.2104.020,11,11,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/6/2026 15:24:11
+24,2 Lan cable + Hub box + 1 Hub Power cacle,สายแลนเหลือง 2 + กล่อง Hub + สายชาร์จ Hub,1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 11:09:28
+25,OMNIS Dosing unit 10 mL,6.01508.210,3,3,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 11:22:44
+26,OMNIS Dosing unit 20 mL,6.01508.220,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 11:24:24
+27,OMNIS Holder,,3,3,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 11:27:50
+28,OMNIS Molecular sieve with Cap,,4,4,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/6/2026 17:09:53
+29,"Red Electrode cable plug-in head G (temp.) / plug P, 0.55 m","6.02104.020
+สายแดงใช้กับ temp senser",1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/6/2026 16:35:16
+30,"Blue Electrode cable plug-in head G (pol.) / plug P, 0.55 m","6.02104.040
+สายสีน้ำเงินใช้กับ Polarized electrode to plug F (เป็นขั้วโลหะและเป็นแง่ง หรือ Pt sheet)",2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/6/2026 16:46:03
+31,"Green Electrode cable plug-in head G / plug P, 0.55 m ","6.02104.000
+สายสีเขียวใช้กับ Electrode ทั่วไป to plug F (ทุกประเภท General)",1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/6/2026 16:34:55
+32,Magnetic bar,,14,14,TRUE,admin@admin.com,2/5/2026 9:20:25,admin@admin.com,2/5/2026 9:20:25
+33,Power cable with adapter,สาย Power ที่มี Adapter สำหรับบางเครื่อง เช่น Eco,6,5,TRUE,admin@admin.com,2/5/2026 10:33:52,admin@admin.com,2/6/2026 15:15:31
+34,SET Tubing for Cylinder Unit,"3 Tubing เขียว,+Tip+Microvalve
+1 Tubing ใส+ Cap SET",10,10,TRUE,admin@admin.com,2/5/2026 11:05:30,admin@admin.com,2/5/2026 11:05:30
+35,Exchange unit 5 mL,6.1576.150,1,1,TRUE,admin@admin.com,2/5/2026 14:43:34,admin@admin.com,2/5/2026 14:43:34
+36,Exchange unit 10 mL,6.1576.210,2,2,TRUE,admin@admin.com,2/5/2026 14:47:31,admin@admin.com,2/5/2026 14:51:58
+37,Exchange unit 20 mL,6.1576.220,5,5,TRUE,admin@admin.com,2/5/2026 14:51:31,admin@admin.com,2/5/2026 14:51:31
+38,Exchange unit 50 mL,6.1576.250,1,1,TRUE,admin@admin.com,2/5/2026 14:54:23,admin@admin.com,2/5/2026 14:54:55
+39,Cylinder unit 5 mL,6.1518.150 ,7,5,TRUE,admin@admin.com,2/5/2026 15:04:24,admin@admin.com,2/5/2026 15:04:24
+40,Cylinder unit 10 mL,6.1518.210,13,7,TRUE,admin@admin.com,2/5/2026 15:15:07,admin@admin.com,2/5/2026 15:15:07
+41,Cylinder unit 1 mL,6.1518.110,1,0,TRUE,admin@admin.com,2/5/2026 15:16:57,admin@admin.com,2/5/2026 15:16:57
+42,Cylinder unit 20 mL,6.1518.220,20,6,TRUE,admin@admin.com,2/5/2026 15:19:08,admin@admin.com,2/5/2026 15:19:08
+43,Cylinder unit 50 mL,6.1518.250,1,1,TRUE,admin@admin.com,2/5/2026 15:21:57,admin@admin.com,2/5/2026 15:21:57
+44,Electrode cable /1 m /H,6.2104.120,15,15,TRUE,admin@admin.com,2/6/2026 15:41:50,admin@admin.com,2/6/2026 15:47:30
+45,"Electrode cable 1 m, 2xB",6.2104.080,3,3,TRUE,admin@admin.com,2/6/2026 15:45:25,admin@admin.com,2/6/2026 15:47:58
+46,Strand / 1 m / 2 x B (banana),6.2106.020,7,7,TRUE,admin@admin.com,2/6/2026 15:48:59,admin@admin.com,2/6/2026 15:50:30
+47,854 iConnect,2.854.0010,2,2,TRUE,admin@admin.com,2/6/2026 16:08:50,admin@admin.com,2/6/2026 16:08:50
+48,"Electrode cable 2 m, 2 x 2 mm (temp senser)",6.2104.150,3,3,TRUE,admin@admin.com,2/6/2026 16:10:48,admin@admin.com,2/6/2026 16:10:48
+49,Connect cable for 703 stirrer 0.5 m,6.2108.100,1,1,TRUE,admin@admin.com,2/6/2026 16:15:34,admin@admin.com,2/6/2026 16:20:54
+50,Electrode cable / 1 m / RM,"6.2104.130
+With RM plug. For connecting electrodes with plug-in head G - Radiometer instruments",1,1,TRUE,admin@admin.com,2/6/2026 16:22:42,admin@admin.com,2/6/2026 16:22:42
+51,Adaptor USB Mini (OTG) - USB A ,6.2151.100,1,1,TRUE,admin@admin.com,2/6/2026 16:25:23,admin@admin.com,2/6/2026 16:25:23
+52,Cable MDL PL/SO 0.5 m,6.02102.010,1,1,TRUE,admin@admin.com,2/6/2026 16:38:34,admin@admin.com,2/6/2026 16:38:34
+53,Cable MDL PL/SO 1 m,"6.02102.020
+
+",1,1,TRUE,admin@admin.com,2/6/2026 16:39:20,admin@admin.com,2/6/2026 16:39:20

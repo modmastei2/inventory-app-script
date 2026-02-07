@@ -1,0 +1,232 @@
+Log_Id,Email,Activity,Action_At
+1,,Admin admin@admin.com created accessory: Magnetic bar (ID: 32),2026-02-05 9:20:25
+2,,Admin admin@admin.com deleted accessory ID: 2,2026-02-05 9:24:43
+3,,Admin admin@admin.com updated accessory ID: 3,2026-02-05 9:35:29
+4,,Admin admin@admin.com updated accessory ID: 1,2026-02-05 9:36:08
+5,,Admin admin@admin.com updated accessory ID: 1,2026-02-05 9:37:53
+6,,Admin admin@admin.com updated accessory ID: 4,2026-02-05 9:42:39
+7,,Admin admin@admin.com updated accessory ID: 5,2026-02-05 9:43:46
+8,,Admin admin@admin.com updated accessory ID: 6,2026-02-05 9:54:40
+9,,Admin admin@admin.com updated accessory ID: 7,2026-02-05 9:55:23
+10,,Admin admin@admin.com updated accessory ID: 8,2026-02-05 9:57:03
+11,,Admin admin@admin.com created item: Ag brominate Titrode (ID: 94),2026-02-05 10:00:59
+12,,Admin admin@admin.com deleted item ID: 54,2026-02-05 10:02:17
+13,,Admin admin@admin.com deleted item ID: 53,2026-02-05 10:02:54
+14,,Admin admin@admin.com deleted item ID: 56,2026-02-05 10:03:04
+15,,Admin admin@admin.com deleted item ID: 57,2026-02-05 10:03:16
+16,,Admin admin@admin.com deleted item ID: 55,2026-02-05 10:03:29
+17,,Admin admin@admin.com updated accessory ID: 9,2026-02-05 10:04:12
+18,,Admin admin@admin.com updated accessory ID: 5,2026-02-05 10:06:33
+19,,Admin admin@admin.com updated item ID: 51,2026-02-05 10:06:54
+20,,Admin admin@admin.com updated accessory ID: 4,2026-02-05 10:07:02
+21,,Admin admin@admin.com updated accessory ID: 6,2026-02-05 10:07:24
+22,,Admin admin@admin.com updated accessory ID: 7,2026-02-05 10:07:45
+23,,Admin admin@admin.com deleted accessory ID: 10,2026-02-05 10:08:07
+24,,Admin admin@admin.com updated item ID: 51,2026-02-05 10:08:16
+25,,Admin admin@admin.com deleted accessory ID: 11,2026-02-05 10:08:18
+26,,Admin admin@admin.com deleted accessory ID: 12,2026-02-05 10:08:26
+27,,Admin admin@admin.com deleted accessory ID: 13,2026-02-05 10:08:37
+28,,Admin admin@admin.com updated item ID: 51,2026-02-05 10:09:19
+29,,Admin admin@admin.com updated item ID: 52,2026-02-05 10:10:43
+30,,Admin admin@admin.com deleted item ID: 58,2026-02-05 10:11:01
+31,,Admin admin@admin.com deleted item ID: 60,2026-02-05 10:11:09
+32,,Admin admin@admin.com updated accessory ID: 8,2026-02-05 10:12:07
+33,,Admin admin@admin.com updated item ID: 59,2026-02-05 10:12:12
+34,,Admin admin@admin.com updated accessory ID: 9,2026-02-05 10:12:44
+35,,Admin admin@admin.com updated item ID: 61,2026-02-05 10:16:34
+36,,Admin admin@admin.com updated accessory ID: 14,2026-02-05 10:18:05
+37,,Admin admin@admin.com updated item ID: 62,2026-02-05 10:18:57
+38,,Admin admin@admin.com deleted item ID: 63,2026-02-05 10:19:15
+39,,Admin admin@admin.com deleted item ID: 64,2026-02-05 10:19:23
+40,,Admin admin@admin.com deleted item ID: 65,2026-02-05 10:19:32
+41,,Admin admin@admin.com updated item ID: 66,2026-02-05 10:21:09
+42,,Admin admin@admin.com updated item ID: 66,2026-02-05 10:21:19
+43,,Admin admin@admin.com deleted item ID: 76,2026-02-05 10:21:40
+44,,Admin admin@admin.com deleted item ID: 77,2026-02-05 10:21:48
+45,,Admin admin@admin.com deleted item ID: 78,2026-02-05 10:21:57
+46,,Admin admin@admin.com updated item ID: 79,2026-02-05 10:25:25
+47,,Admin admin@admin.com deleted item ID: 68,2026-02-05 10:25:48
+48,,Admin admin@admin.com updated item ID: 67,2026-02-05 10:26:58
+49,,Admin admin@admin.com deleted item ID: 69,2026-02-05 10:27:14
+50,,Admin admin@admin.com deleted item ID: 71,2026-02-05 10:27:22
+51,,Admin admin@admin.com deleted item ID: 70,2026-02-05 10:27:33
+52,,Admin admin@admin.com updated accessory ID: 15,2026-02-05 10:27:52
+53,,Admin admin@admin.com updated item ID: 72,2026-02-05 10:29:17
+54,,Admin admin@admin.com updated item ID: 73,2026-02-05 10:32:09
+55,,Admin admin@admin.com deleted item ID: 74,2026-02-05 10:32:26
+56,,Admin admin@admin.com created accessory: Power cable with adapter (ID: 33),2026-02-05 10:33:56
+57,,Admin admin@admin.com updated item ID: 75,2026-02-05 10:34:35
+58,,Admin admin@admin.com updated accessory ID: 16,2026-02-05 10:35:40
+59,,Admin admin@admin.com updated item ID: 80,2026-02-05 10:36:12
+60,,Admin admin@admin.com deleted item ID: 81,2026-02-05 10:36:22
+61,,Admin admin@admin.com updated item ID: 82,2026-02-05 10:37:36
+62,,Admin admin@admin.com updated accessory ID: 17,2026-02-05 10:38:36
+63,,Admin admin@admin.com updated item ID: 83,2026-02-05 10:38:41
+64,,Admin admin@admin.com updated accessory ID: 17,2026-02-05 10:39:08
+65,,Admin admin@admin.com updated item ID: 84,2026-02-05 10:39:55
+66,,Admin admin@admin.com deleted item ID: 85,2026-02-05 10:40:10
+67,,Admin admin@admin.com deleted item ID: 86,2026-02-05 10:40:18
+68,,Admin admin@admin.com updated accessory ID: 18,2026-02-05 10:45:55
+69,,Admin admin@admin.com deleted accessory ID: 19,2026-02-05 10:46:34
+70,,Admin admin@admin.com updated item ID: 87,2026-02-05 10:49:37
+71,,Admin admin@admin.com updated item ID: 87,2026-02-05 10:49:59
+72,,Admin admin@admin.com updated accessory ID: 20,2026-02-05 10:50:16
+73,,Admin admin@admin.com updated item ID: 88,2026-02-05 10:51:38
+74,,Admin admin@admin.com updated item ID: 89,2026-02-05 10:52:54
+75,,Admin admin@admin.com updated item ID: 89,2026-02-05 10:53:03
+76,,Admin admin@admin.com deleted item ID: 91,2026-02-05 10:53:11
+77,,Admin admin@admin.com updated accessory ID: 21,2026-02-05 10:53:14
+78,,Admin admin@admin.com deleted item ID: 92,2026-02-05 10:53:20
+79,,Admin admin@admin.com updated item ID: 90,2026-02-05 10:54:44
+80,,Admin admin@admin.com updated accessory ID: 22,2026-02-05 10:55:06
+81,,Admin admin@admin.com updated accessory ID: 21,2026-02-05 10:56:51
+82,,Admin admin@admin.com updated item ID: 93,2026-02-05 11:00:55
+83,,Admin admin@admin.com updated item ID: 71,2026-02-05 11:05:02
+84,,Admin admin@admin.com deleted item ID: 72,2026-02-05 11:05:25
+85,,Admin admin@admin.com created accessory: SET Tubing for Cylinder Unit (ID: 34),2026-02-05 11:05:32
+86,,Admin admin@admin.com deleted item ID: 73,2026-02-05 11:05:56
+87,,Admin admin@admin.com updated item ID: 74,2026-02-05 11:07:52
+88,,Admin admin@admin.com updated accessory ID: 21,2026-02-05 11:08:47
+89,,Admin admin@admin.com updated item ID: 75,2026-02-05 11:08:53
+90,,Admin admin@admin.com updated accessory ID: 24,2026-02-05 11:09:30
+91,,Admin admin@admin.com updated accessory ID: 25,2026-02-05 11:22:47
+92,,Admin admin@admin.com updated accessory ID: 26,2026-02-05 11:24:27
+93,,Admin admin@admin.com updated accessory ID: 27,2026-02-05 11:27:52
+94,,Admin admin@admin.com updated accessory ID: 28,2026-02-05 11:28:26
+95,,Admin admin@admin.com updated accessory ID: 29,2026-02-05 11:30:05
+96,,Admin admin@admin.com updated accessory ID: 29,2026-02-05 11:39:36
+97,,Admin admin@admin.com updated item ID: 76,2026-02-05 11:42:33
+98,,Admin admin@admin.com updated accessory ID: 30,2026-02-05 11:42:38
+99,,Admin admin@admin.com updated item ID: 77,2026-02-05 11:44:41
+100,,Admin admin@admin.com updated accessory ID: 31,2026-02-05 11:46:09
+101,,Admin admin@admin.com updated item ID: 78,2026-02-05 11:46:35
+102,,Admin admin@admin.com deleted item ID: 80,2026-02-05 11:47:04
+103,,Admin admin@admin.com updated item ID: 79,2026-02-05 11:51:12
+104,,Admin admin@admin.com updated item ID: 81,2026-02-05 11:52:38
+105,,Admin admin@admin.com updated item ID: 10,2026-02-05 11:52:59
+106,,Admin admin@admin.com updated item ID: 81,2026-02-05 11:54:20
+107,,Admin admin@admin.com updated item ID: 14,2026-02-05 11:54:58
+108,,Admin admin@admin.com updated item ID: 82,2026-02-05 11:55:00
+109,,Admin admin@admin.com updated item ID: 82,2026-02-05 11:57:23
+110,,Admin admin@admin.com updated item ID: 17,2026-02-05 11:57:24
+111,,Admin admin@admin.com updated item ID: 83,2026-02-05 12:55:49
+112,,Admin admin@admin.com updated item ID: 84,2026-02-05 12:57:46
+113,,Admin admin@admin.com updated item ID: 85,2026-02-05 12:59:50
+114,,Admin admin@admin.com updated item ID: 86,2026-02-05 13:07:55
+115,,Admin admin@admin.com updated item ID: 87,2026-02-05 14:32:22
+116,,Admin admin@admin.com deleted item ID: 88,2026-02-05 14:32:32
+117,,Admin admin@admin.com updated item ID: 89,2026-02-05 14:35:03
+118,,Admin admin@admin.com updated item ID: 90,2026-02-05 14:37:01
+119,,Admin admin@admin.com created item: Exchange Unit 5 mL (ID: 174),2026-02-05 14:37:14
+120,,Admin admin@admin.com deleted item ID: 174,2026-02-05 14:37:47
+121,,Admin admin@admin.com updated item ID: 91,2026-02-05 14:38:47
+122,,Admin admin@admin.com updated item ID: 92,2026-02-05 14:40:31
+123,,Admin admin@admin.com updated item ID: 93,2026-02-05 14:42:06
+124,,Admin admin@admin.com deleted item ID: 94,2026-02-05 14:42:46
+125,,Admin admin@admin.com created accessory: Exchange unit 5 mL (ID: 35),2026-02-05 14:43:37
+126,,Admin admin@admin.com updated item ID: 95,2026-02-05 14:44:41
+127,,Admin admin@admin.com updated item ID: 96,2026-02-05 14:45:42
+128,,Admin admin@admin.com created accessory: Exchange unit 5 mL (ID: 36),2026-02-05 14:47:33
+129,,Admin admin@admin.com updated item ID: 97,2026-02-05 14:47:36
+130,,Admin admin@admin.com updated accessory ID: 36,2026-02-05 14:48:16
+131,,Admin admin@admin.com updated item ID: 98,2026-02-05 14:50:18
+132,,Admin admin@admin.com created accessory: Exchange unit 20 mL (ID: 37),2026-02-05 14:51:35
+133,,Admin admin@admin.com updated accessory ID: 36,2026-02-05 14:52:02
+134,,Admin admin@admin.com updated item ID: 99,2026-02-05 14:52:48
+135,,Admin admin@admin.com deleted item ID: 100,2026-02-05 14:53:00
+136,,Admin admin@admin.com created accessory: Exchange unit 50 mL (ID: 38),2026-02-05 14:54:25
+137,,Admin admin@admin.com updated accessory ID: 38,2026-02-05 14:54:59
+138,,Admin admin@admin.com deleted item ID: 101,2026-02-05 14:59:42
+139,,Admin admin@admin.com updated item ID: 102,2026-02-05 15:01:24
+140,,Admin admin@admin.com updated item ID: 103,2026-02-05 15:03:07
+141,,Admin admin@admin.com deleted item ID: 104,2026-02-05 15:03:42
+142,,Admin admin@admin.com created accessory: Cylinder unit 5 mL (ID: 39),2026-02-05 15:04:27
+143,,Admin admin@admin.com updated item ID: 105,2026-02-05 15:05:23
+144,,Admin admin@admin.com updated item ID: 105,2026-02-05 15:07:23
+145,,Admin admin@admin.com updated item ID: 106,2026-02-05 15:08:21
+146,,Admin admin@admin.com deleted item ID: 107,2026-02-05 15:08:40
+147,,Admin admin@admin.com updated item ID: 108,2026-02-05 15:12:45
+148,,Admin admin@admin.com updated item ID: 109,2026-02-05 15:14:17
+149,,Admin admin@admin.com created accessory: Cylinder unit 10 mL (ID: 40),2026-02-05 15:15:10
+150,,Admin admin@admin.com deleted item ID: 110,2026-02-05 15:15:28
+151,,Admin admin@admin.com created accessory: Cylinder unit 1 mL (ID: 41),2026-02-05 15:17:00
+152,,Admin admin@admin.com updated item ID: 111,2026-02-05 15:18:01
+153,,Admin admin@admin.com deleted item ID: 112,2026-02-05 15:18:14
+154,,Admin admin@admin.com created accessory: Cylinder unit 20 mL (ID: 42),2026-02-05 15:19:10
+155,,Admin admin@admin.com updated item ID: 113,2026-02-05 15:19:23
+156,,Admin admin@admin.com deleted item ID: 114,2026-02-05 15:19:33
+157,,Admin admin@admin.com created accessory: Cylinder unit 50 mL (ID: 43),2026-02-05 15:22:01
+158,,Admin admin@admin.com updated item ID: 115,2026-02-06 9:48:36
+159,,Admin admin@admin.com deleted item ID: 116,2026-02-06 9:49:12
+160,,Admin admin@admin.com deleted item ID: 117,2026-02-06 9:49:19
+161,,Admin admin@admin.com updated item ID: 118,2026-02-06 9:54:07
+162,,Admin admin@admin.com deleted item ID: 119,2026-02-06 14:36:42
+163,,Admin admin@admin.com deleted item ID: 102,2026-02-06 14:37:50
+164,,Admin admin@admin.com updated item ID: 120,2026-02-06 14:40:18
+165,,Admin admin@admin.com updated item ID: 121,2026-02-06 14:42:06
+166,,Admin admin@admin.com deleted item ID: 122,2026-02-06 14:44:04
+167,,Admin admin@admin.com deleted item ID: 123,2026-02-06 14:44:55
+168,,Admin admin@admin.com updated item ID: 124,2026-02-06 14:48:29
+169,,Admin admin@admin.com updated item ID: 125,2026-02-06 14:50:45
+170,,Admin admin@admin.com deleted item ID: 126,2026-02-06 14:50:56
+171,,Admin admin@admin.com updated item ID: 127,2026-02-06 14:54:54
+172,,Admin admin@admin.com updated item ID: 128,2026-02-06 14:56:09
+173,,Admin admin@admin.com updated item ID: 129,2026-02-06 14:57:57
+174,,Admin admin@admin.com deleted item ID: 130,2026-02-06 14:58:37
+175,,Admin admin@admin.com deleted item ID: 131,2026-02-06 14:58:45
+176,,Admin admin@admin.com deleted item ID: 132,2026-02-06 14:58:52
+177,,Admin admin@admin.com deleted item ID: 133,2026-02-06 14:58:58
+178,,Admin admin@admin.com updated item ID: 134,2026-02-06 15:00:30
+179,,Admin admin@admin.com deleted item ID: 135,2026-02-06 15:02:13
+180,,Admin admin@admin.com deleted item ID: 136,2026-02-06 15:02:20
+181,,Admin admin@admin.com deleted item ID: 137,2026-02-06 15:02:29
+182,,Admin admin@admin.com deleted item ID: 138,2026-02-06 15:02:36
+183,,Admin admin@admin.com deleted item ID: 139,2026-02-06 15:02:43
+184,,Admin admin@admin.com updated item ID: 140,2026-02-06 15:04:34
+185,,Admin admin@admin.com deleted item ID: 141,2026-02-06 15:04:46
+186,,Admin admin@admin.com updated item ID: 6,2026-02-06 15:04:59
+187,,Admin admin@admin.com updated item ID: 6,2026-02-06 15:05:16
+188,,Admin admin@admin.com updated item ID: 142,2026-02-06 15:06:01
+189,,Admin admin@admin.com created item: 804 Ti stand (ID: 174),2026-02-06 15:08:31
+190,,Admin admin@admin.com updated item ID: 143,2026-02-06 15:10:18
+191,,Admin admin@admin.com deleted item ID: 145,2026-02-06 15:10:28
+192,,Admin admin@admin.com deleted item ID: 146,2026-02-06 15:10:36
+193,,Admin admin@admin.com deleted item ID: 144,2026-02-06 15:11:38
+194,,Admin admin@admin.com updated item ID: 147,2026-02-06 15:13:35
+195,,Admin admin@admin.com updated item ID: 148,2026-02-06 15:15:00
+196,,Admin admin@admin.com updated item ID: 148,2026-02-06 15:16:59
+197,,Admin admin@admin.com updated item ID: 149,2026-02-06 15:19:07
+198,,Admin admin@admin.com updated item ID: 150,2026-02-06 15:20:48
+199,,Admin admin@admin.com updated item ID: 151,2026-02-06 15:22:17
+200,,Admin admin@admin.com updated item ID: 153,2026-02-06 15:24:34
+201,,Admin admin@admin.com updated accessory ID: 23,2026-02-06 15:24:35
+202,,Admin admin@admin.com deleted item ID: 154,2026-02-06 15:24:46
+203,,Admin admin@admin.com updated accessory ID: 29,2026-02-06 15:26:06
+204,,Admin admin@admin.com updated accessory ID: 30,2026-02-06 15:27:50
+205,,Admin admin@admin.com updated accessory ID: 31,2026-02-06 15:36:04
+206,,Admin admin@admin.com created accessory: Electrod cable /1 m /H (ID: 44),2026-02-06 15:41:50
+207,,"Admin admin@admin.com created accessory: Electrode cable 1 m, 2xB (ID: 45)",2026-02-06 15:45:24
+208,,Admin admin@admin.com updated accessory ID: 44,2026-02-06 15:47:30
+209,,Admin admin@admin.com updated accessory ID: 45,2026-02-06 15:47:58
+210,,Admin admin@admin.com created accessory: Strand / 1 m / 2 x B (banana) (ID: 46),2026-02-06 15:48:58
+211,,Admin admin@admin.com updated accessory ID: 46,2026-02-06 15:50:30
+212,,Admin admin@admin.com created accessory: 854 iConnect (ID: 47),2026-02-06 16:08:49
+213,,"Admin admin@admin.com created accessory: Electrode cable 2 m, 2 x 2 mm (temp senser) (ID: 48)",2026-02-06 16:10:48
+214,,Admin admin@admin.com created accessory: Connect cable for 703 stirrer 0.5 M (ID: 49),2026-02-06 16:15:33
+215,,Admin admin@admin.com updated accessory ID: 49,2026-02-06 16:20:55
+216,,Admin admin@admin.com created accessory: Electrode cable / 1 m / RM (ID: 50),2026-02-06 16:22:42
+217,,Admin admin@admin.com created accessory: Adaptor USB Mini (OTG) - USB A  (ID: 51),2026-02-06 16:25:23
+218,,Admin admin@admin.com updated accessory ID: 29,2026-02-06 16:26:28
+219,,Admin admin@admin.com updated accessory ID: 29,2026-02-06 16:27:06
+220,,Admin admin@admin.com updated accessory ID: 31,2026-02-06 16:27:36
+221,,Admin admin@admin.com updated accessory ID: 30,2026-02-06 16:28:12
+222,,Admin admin@admin.com updated accessory ID: 29,2026-02-06 16:29:49
+223,,Admin admin@admin.com updated accessory ID: 29,2026-02-06 16:30:21
+224,,Admin admin@admin.com updated accessory ID: 29,2026-02-06 16:33:49
+225,,Admin admin@admin.com updated accessory ID: 30,2026-02-06 16:34:17
+226,,Admin admin@admin.com updated accessory ID: 31,2026-02-06 16:34:55
+227,,Admin admin@admin.com updated accessory ID: 29,2026-02-06 16:35:16
+228,,Admin admin@admin.com created accessory: Cable MDL PL/SO 0.5 m (ID: 52),2026-02-06 16:38:36
+229,,Admin admin@admin.com created accessory: Cable MDL PL/SO 1 m (ID: 53),2026-02-06 16:39:20
+230,,Admin admin@admin.com updated accessory ID: 30,2026-02-06 16:46:03
+231,,Admin admin@admin.com updated accessory ID: 28,2026-02-06 17:09:56
