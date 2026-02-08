@@ -164,7 +164,7 @@ function validateSession(sessionId, sessionToken) {
 
                 const email = sessionData[i][1];
 
-                // Get latest permission from Users sheet
+                // Get latest permission and active status from Users sheet
                 const userSheet = ss.getSheetByName(USER_SHEET_NAME);
                 if (!userSheet) {
                     return { valid: false, message: "User sheet not found" };
@@ -174,14 +174,25 @@ function validateSession(sessionId, sessionToken) {
                 const userHeaders = userData[0];
                 const emailCol = userHeaders.indexOf("Email");
                 const permissionCol = userHeaders.indexOf("Permission");
+                const activeCol = userHeaders.indexOf("Active");
 
                 let currentPermission = 'Guest';
+                let isActive = false;
                 const normalizedEmail = email.toLowerCase();
+                
                 for (let j = 1; j < userData.length; j++) {
                     if (userData[j][emailCol].toLowerCase() === normalizedEmail) {
                         currentPermission = userData[j][permissionCol] || 'Guest';
+                        isActive = userData[j][activeCol] === true || userData[j][activeCol] === 'TRUE';
                         break;
                     }
+                }
+
+                // Check if user is still active
+                if (!isActive) {
+                    // Delete session for inactive user
+                    sessionSheet.deleteRow(i + 1);
+                    return { valid: false, message: "Account has been deactivated. Please contact administrator." };
                 }
 
                 // Update last activity and permission in session
