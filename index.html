@@ -1246,12 +1246,11 @@
                             class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
                     </div>
 
-                    <div>
-                        <label class="block mb-2 text-sm font-medium text-slate-700">Available Quantity <span
-                                class="text-red-500">*</span></label>
-                        <input type="number" id="item-available-qty" required min="0"
+                    <!-- <div>
+                        <label class="block mb-2 text-sm font-medium text-slate-700">Available Quantity </label>
+                        <input type="number" id="item-available-qty" min="0"
                             class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
-                    </div>
+                    </div> -->
 
                     <div class="col-span-2">
                         <label class="block mb-2 text-sm font-medium text-slate-700">Image URL</label>
@@ -1278,107 +1277,6 @@
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Accessory Modal (for specific item) -->
-    <div id="accessory-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 bg-black/75">
-        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="sticky top-0 flex items-center justify-between p-6 bg-white border-b border-slate-200">
-                <div>
-                    <h3 class="text-xl font-bold text-slate-800">Manage Accessories</h3>
-                    <p class="text-sm text-slate-600" id="accessory-item-name"></p>
-                </div>
-                <button onclick="closeAccessoryModal()"
-                    class="p-2 transition rounded-lg hover:bg-slate-100 cursor-pointer">
-                    <i class="fas fa-times text-slate-600"></i>
-                </button>
-            </div>
-
-            <div class="p-6">
-                <input type="hidden" id="current-item-id" value="">
-
-                <!-- Add Accessory Button -->
-                <div class="mb-4">
-                    <button onclick="openAccessoryForm()"
-                        class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
-                        <i class="fas fa-plus mr-2"></i>Add Accessory
-                    </button>
-                </div>
-
-                <!-- Accessories List -->
-                <div class="space-y-3" id="accessories-list">
-                    <!-- Accessories will be loaded here -->
-                </div>
-
-                <!-- Accessory Form (hidden by default) -->
-                <div id="accessory-form-container"
-                    class="hidden p-4 border rounded-lg border-slate-200 bg-slate-50 mt-4">
-                    <h4 class="mb-3 font-semibold text-slate-800" id="accessory-form-title">Add Accessory</h4>
-                    <form id="accessory-form" onsubmit="saveAccessory(event)" class="space-y-3">
-                        <input type="hidden" id="accessory-id" value="">
-
-                        <div>
-                            <label class="block mb-1 text-sm font-medium text-slate-700">Accessory Name <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" id="accessory-name" required
-                                class="w-full px-3 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
-                        </div>
-
-                        <div>
-                            <label class="block mb-1 text-sm font-medium text-slate-700">Description</label>
-                            <textarea id="accessory-desc" rows="2"
-                                class="w-full px-3 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500"></textarea>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block mb-1 text-sm font-medium text-slate-700">Total Quantity <span
-                                        class="text-red-500">*</span></label>
-                                <input type="number" id="accessory-total-qty" required min="0"
-                                    class="w-full px-3 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
-                            </div>
-
-                            <div>
-                                <label class="block mb-1 text-sm font-medium text-slate-700">Available Quantity <span
-                                        class="text-red-500">*</span></label>
-                                <input type="number" id="accessory-available-qty" required min="0"
-                                    class="w-full px-3 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block mb-1 text-sm font-medium text-slate-700">
-                                Linked Items <span class="text-blue-500 text-xs">(Select items this accessory works
-                                    with)</span>
-                            </label>
-                            <div id="item-selection-container"
-                                class="p-3 border rounded-lg border-slate-200 bg-white max-h-40 overflow-y-auto">
-                                <!-- Items checkboxes will be loaded here -->
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" id="accessory-active" checked
-                                    class="w-4 h-4 text-blue-600 rounded">
-                                <span class="text-sm font-medium text-slate-700">Active</span>
-                            </label>
-                        </div>
-
-                        <div class="flex gap-2 pt-2">
-                            <button type="submit"
-                                class="flex-1 px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
-                                Save
-                            </button>
-                            <button type="button" onclick="cancelAccessoryForm()"
-                                class="px-4 py-2 font-medium transition rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer">
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -1741,13 +1639,13 @@
 
                         <!-- Available Qty & Active -->
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
+                            <!-- <div>
                                 <label class="block mb-2 text-sm font-medium text-slate-700">
-                                    Available Quantity <span class="text-red-500">*</span>
+                                    Available Quantity
                                 </label>
-                                <input type="number" id="mgmt-accessory-available-qty" required min="0"
+                                <input type="number" id="mgmt-accessory-available-qty" min="0"
                                     class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
-                            </div>
+                            </div> -->
                             <div class="flex items-center">
                                 <label class="flex items-center gap-2 cursor-pointer">
                                     <input type="checkbox" id="mgmt-accessory-active" checked
@@ -3802,12 +3700,14 @@
                 document.getElementById('item-name').value = item.Item_Name;
                 document.getElementById('item-desc').value = item.Item_Desc || '';
                 document.getElementById('item-total-qty').value = item.Total_Qty;
-                document.getElementById('item-available-qty').value = item.Available_Qty;
+                // document.getElementById('item-available-qty').value = item.Available_Qty;
+                // document.getElementById('item-available-qty').disabled = true;
                 document.getElementById('item-image').value = item.Image || '';
                 document.getElementById('item-active').checked = item.Active;
             }
         } else {
             document.getElementById('item-modal-title').textContent = 'Add Item';
+            // document.getElementById('item-available-qty').disabled = false;
             document.getElementById('item-id').value = '';
         }
 
@@ -3830,7 +3730,7 @@
             Item_Name: document.getElementById('item-name').value,
             Item_Desc: document.getElementById('item-desc').value,
             Total_Qty: parseInt(document.getElementById('item-total-qty').value),
-            Available_Qty: parseInt(document.getElementById('item-available-qty').value),
+            // Available_Qty: parseInt(document.getElementById('item-available-qty').value),
             Image: document.getElementById('item-image').value,
             Active: document.getElementById('item-active').checked
         };
@@ -4713,11 +4613,13 @@
                 document.getElementById('mgmt-accessory-name').value = accessory.Accessory_Name;
                 document.getElementById('mgmt-accessory-desc').value = accessory.Accessory_Desc || '';
                 document.getElementById('mgmt-accessory-total-qty').value = accessory.Total_Qty;
-                document.getElementById('mgmt-accessory-available-qty').value = accessory.Available_Qty;
+                // document.getElementById('mgmt-accessory-available-qty').value = accessory.Available_Qty;
+                // document.getElementById('mgmt-accessory-available-qty').disabled = true;
                 document.getElementById('mgmt-accessory-active').checked = accessory.Active;
             }
         } else {
             modalTitle.textContent = 'Create Accessory';
+            // document.getElementById('mgmt-accessory-available-qty').disabled = false;
         }
 
         // Load items for selection
@@ -4787,7 +4689,7 @@
             Accessory_Name: document.getElementById('mgmt-accessory-name').value,
             Accessory_Desc: document.getElementById('mgmt-accessory-desc').value,
             Total_Qty: parseInt(document.getElementById('mgmt-accessory-total-qty').value),
-            Available_Qty: parseInt(document.getElementById('mgmt-accessory-available-qty').value),
+            // Available_Qty: parseInt(document.getElementById('mgmt-accessory-available-qty').value),
             Active: document.getElementById('mgmt-accessory-active').checked
         };
 

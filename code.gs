@@ -115,9 +115,9 @@ function getCurrentUserEmail(sessionId) {
             }
         }
 
-        throw new Error("Session not found or expired");
+        throw new Error("ไม่พบ session หรือ session หมดอายุ");
     } catch (error) {
-        Logger.log("Error in getCurrentUserEmail: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน getCurrentUserEmail: " + error.toString());
         throw error;
     }
 }
@@ -285,7 +285,7 @@ function createItem(itemData, sessionId) {
     try {
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -303,7 +303,7 @@ function createItem(itemData, sessionId) {
             itemData.Item_Name,
             itemData.Item_Desc || '',
             itemData.Total_Qty || 0,
-            itemData.Available_Qty || 0,
+            itemData.Total_Qty || 0, //itemData.Available_Qty || 0, // on create item Available_Qty = Total_Qty
             itemData.Image || '',
             itemData.Active !== false ? true : false,
             userEmail,
@@ -314,9 +314,9 @@ function createItem(itemData, sessionId) {
         
         logInventoryActivity(`Admin ${userEmail} created item: ${itemData.Item_Name} (ID: ${itemId})`, sessionId);
         
-        return { success: true, message: "Item created successfully", itemId: itemId };
+        return { success: true, message: "สร้างรายการ Item สำเร็จ", itemId: itemId };
     } catch (error) {
-        Logger.log("Error in createItem: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน createItem: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -329,7 +329,7 @@ function updateItem(itemId, itemData, sessionId) {
     try {
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -348,11 +348,20 @@ function updateItem(itemId, itemData, sessionId) {
                 const rowNum = i + 1;
                 const timestamp = new Date();
                 
+                // find diff between old Total_Qty and itemData.Total_Qty
+                // in case 
+                // total item 15 
+                // borrow 1 
+                // available 14
+                // and reduce total
+                const diffTotalQty = itemData.Total_Qty - data[i][3]; // 14 - 15 = -1
+                const updateAvailableQty = data[i][4] + diffTotalQty; // 14 + (-1) = 13
+
                 // Update fields
                 if (itemData.Item_Name !== undefined) itemsSheet.getRange(rowNum, 2).setValue(itemData.Item_Name);
                 if (itemData.Item_Desc !== undefined) itemsSheet.getRange(rowNum, 3).setValue(itemData.Item_Desc);
                 if (itemData.Total_Qty !== undefined) itemsSheet.getRange(rowNum, 4).setValue(itemData.Total_Qty);
-                if (itemData.Available_Qty !== undefined) itemsSheet.getRange(rowNum, 5).setValue(itemData.Available_Qty);
+                itemsSheet.getRange(rowNum, 5).setValue(updateAvailableQty);
                 if (itemData.Image !== undefined) itemsSheet.getRange(rowNum, 6).setValue(itemData.Image);
                 if (itemData.Active !== undefined) itemsSheet.getRange(rowNum, 7).setValue(itemData.Active);
                 
@@ -361,13 +370,13 @@ function updateItem(itemId, itemData, sessionId) {
                 
                 logInventoryActivity(`Admin ${userEmail} updated item ID: ${itemId}`, sessionId);
                 
-                return { success: true, message: "Item updated successfully" };
+                return { success: true, message: "แก้ไขรายการ Item สำเร็จ" };
             }
         }
         
-        return { success: false, message: "Item not found" };
+        return { success: false, message: "ไม่พบรายการ Item" };
     } catch (error) {
-        Logger.log("Error in updateItem: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน updateItem: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -380,7 +389,7 @@ function deleteItem(itemId, sessionId) {
     try {
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -397,13 +406,13 @@ function deleteItem(itemId, sessionId) {
             if (data[i][0] == itemId) {
                 itemsSheet.deleteRow(i + 1);
                 logInventoryActivity(`Admin ${userEmail} deleted item ID: ${itemId}`, sessionId);
-                return { success: true, message: "Item deleted successfully" };
+                return { success: true, message: "ลบรายการ Item สำเร็จ" };
             }
         }
         
-        return { success: false, message: "Item not found" };
+        return { success: false, message: "ไม่พบรายการ Item" };
     } catch (error) {
-        Logger.log("Error in deleteItem: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน deleteItem: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -416,7 +425,7 @@ function createAccessory(accessoryData, sessionId) {
     try {
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -440,7 +449,7 @@ function createAccessory(accessoryData, sessionId) {
             accessoryData.Accessory_Name,
             accessoryData.Accessory_Desc || '',
             accessoryData.Total_Qty || 0,
-            accessoryData.Available_Qty || 0,
+            accessoryData.Total_Qty || 0, // accessoryData.Available_Qty || 0, // on create accessory Available_Qty = Total_Qty
             accessoryData.Active !== false ? true : false,
             userEmail,
             timestamp,
@@ -465,9 +474,9 @@ function createAccessory(accessoryData, sessionId) {
         
         logInventoryActivity(`Admin ${userEmail} created accessory: ${accessoryData.Accessory_Name} (ID: ${accessoryId})`, sessionId);
         
-        return { success: true, message: "Accessory created successfully", accessoryId: accessoryId };
+        return { success: true, message: "สร้างรายการ Accessory สำเร็จ", accessoryId: accessoryId };
     } catch (error) {
-        Logger.log("Error in createAccessory: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน createAccessory: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -480,7 +489,7 @@ function updateAccessory(accessoryId, accessoryData, sessionId) {
     try {
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -503,12 +512,20 @@ function updateAccessory(accessoryId, accessoryData, sessionId) {
             if (data[i][0] == accessoryId) {
                 const rowNum = i + 1;
                 const timestamp = new Date();
+
+                // find diff between old Total_Qty and accessoryData.Total_Qty
+                // total item 24 
+                // borrow 3
+                // available 21
+                // and reduce total
+                const diffTotalQty = accessoryData.Total_Qty - data[i][3]; // 27 - 24 = 3
+                const updateAvailableQty = data[i][4] + diffTotalQty; // 21 + 3 = 24
                 
                 // Update fields (note: column indices changed after removing Item_Id)
                 if (accessoryData.Accessory_Name !== undefined) accessorySheet.getRange(rowNum, 2).setValue(accessoryData.Accessory_Name);
                 if (accessoryData.Accessory_Desc !== undefined) accessorySheet.getRange(rowNum, 3).setValue(accessoryData.Accessory_Desc);
                 if (accessoryData.Total_Qty !== undefined) accessorySheet.getRange(rowNum, 4).setValue(accessoryData.Total_Qty);
-                if (accessoryData.Available_Qty !== undefined) accessorySheet.getRange(rowNum, 5).setValue(accessoryData.Available_Qty);
+                accessorySheet.getRange(rowNum, 5).setValue(updateAvailableQty);
                 if (accessoryData.Active !== undefined) accessorySheet.getRange(rowNum, 6).setValue(accessoryData.Active);
                 
                 accessorySheet.getRange(rowNum, 9).setValue(userEmail);
@@ -540,13 +557,13 @@ function updateAccessory(accessoryId, accessoryData, sessionId) {
                 
                 logInventoryActivity(`Admin ${userEmail} updated accessory ID: ${accessoryId}`, sessionId);
                 
-                return { success: true, message: "Accessory updated successfully" };
+                return { success: true, message: "แก้ไขรายการ Accessory สำเร็จ" };
             }
         }
         
-        return { success: false, message: "Accessory not found" };
+        return { success: false, message: "ไม่พบรายการ Accessory" };
     } catch (error) {
-        Logger.log("Error in updateAccessory: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน updateAccessory: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -559,7 +576,7 @@ function deleteAccessory(accessoryId, sessionId) {
     try {
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -589,13 +606,13 @@ function deleteAccessory(accessoryId, sessionId) {
                 }
                 
                 logInventoryActivity(`Admin ${userEmail} deleted accessory ID: ${accessoryId}`, sessionId);
-                return { success: true, message: "Accessory deleted successfully" };
+                return { success: true, message: "ลบรายการ Accessory สำเร็จ" };
             }
         }
         
-        return { success: false, message: "Accessory not found" };
+        return { success: false, message: "ไม่พบรายการ Accessory" };
     } catch (error) {
-        Logger.log("Error in deleteAccessory: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน deleteAccessory: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -651,7 +668,7 @@ function getItemAccessoryMappings() {
         
         return { success: true, mappings: mappings };
     } catch (error) {
-        Logger.log("Error in getItemAccessoryMappings: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน getItemAccessoryMappings: " + error.toString());
         return { success: false, message: error.toString(), mappings: [] };
     }
 }
@@ -664,7 +681,7 @@ function linkAccessoryToItems(accessoryId, itemIds, sessionId) {
     try {
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -699,9 +716,9 @@ function linkAccessoryToItems(accessoryId, itemIds, sessionId) {
         
         logInventoryActivity(`Admin ${userEmail} linked accessory ${accessoryId} to ${itemIds.length} items`, sessionId);
         
-        return { success: true, message: "Accessory linked successfully" };
+        return { success: true, message: "เชื่อมโยงอุปกรณ์เสริมสำเร็จ" };
     } catch (error) {
-        Logger.log("Error in linkAccessoryToItems: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน linkAccessoryToItems: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -740,7 +757,7 @@ function getUsers() {
         
         return { success: true, data: users };
     } catch (error) {
-        Logger.log("Error in getUsers: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน getUsers: " + error.toString());
         return { success: false, message: error.toString(), data: [] };
     }
 }
@@ -753,7 +770,7 @@ function createUser(userData, sessionId) {
         const adminEmail = getCurrentUserEmail(sessionId);
         
         if (!checkAdminPermission(adminEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -792,9 +809,9 @@ function createUser(userData, sessionId) {
         
         logSystemActivity(`Admin ${adminEmail} created user: ${normalizedEmail}`);
         
-        return { success: true, message: "User created successfully" };
+        return { success: true, message: "สร้างผู้ใช้สำเร็จ" };
     } catch (error) {
-        Logger.log("Error in createUser: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน createUser: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -807,7 +824,7 @@ function updateUser(originalEmail, userData, sessionId) {
         const adminEmail = getCurrentUserEmail(sessionId);
 
         if (!checkAdminPermission(adminEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -843,13 +860,13 @@ function updateUser(originalEmail, userData, sessionId) {
                 
                 logSystemActivity(`Admin ${adminEmail} updated user: ${originalEmail}`);
                 
-                return { success: true, message: "User updated successfully" };
+                return { success: true, message: "อัปเดตผู้ใช้สำเร็จ" };
             }
         }
         
-        return { success: false, message: "User not found" };
+        return { success: false, message: "ไม่พบผู้ใช้" };
     } catch (error) {
-        Logger.log("Error in updateUser: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน updateUser: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -862,7 +879,7 @@ function toggleUserActive(userEmail, newActiveState, sessionId) {
         const adminEmail = getCurrentUserEmail(sessionId);
         
         if (!checkAdminPermission(adminEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -885,13 +902,13 @@ function toggleUserActive(userEmail, newActiveState, sessionId) {
                 
                 logSystemActivity(`Admin ${adminEmail} ${newActiveState ? 'activated' : 'deactivated'} user: ${data[i][0]}`);
                 
-                return { success: true, message: `User ${newActiveState ? 'activated' : 'deactivated'} successfully` };
+                return { success: true, message: `ผู้ใช้${newActiveState ? 'เปิดใช้งาน' : 'ปิดใช้งาน'}สำเร็จ` };
             }
         }
         
-        return { success: false, message: "User not found" };
+        return { success: false, message: "ไม่พบผู้ใช้" };
     } catch (error) {
-        Logger.log("Error in toggleUserActive: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน toggleUserActive: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -904,12 +921,12 @@ function changeUserPassword(userEmail, newPassword, sessionId) {
         const adminEmail = getCurrentUserEmail(sessionId);
         
         if (!checkAdminPermission(adminEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         // Validate new password
         if (!newPassword || newPassword.trim().length < 6) {
-            return { success: false, message: "Password must be at least 6 characters long" };
+            return { success: false, message: "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร" };
         }
         
         const ss = getActiveSheet();
@@ -935,13 +952,13 @@ function changeUserPassword(userEmail, newPassword, sessionId) {
                 
                 logSystemActivity(`Admin ${adminEmail} changed password for user: ${data[i][0]}`);
                 
-                return { success: true, message: "Password changed successfully" };
+                return { success: true, message: "เปลี่ยนรหัสผ่านสำเร็จ" };
             }
         }
         
-        return { success: false, message: "User not found" };
+        return { success: false, message: "ไม่พบผู้ใช้" };
     } catch (error) {
-        Logger.log("Error in changeUserPassword: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน changeUserPassword: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -1037,7 +1054,7 @@ function loadItems (filterName = '', filterActive = 'ALL', page = 1, pageSize = 
         return result;
 
     } catch (error) {
-        Logger.log("Error in loadItems: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน loadItems: " + error.toString());
         return { data: [], total: 0, page: 1, pageSize: pageSize, totalPages: 0 };
     }
 };
@@ -1147,7 +1164,7 @@ function loadAccessories (itemIds = [], includeInactive = false)  {
 
     }
     catch (error) {
-        Logger.log("Error in loadAccessories: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน loadAccessories: " + error.toString());
         return { success: false, message: error.toString(), data: [] };
     }
 }
@@ -1371,7 +1388,7 @@ function getRowRequest(requestId = null) {
         return { success: true, data: request };
     }
     catch (error) {
-        Logger.log("Error in getRowRequest: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน getRowRequest: " + error.toString());
         throw error;
     }
 }
@@ -1413,7 +1430,7 @@ function submitRequest(submitRequestData, sessionId) {
             const stockValidation = validateStockAvailable(submitRequestData.Items);
 
             if (!stockValidation.success) {
-                throw new Error(`Insufficient stock: ${stockValidation.message}`);
+                throw new Error(`รายการไม่เพียงพอ: ${stockValidation.message}`);
             }
 
             request.push([
@@ -1479,10 +1496,10 @@ function submitRequest(submitRequestData, sessionId) {
 
         Logger.log("Submit Request Data: " + JSON.stringify(submitRequestData));
 
-        return { success: true, message: "Request submitted successfully" };
+        return { success: true, message: "ส่งคำขอสำเร็จ" };
     }
     catch (error) {
-        Logger.log("Error in submitRequest: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน submitRequest: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -1519,12 +1536,12 @@ function editRequest(editRequestData, sessionId) {
         }
 
         if (rowIndex === -1) {
-            return { success: false, message: "Request not found" };
+            return { success: false, message: "ไม่พบคำขอ" };
         }
 
         // Check if request is in editable status
         if (rowData[statusIndex] !== "Submit") {
-            return { success: false, message: "Only pending requests can be edited" };
+            return { success: false, message: "สามารถแก้ไขได้เฉพาะคำขอที่ Submit เท่านั้น" };
         }
 
         // Check permission: User can edit own requests, Admin can edit any
@@ -1532,13 +1549,13 @@ function editRequest(editRequestData, sessionId) {
         const createdBy = rowData[createdByIndex];
         
         if (!isAdmin && createdBy !== userEmail) {
-            return { success: false, message: "You can only edit your own requests" };
+            return { success: false, message: "คุณสามารถแก้ไขคำขอของคุณเองได้เท่านั้น" };
         }
 
         // Check stock availability
         const stockValidation = validateStockAvailable(editRequestData.Items);
         if (!stockValidation.success) {
-            return { success: false, message: `Insufficient stock: ${stockValidation.message}` };
+            return { success: false, message: `รายการไม่เพียงพอ: ${stockValidation.message}` };
         }
 
         // Delete existing items and accessories for this request
@@ -1604,9 +1621,9 @@ function editRequest(editRequestData, sessionId) {
 
         logRequestActivity("Edit Request", sessionId);
 
-        return { success: true, message: "Request updated successfully" };
+        return { success: true, message: "แก้ไขคำขอสำเร็จ" };
     } catch (error) {
-        Logger.log("Error in editRequest: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน editRequest: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -1633,14 +1650,14 @@ function validateStockAvailable(items) {
     for (let item of items) {
         const availableQty = itemsMap[item.Item_Id] || 0;
         if (availableQty < item.Qty) {
-            return { success: false, message: `Insufficient stock for item ID ${item.Item_Id}` };
+            return { success: false, message: `รายการไม่เพียงพอสำหรับ Item ${item.Item_Id}: ${item.Item_Name}` };
         }
 
         // check each accessory
         for (let accessory of item.Accessories) {
             const accAvailableQty = accessoryMap[accessory.Accessory_Id] || 0;
             if(accAvailableQty < accessory.Qty) {
-                return { success: false, message: `Insufficient stock for accessory ID ${accessory.Accessory_Id}` };
+                return { success: false, message: `รายการไม่เพียงพอสำหรับ Accessory ${accessory.Accessory_Id}: ${accessory.Accessory_Name}` };
             }
         }
     }
@@ -1802,7 +1819,7 @@ function distributeRequest(request, sessionId) {
         // Check admin permission
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required to distribute requests" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -1840,11 +1857,11 @@ function distributeRequest(request, sessionId) {
         }
 
         if (rowIndex === -1) {
-            throw new Error(`Request ID ${request.Request_Id} not found`);
+            throw new Error(`ไม่พบคำขอหมายเลข ${request.Request_Id}`);
         }
 
         if (rowData[headers.indexOf("Status")] !== "Submit") {
-            throw new Error(`Request ID ${request.Request_Id} is not in 'Submit' status`);
+            throw new Error(`คำขอหมายเลข ${request.Request_Id} ไม่ได้อยู่ในสถานะ 'Submit'`);
         }
 
         const statusIndex = headers.indexOf("Status");
@@ -1883,10 +1900,10 @@ function distributeRequest(request, sessionId) {
 
         logRequestActivity("Distribute Request", sessionId);
 
-        return { success: true, message: `Request ID ${request.Request_Id} distributed successfully` };
+        return { success: true, message: `คำขอหมายเลข ${request.Request_Id} ถูกแจกจ่ายเรียบร้อยแล้ว` };
     }
     catch (error) {
-        Logger.log("Error in distributeRequest: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน distributeRequest: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -1930,13 +1947,13 @@ function cancelRequest(requestId, sessionId) {
         }
         
         if (rowIndex === -1) {
-            throw new Error(`Request ID ${requestId} not found`);
+            throw new Error(`ไม่พบคำขอหมายเลข ${requestId}`);
         }
 
         const statusIndex = headers.indexOf("Status");
 
         if (rowData[statusIndex] !== "Submit") {
-            throw new Error(`Request ID ${requestId} is not in 'Submit' status`);
+            throw new Error(`คำขอหมายเลข ${requestId} ไม่ได้อยู่ในสถานะ 'Submit'`);
         }
 
         const modifiedByIndex = headers.indexOf("Modified_By");
@@ -1967,10 +1984,10 @@ function cancelRequest(requestId, sessionId) {
 
         logRequestActivity("Cancel Request", sessionId);
 
-        return { success: true, message: `Request ID ${requestId} cancelled successfully` };
+        return { success: true, message: `คำขอหมายเลข ${requestId} ถูกยกเลิกเรียบร้อยแล้ว` };
     }
     catch (error) {
-        Logger.log("Error in cancelRequest: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน cancelRequest: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -1984,7 +2001,7 @@ function returnRequest(returnRequestData, sessionId) {
         // Check admin permission
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required to return requests" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -2025,11 +2042,11 @@ function returnRequest(returnRequestData, sessionId) {
         }
 
         if (rowIndex === -1) {
-            throw new Error(`Request ID ${returnRequestData.Request_Id} not found`);
+            throw new Error(`ไม่พบคำขอหมายเลข ${returnRequestData.Request_Id}`);
         }
 
         if (rowData[statusIndex] !== "Distributed" && rowData[statusIndex] !== "Partial_Returned") {
-            throw new Error(`Request ID ${returnRequestData.Request_Id} is not in 'Distributed' or 'Partial_Returned' status. Current status: ${rowData[statusIndex]}`);
+            throw new Error(`คำขอหมายเลข ${returnRequestData.Request_Id} ไม่ได้อยู่ในสถานะ 'Distributed' หรือ 'Partial_Returned' สถานะปัจจุบัน: ${rowData[statusIndex]}`);
         }
 
         // Check if this is a partial return
@@ -2150,14 +2167,14 @@ function returnRequest(returnRequestData, sessionId) {
 
         return { 
             success: true, 
-            message: `Request ID ${returnRequestData.Request_Id} ${allItemsFullyReturned ? 'returned' : 'partially returned'} successfully`,
+            message: `ดำเนินการคืนคำขอหมายเลข ${returnRequestData.Request_Id} ${allItemsFullyReturned ? 'เรียบร้อยแล้ว' : 'บางส่วนเรียบร้อยแล้ว'}`,
             status: newStatus,
             itemsUpdated: stockUpdateResult.updatedItems,
             accessoriesUpdated: stockUpdateResult.updatedAccessories
         };
     }
     catch (error) {
-        Logger.log("Error in returnRequest: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน returnRequest: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
@@ -2289,7 +2306,7 @@ function getRequestActivity(page = 1, pageSize = 50) {
             totalPages: totalPages
         };
     } catch (error) {
-        Logger.log("Error in getRequestActivity: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน getRequestActivity: " + error.toString());
         return { success: false, message: error.toString(), data: [] };
     }
 }
@@ -2302,7 +2319,7 @@ function getSystemActivity(sessionId, page = 1, pageSize = 50) {
     try {
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -2367,7 +2384,7 @@ function getSystemActivity(sessionId, page = 1, pageSize = 50) {
             totalPages: totalPages
         };
     } catch (error) {
-        Logger.log("Error in getSystemActivity: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน getSystemActivity: " + error.toString());
         return { success: false, message: error.toString(), data: [] };
     }
 }
@@ -2380,7 +2397,7 @@ function getInventoryActivity(sessionId, page = 1, pageSize = 50) {
     try {
         const userEmail = getCurrentUserEmail(sessionId);
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         const ss = getActiveSheet();
@@ -2429,7 +2446,7 @@ function getInventoryActivity(sessionId, page = 1, pageSize = 50) {
             totalPages: totalPages
         };
     } catch (error) {
-        Logger.log("Error in getInventoryActivity: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน getInventoryActivity: " + error.toString());
         return { success: false, message: error.toString(), data: [] };
     }
 }
@@ -2455,7 +2472,7 @@ function logRequestActivity(actionType, sessionId = null) {
 
         Logger.log(`Request activity logged: ${email} - ${actionType} at ${timestamp}`);
     } catch (error) {
-        Logger.log("Error in logRequestActivity: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน logRequestActivity: " + error.toString());
     }
 }
 
@@ -2478,7 +2495,7 @@ function logSystemActivity(actionType, userEmail = null) {
 
         Logger.log(`System activity logged: ${email} - ${actionType} at ${timestamp}`);
     } catch (error) {
-        Logger.log("Error in logSystemActivity: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน logSystemActivity: " + error.toString());
     }
 }
 
@@ -2502,7 +2519,7 @@ function logInventoryActivity(actionType, sessionId = null) {
 
         Logger.log(`Inventory activity logged: ${email} - ${actionType} at ${timestamp}`);
     } catch (error) {
-        Logger.log("Error in logInventoryActivity: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน logInventoryActivity: " + error.toString());
     }
 }
 
@@ -2592,7 +2609,7 @@ function initializeDataFromReference(sessionId = null) {
         
         // Check admin permission
         if (!checkAdminPermission(userEmail)) {
-            return { success: false, message: "Unauthorized: Admin permission required" };
+            return { success: false, message: "ไม่ได้รับอนุญาต: ต้องมีสิทธิ์ผู้ดูแลระบบ" };
         }
         
         // Ensure all sheets exist before proceeding
@@ -2990,7 +3007,7 @@ function initializeDataFromReference(sessionId = null) {
             usersImported: usersImported
         };
     } catch (error) {
-        Logger.log("Error in initializeDataFromReference: " + error.toString());
+        Logger.log("เกิดข้อผิดพลาดใน initializeDataFromReference: " + error.toString());
         return { success: false, message: error.toString() };
     }
 }
