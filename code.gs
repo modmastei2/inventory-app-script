@@ -27,6 +27,9 @@ const ITEM_ACCESSORY_SHEET_NAME = "Item_Accessory_Mapping"; // Many-to-many mapp
 const REQUEST_SHEET_NAME = "Requests";
 const REQUEST_ITEM_SHEET_NAME = "Request_Item";
 const REQUEST_ITEM_ACCESSORY_SHEET_NAME = "Request_Item_Accessory";
+const HISTORICAL_REQUESTS_SHEET_NAME = "Historical_Requests";
+const HISTORICAL_REQUEST_ITEM_SHEET_NAME = "Historical_Request_Item";
+const HISTORICAL_REQUEST_ITEM_ACCESSORY_SHEET_NAME = "Historical_Request_Item_Accessory";
 const USER_SHEET_NAME = "Users";
 const REQUEST_ACTIVITY_SHEET_NAME = "Request_Activity";
 const SYSTEM_ACTIVITY_SHEET_NAME = "System_Activity";
@@ -204,6 +207,34 @@ const repairSheets = () => {
         ])
 
         Logger.log(`Created sheet: ${REQUEST_ITEM_ACCESSORY_SHEET_NAME}`);
+    }
+
+    // Create Historical sheets
+    let historicalRequestsSheet = ss.getSheetByName(HISTORICAL_REQUESTS_SHEET_NAME);
+    if (!historicalRequestsSheet) {
+        historicalRequestsSheet = ss.insertSheet(HISTORICAL_REQUESTS_SHEET_NAME);
+        historicalRequestsSheet.getRange(1,1,1,11).setValues([
+            ["Request_Id","Requirer_Name","Status","Request_Date","Distributed_Date","Return_Date","Remark","Created_By","Created_At","Modified_By","Modified_At"]
+        ])
+        Logger.log(`Created sheet: ${HISTORICAL_REQUESTS_SHEET_NAME}`);
+    }
+
+    let historicalRequestItemSheet = ss.getSheetByName(HISTORICAL_REQUEST_ITEM_SHEET_NAME);
+    if (!historicalRequestItemSheet) {
+        historicalRequestItemSheet = ss.insertSheet(HISTORICAL_REQUEST_ITEM_SHEET_NAME);
+        historicalRequestItemSheet.getRange(1,1,1,7).setValues([
+            ["Request_Id","Item_Index","Item_Id", "Item_Name","Qty","Returned_Qty","Status"]
+        ])
+        Logger.log(`Created sheet: ${HISTORICAL_REQUEST_ITEM_SHEET_NAME}`);
+    }
+
+    let historicalRequestItemAccessorySheet = ss.getSheetByName(HISTORICAL_REQUEST_ITEM_ACCESSORY_SHEET_NAME);
+    if (!historicalRequestItemAccessorySheet) {
+        historicalRequestItemAccessorySheet = ss.insertSheet(HISTORICAL_REQUEST_ITEM_ACCESSORY_SHEET_NAME);
+        historicalRequestItemAccessorySheet.getRange(1,1,1,8).setValues([
+            ["Request_Id","Item_Index","Accessory_Index","Accessory_Id", "Accessory_Name","Qty","Returned_Qty","Status"]
+        ])
+        Logger.log(`Created sheet: ${HISTORICAL_REQUEST_ITEM_ACCESSORY_SHEET_NAME}`);
     }
 
     // Create 3 separate activity sheets
@@ -1643,8 +1674,12 @@ function validateStockAvailable(items) {
 
     // build accessory map
     for (let i = 1; i < accessoryData.length; i++) {
-        accessoryMap[accessoryData[i][0]] = accessoryData[i][5]; // "Accessory_Id":"Available_Qty"
+        accessoryMap[accessoryData[i][0]] = accessoryData[i][4]; // "Accessory_Id":"Available_Qty"
     }
+
+    Logger.log(`Validating stock for items: ${JSON.stringify(items)}`);
+    Logger.log(`Items Map: ${JSON.stringify(itemsMap)}`);
+    Logger.log(`Accessory Map: ${JSON.stringify(accessoryMap)}`);
 
     // check each item
     for (let item of items) {
@@ -3009,5 +3044,123 @@ function initializeDataFromReference(sessionId = null) {
     } catch (error) {
         Logger.log("เกิดข้อผิดพลาดใน initializeDataFromReference: " + error.toString());
         return { success: false, message: error.toString() };
+    }
+}
+
+// ============================================
+// Historical Data Functions
+// ============================================
+
+/*
+@ Get Historical Requests with filtering and pagination
+@ Filters: Requirer_Name, Request_Date, Return_Date, Status
+*/
+function getHistoricalRequests(filters = {}, page = 1, pageSize = 100) {
+    try {
+        const ss = getActiveSheet();
+        const historicalRequestsSheet = ss.getSheetByName(HISTORICAL_REQUESTS_SHEET_NAME);
+        
+        if (!historicalRequestsSheet) {
+            return { success: true, data: [], total: 0, page: 1, pageSize: pageSize, totalPages: 0 };
+        }
+        
+        const data = historicalRequestsSheet.getDataRange().getValues();
+        const headers = data[0];
+        
+        // Find column indices
+        const requestIdCol = headers.indexOf("Request_Id");
+        const requirerNameCol = headers.indexOf("Requirer_Name");
+        const statusCol = headers.indexOf("Status");
+        const requestDateCol = headers.indexOf("Request_Date");
+        const distributedDateCol = headers.indexOf("Distributed_Date");
+        const returnDateCol = headers.indexOf("Return_Date");
+        const remarkCol = headers.indexOf("Remark");
+        const createdByCol = headers.indexOf("Created_By");
+        const createdAtCol = headers.indexOf("Created_At");
+        const modifiedByCol = headers.indexOf("Modified_By");
+        const modifiedAtCol = headers.indexOf("Modified_At");
+        
+        // Get all historical requests
+        const historicalRequests = [];
+        for (let i = 1; i < data.length; i++) {
+            if (data[i][requestIdCol]) { // Check if row has data
+                const request = {
+                    Request_Id: data[i][requestIdCol],
+                    Requirer_Name: data[i][requirerNameCol] || '',
+                    Status: data[i][statusCol] || '',
+                    Request_Date: data[i][requestDateCol] ? formatDate(data[i][requestDateCol], 'yyyy-MM-dd') : '',
+                    Distributed_Date: data[i][distributedDateCol] ? formatDate(data[i][distributedDateCol], 'yyyy-MM-dd') : '',
+                    Return_Date: data[i][returnDateCol] ? formatDate(data[i][returnDateCol], 'yyyy-MM-dd') : '',
+                    Remark: data[i][remarkCol] || '',
+                    Created_By: data[i][createdByCol] || '',
+                    Created_At: data[i][createdAtCol] ? formatDate(data[i][createdAtCol]) : '',
+                    Modified_By: data[i][modifiedByCol] || '',
+                    Modified_At: data[i][modifiedAtCol] ? formatDate(data[i][modifiedAtCol]) : ''
+                };
+                
+                historicalRequests.push(request);
+            }
+        }
+        
+        // Apply filters
+        let filteredRequests = historicalRequests;
+        
+        // Filter by Requirer_Name (partial match, case-insensitive)
+        if (filters.Requirer_Name && filters.Requirer_Name.trim() !== '') {
+            const searchName = filters.Requirer_Name.trim().toLowerCase();
+            filteredRequests = filteredRequests.filter(req => 
+                req.Requirer_Name.toLowerCase().includes(searchName)
+            );
+        }
+        
+        // Filter by Request_Date (exact match or range)
+        if (filters.Request_Date && filters.Request_Date.trim() !== '') {
+            const searchDate = filters.Request_Date.trim();
+            filteredRequests = filteredRequests.filter(req => 
+                req.Request_Date.includes(searchDate)
+            );
+        }
+        
+        // Filter by Return_Date (exact match or range)
+        if (filters.Return_Date && filters.Return_Date.trim() !== '') {
+            const searchReturnDate = filters.Return_Date.trim();
+            filteredRequests = filteredRequests.filter(req => 
+                req.Return_Date.includes(searchReturnDate)
+            );
+        }
+        
+        // Filter by Status (exact match)
+        if (filters.Status && filters.Status.trim() !== '' && filters.Status !== 'All') {
+            const searchStatus = filters.Status.trim();
+            filteredRequests = filteredRequests.filter(req => 
+                req.Status === searchStatus
+            );
+        }
+        
+        // Sort by Modified_At descending (most recent first)
+        filteredRequests.sort((a, b) => {
+            const dateA = new Date(a.Modified_At);
+            const dateB = new Date(b.Modified_At);
+            return dateB - dateA;
+        });
+        
+        // Pagination
+        const total = filteredRequests.length;
+        const totalPages = Math.ceil(total / pageSize);
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const paginatedData = filteredRequests.slice(startIndex, endIndex);
+        
+        return {
+            success: true,
+            data: paginatedData,
+            total: total,
+            page: page,
+            pageSize: pageSize,
+            totalPages: totalPages
+        };
+    } catch (error) {
+        Logger.log("Error in getHistoricalRequests: " + error.toString());
+        return { success: false, message: error.toString(), data: [] };
     }
 }
