@@ -1,35 +1,32 @@
 Accessory_Id,Accessory_Name,Accessory_Desc,Total_Qty,Available_Qty,Active,Created_By,Created_At,Modified_By,Modified_At
-1,stirrering proppeller 104mm,,1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 9:37:51
-3,stirrering propeller 96mm,,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 9:35:28
-4,Dosing unit 2 mL for Titrate,6.1580.120,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:07:01
-5,Dosing unit 10 mL for Titrate,6.1580.210,5,5,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:06:32
-6,Dosing unit 20 mL for Titrate,6.1580.220,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:07:24
-7,Dosing unit 50 mL for Titrate,6.1580.250,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:07:45
-8,OMNIS Dosing 10 mL ,6.01503.210,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:12:03
-9,OMNIS Dosing 20 mL,6.01503.220,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:12:40
-14,Holding clip for bottles,6.2043.005,24,24,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:18:01
-15,Power cable,สายPower อย่างเดียวต่อกับเครื่อง,38,38,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:27:43
+1,Stirrering proppeller 104mm,,1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/9/2026 2:27:41
+3,Stirrering propeller 96mm,,2,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/10/2026 17:15:42
+4,Dosing unit 2 mL for Titrate,6.1580.120,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/13/2026 9:28:33
+5,Dosing unit 10 mL for Titrate,6.1580.210,5,4,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/13/2026 9:29:05
+6,Dosing unit 20 mL for Titrate,6.1580.220,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/13/2026 9:30:00
+7,Dosing unit 50 mL for Titrate,6.1580.250,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/13/2026 9:30:29
+14,Holding clip for bottles,6.2043.005,24,24,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/10/2026 11:09:19
+15,Power cable,สายPower อย่างเดียวต่อกับเครื่อง,38,37,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/12/2026 17:04:58
 16,Controller cable,สาย controller เชื่อม software กับตัวเครื่อง,4,4,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:35:37
-17,SET PC OMNIS,"CPU, Keyboard, mouse, power cable, Screen",1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:38:59
-18,Rod stand + lock camp,แท่งเหล็ก + ตัวล็อค,39,39,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:45:45
-20,Electrode holder,6.2021.020 Electrode holder for 4 electrodes and 2 buret tips,6,6,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:50:08
+18,Rod stand + lock camp,แท่งเหล็ก + ตัวล็อค,39,39,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/12/2026 17:04:58
+20,Electrode holder,6.2021.020 Electrode holder for 4 electrodes and 2 buret tips,6,6,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/10/2026 11:09:19
 21,SET Tubing for Dosing unit,"1 Tubing เขียว, Tip, Microvalve
 1 Tubing ใส+จุกใส, Molecular sieve ",10,10,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 11:08:46
-22,Brown glass bottle,ขวดเปล่า,15,15,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 10:54:58
-23,Electrod cable /1 m /F,6.2104.020,11,11,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/6/2026 15:24:11
-24,2 Lan cable + Hub box + 1 Hub Power cacle,สายแลนเหลือง 2 + กล่อง Hub + สายชาร์จ Hub,1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 11:09:28
-25,OMNIS Dosing unit 10 mL,6.01508.210,3,3,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 11:22:44
+22,Brown glass bottle,ขวดเปล่า,15,15,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/10/2026 11:09:19
+23,Electrod cable /1 m /F,6.2104.020,11,10,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/12/2026 17:04:58
+24,2 Lan cable + Hub box + 1 Hub Power cacle,สายแลนเหลือง 2 + กล่อง Hub + สายชาร์จ Hub,1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/12/2026 17:04:58
+25,OMNIS Dosing unit 10 mL,6.01508.210,3,3,TRUE,system,2/5/2026 9:07:10,modmastei2@gmail.com,2/12/2026 17:04:58
 26,OMNIS Dosing unit 20 mL,6.01508.220,2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 11:24:24
-27,OMNIS Holder,,3,3,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/5/2026 11:27:50
-28,OMNIS Molecular sieve with Cap,,4,4,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/6/2026 17:09:53
+27,OMNIS Holder,,3,3,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/12/2026 17:04:58
+28,OMNIS Molecular sieve with Cap,,4,4,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/12/2026 17:04:58
 29,"Red Electrode cable plug-in head G (temp.) / plug P, 0.55 m","6.02104.020
-สายแดงใช้กับ temp senser",1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/6/2026 16:35:16
+สายแดงใช้กับ temp senser",1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/11/2026 9:45:57
 30,"Blue Electrode cable plug-in head G (pol.) / plug P, 0.55 m","6.02104.040
-สายสีน้ำเงินใช้กับ Polarized electrode to plug F (เป็นขั้วโลหะและเป็นแง่ง หรือ Pt sheet)",2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/6/2026 16:46:03
+สายสีน้ำเงินใช้กับ Polarized electrode to plug F (เป็นขั้วโลหะและเป็นแง่ง หรือ Pt sheet)",2,2,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/11/2026 9:46:35
 31,"Green Electrode cable plug-in head G / plug P, 0.55 m ","6.02104.000
-สายสีเขียวใช้กับ Electrode ทั่วไป to plug F (ทุกประเภท General)",1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/6/2026 16:34:55
+สายสีเขียวใช้กับ Electrode ทั่วไป to plug F (ทุกประเภท General)",1,1,TRUE,system,2/5/2026 9:07:10,admin@admin.com,2/12/2026 17:04:58
 32,Magnetic bar,,14,14,TRUE,admin@admin.com,2/5/2026 9:20:25,admin@admin.com,2/5/2026 9:20:25
-33,Power cable with adapter,สาย Power ที่มี Adapter สำหรับบางเครื่อง เช่น Eco,6,5,TRUE,admin@admin.com,2/5/2026 10:33:52,admin@admin.com,2/6/2026 15:15:31
+33,Power cable with adapter,สาย Power ที่มี Adapter สำหรับบางเครื่อง เช่น Eco,6,5,TRUE,admin@admin.com,2/5/2026 10:33:52,admin@admin.com,2/10/2026 11:09:19
 34,SET Tubing for Cylinder Unit,"3 Tubing เขียว,+Tip+Microvalve
 1 Tubing ใส+ Cap SET",10,10,TRUE,admin@admin.com,2/5/2026 11:05:30,admin@admin.com,2/5/2026 11:05:30
 35,Exchange unit 5 mL,6.1576.150,1,1,TRUE,admin@admin.com,2/5/2026 14:43:34,admin@admin.com,2/5/2026 14:43:34
@@ -40,17 +37,43 @@ Accessory_Id,Accessory_Name,Accessory_Desc,Total_Qty,Available_Qty,Active,Create
 40,Cylinder unit 10 mL,6.1518.210,13,7,TRUE,admin@admin.com,2/5/2026 15:15:07,admin@admin.com,2/5/2026 15:15:07
 41,Cylinder unit 1 mL,6.1518.110,1,0,TRUE,admin@admin.com,2/5/2026 15:16:57,admin@admin.com,2/5/2026 15:16:57
 42,Cylinder unit 20 mL,6.1518.220,20,6,TRUE,admin@admin.com,2/5/2026 15:19:08,admin@admin.com,2/5/2026 15:19:08
-43,Cylinder unit 50 mL,6.1518.250,1,1,TRUE,admin@admin.com,2/5/2026 15:21:57,admin@admin.com,2/5/2026 15:21:57
+43,Cylinder unit 50 mL,6.1518.250,1,1,TRUE,admin@admin.com,2/5/2026 15:21:57,admin@admin.com,2/9/2026 3:58:21
 44,Electrode cable /1 m /H,6.2104.120,15,15,TRUE,admin@admin.com,2/6/2026 15:41:50,admin@admin.com,2/6/2026 15:47:30
 45,"Electrode cable 1 m, 2xB",6.2104.080,3,3,TRUE,admin@admin.com,2/6/2026 15:45:25,admin@admin.com,2/6/2026 15:47:58
-46,Strand / 1 m / 2 x B (banana),6.2106.020,7,7,TRUE,admin@admin.com,2/6/2026 15:48:59,admin@admin.com,2/6/2026 15:50:30
-47,854 iConnect,2.854.0010,2,2,TRUE,admin@admin.com,2/6/2026 16:08:50,admin@admin.com,2/6/2026 16:08:50
+46,Strand / 1 m / 2 x B (banana),6.2106.020,7,7,TRUE,admin@admin.com,2/6/2026 15:48:59,admin@admin.com,2/12/2026 17:07:15
 48,"Electrode cable 2 m, 2 x 2 mm (temp senser)",6.2104.150,3,3,TRUE,admin@admin.com,2/6/2026 16:10:48,admin@admin.com,2/6/2026 16:10:48
 49,Connect cable for 703 stirrer 0.5 m,6.2108.100,1,1,TRUE,admin@admin.com,2/6/2026 16:15:34,admin@admin.com,2/6/2026 16:20:54
 50,Electrode cable / 1 m / RM,"6.2104.130
 With RM plug. For connecting electrodes with plug-in head G - Radiometer instruments",1,1,TRUE,admin@admin.com,2/6/2026 16:22:42,admin@admin.com,2/6/2026 16:22:42
 51,Adaptor USB Mini (OTG) - USB A ,6.2151.100,1,1,TRUE,admin@admin.com,2/6/2026 16:25:23,admin@admin.com,2/6/2026 16:25:23
-52,Cable MDL PL/SO 0.5 m,6.02102.010,1,1,TRUE,admin@admin.com,2/6/2026 16:38:34,admin@admin.com,2/6/2026 16:38:34
-53,Cable MDL PL/SO 1 m,"6.02102.020
+52,OMNIS Cable MDL PL/SO 0.5 m,6.02102.010,1,1,TRUE,admin@admin.com,2/6/2026 16:38:34,admin@admin.com,2/11/2026 10:59:53
+53,OMNIS Cable MDL PL/SO 1 m,"6.02102.020
 
-",1,1,TRUE,admin@admin.com,2/6/2026 16:39:20,admin@admin.com,2/6/2026 16:39:20
+",1,1,TRUE,admin@admin.com,2/6/2026 16:39:20,admin@admin.com,2/11/2026 10:59:21
+54,Numerical USB keypad,6.2147.000,2,1,TRUE,admin@admin.com,2/10/2026 16:41:42,admin@admin.com,2/10/2026 17:15:42
+55,Manual Dosing Controller,6.2107.100,1,1,TRUE,admin@admin.com,2/11/2026 10:21:54,admin@admin.com,2/11/2026 10:21:54
+56,784 KFP Titrino keyboard,6.2130.050,1,1,TRUE,admin@admin.com,2/11/2026 10:41:55,admin@admin.com,2/11/2026 10:41:55
+57,Dosimat keyboard,6.2149.000,1,1,TRUE,admin@admin.com,2/11/2026 10:43:03,admin@admin.com,2/11/2026 10:43:03
+58,"Electrode cable for plug in head U/plug F, 2x2 mm B, 1m ",6.2104.600,4,4,TRUE,admin@admin.com,2/11/2026 10:47:23,admin@admin.com,2/11/2026 10:49:32
+59,6.2104.540,Stirrer cable sooooo old,1,1,TRUE,admin@admin.com,2/11/2026 10:54:15,admin@admin.com,2/11/2026 10:54:15
+60,"Electrode cable 1 m, BNC ",6.2104.090,1,1,TRUE,admin@admin.com,2/11/2026 11:02:41,admin@admin.com,2/11/2026 11:02:41
+61,RS 232/USB BOX,6.2148.020,8,8,TRUE,admin@admin.com,2/11/2026 13:26:31,admin@admin.com,2/11/2026 13:26:31
+62,Adapter sub D 25-pin/5 sockets ,6.2125.120,2,2,TRUE,admin@admin.com,2/11/2026 13:34:01,admin@admin.com,2/11/2026 13:34:01
+63,USB/RS-232 Converter for 900 Touch Control,6.2148.050,4,4,TRUE,admin@admin.com,2/11/2026 13:39:32,admin@admin.com,2/11/2026 13:48:46
+64,Cable RS-232 DB9 socket f – DB9 plug,6.2134.110,1,1,TRUE,admin@admin.com,2/11/2026 13:46:18,admin@admin.com,2/11/2026 13:46:18
+65,Connecting cable RS-232 to Sartorius MP8,6.2134.060,2,2,TRUE,admin@admin.com,2/11/2026 13:59:22,admin@admin.com,2/11/2026 13:59:22
+66,"RS-232 cable 3 m, 25-pin – 9-pin",6.2125.110,3,3,TRUE,admin@admin.com,2/11/2026 14:02:02,admin@admin.com,2/11/2026 14:02:02
+67,cable ATEN,,7,7,TRUE,admin@admin.com,2/12/2026 11:20:57,admin@admin.com,2/12/2026 11:20:57
+68,Power Adapter,6.2153.000,4,4,TRUE,admin@admin.com,2/12/2026 11:25:30,admin@admin.com,2/12/2026 11:25:30
+69,OMNIS adapter cable (สายสั้นเขียว),6.02109.000,1,1,TRUE,admin@admin.com,2/12/2026 11:41:15,admin@admin.com,2/12/2026 17:04:58
+70,cable control,,24,24,TRUE,admin@admin.com,2/12/2026 13:16:48,admin@admin.com,2/12/2026 13:16:48
+71,pH 781/Ion meter cable,,1,1,TRUE,admin@admin.com,2/12/2026 13:29:12,admin@admin.com,2/12/2026 13:29:12
+72,connect cable,6.02110.000,2,2,TRUE,admin@admin.com,2/12/2026 13:32:31,admin@admin.com,2/12/2026 13:32:31
+73,Connection cable 843 Pump Station to 797 VA Computrace,6.2141.270,2,2,TRUE,admin@admin.com,2/12/2026 13:43:29,admin@admin.com,2/12/2026 13:43:29
+74,Cable RS-232 DB9 socket f – DB9 plug,6.2134.110,1,1,TRUE,admin@admin.com,2/12/2026 13:45:01,admin@admin.com,2/12/2026 13:45:01
+75,RS-232 DB9 - IBM-PC(DB9) connecting cable,6.2134.040,2,2,TRUE,admin@admin.com,2/12/2026 13:48:48,admin@admin.com,2/12/2026 13:48:48
+76,Connecting cable RS-232 to Sartorius MP8 6.2134.060,6.2134.060,2,2,TRUE,admin@admin.com,2/12/2026 13:50:07,admin@admin.com,2/12/2026 13:50:07
+77,USB/RS-232 Converter for 900 Touch Control,6.2148.050,4,4,TRUE,admin@admin.com,2/12/2026 13:52:08,admin@admin.com,2/12/2026 13:52:08
+78,Adapter sub D 25-pin/5 sockets,6.2125.120,1,1,TRUE,admin@admin.com,2/12/2026 13:57:13,admin@admin.com,2/12/2026 13:57:13
+79,RS-232/USB box,6.2148.020,8,8,TRUE,admin@admin.com,2/12/2026 14:03:54,admin@admin.com,2/12/2026 15:28:29
+80,Adapter,Adapter omnis for reference,1,1,TRUE,admin@admin.com,2/12/2026 17:01:53,admin@admin.com,2/12/2026 17:07:15

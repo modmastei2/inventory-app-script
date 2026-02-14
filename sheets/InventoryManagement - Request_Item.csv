@@ -1,3 +1,22 @@
 Request_Id,Item_Index,Item_Id,Item_Name,Qty,Returned_Qty,Status
-1,1,2,907 Titrando,1,0,Cancelled
 2,1,11,Eco Dosimat,1,0,Distributed
+3,1,2,907 Titrando,1,0,Cancelled
+4,1,129,Generator without diaphragm,1,0,Distributed
+5,1,7,916 Ti-touch,1,1,Returned
+5,2,13,800 Dosino,1,1,Returned
+6,1,175,862 Compact Titrosampler,1,0,Cancelled
+7,1,176,Solvotrode,1,0,Distributed
+7,2,175,862 Compact Titrosampler,1,0,Distributed
+7,3,13,800 Dosino,1,0,Distributed
+7,4,16,802 Rod stirrer,1,0,Distributed
+8,1,21,OMNIS Titrator with stirrer,1,1,Returned
+8,2,179,OMNIS Notebook	,1,1,Returned
+8,3,75,Ag/AgCl ref,1,1,Returned
+8,4,150,DJ Ag/AgCl Reference,1,1,Returned
+8,5,58,Surfactrode Resistant,1,1,Returned
+8,6,60,Cation surfacte,1,1,Returned
+8,7,171,Optrode with adapter,1,1,Returned
+9,1,177,อื่นๆ,1,1,Returned
+10,1,7,916 Ti-touch,1,0,Submit
+10,2,13,800 Dosino,1,0,Submit
+10,3,166,solvotrode easy clean,1,0,Submit

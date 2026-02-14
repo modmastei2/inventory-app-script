@@ -1,3 +1,18 @@
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('IMS Menu')
+    .addItem('Generate Password', 'showPasswordDialog')
+    .addToUi();
+}
+
+function showPasswordDialog() {
+  const html = HtmlService.createHtmlOutputFromFile('passwordForm')
+    .setWidth(600)
+    .setHeight(500);
+
+  SpreadsheetApp.getUi().showModalDialog(html, 'Hash Password');
+}
+
 // ============================================
 // Authentication Functions
 // ============================================

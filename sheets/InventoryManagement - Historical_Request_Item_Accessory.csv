@@ -1,0 +1,5 @@
+Request_Id,Item_Index,Accessory_Index,Accessory_Id,Accessory_Name,Qty,Returned_Qty,Status
+4,1,2,17,SET PC OMNIS,1,1,Returned
+4,1,1,14,Holding clip for bottles,2,2,Returned
+3,1,1,14,Holding clip for bottles,1,0,Cancelled
+1,1,1,1,stirrering proppeller 104mm,1,0,Cancelled

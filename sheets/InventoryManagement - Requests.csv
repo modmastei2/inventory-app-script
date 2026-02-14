@@ -1,3 +1,31 @@
 Request_Id,Requirer_Name,Status,Request_Date,Distributed_Date,Return_Date,Remark,Created_By,Created_At,Modified_By,Modified_At
-1,Warangkhana,Cancelled,2026-02-05,,2026-02-07,,,2026-02-05 9:20:40,modmastei2@gmail.com,2026-02-05 10:29:18
 2,TC (service),Distributed,2026-02-06,2026-02-06,2026-02-06,พี่ชายยืมพร้อมกับ power adapter อย่างเดียว,,2026-02-06 15:13:34,,2026-02-06 15:15:31
+3,jenny,Cancelled,2026-02-09,,2026-02-09,,warangkana.jenny13@gmail.com,2026-02-09 11:20:51,admin@admin.com,2026-02-09 11:21:39
+4,Pin,Distributed,2026-02-09,2026-02-09,2026-03-10,"Supp บริษัท พี.เอส.พี. สเปเชียลตี้ส์ จำกัด (มหาชน) 
+เทอร์มินอล 1 76 ม.7 ถ.พระราม2 ต.ท่าจีน อ.เมือง จ.สมุทรสาคร 74000
+คุณ วิลาวรรณ แซ่โอ้ว 086-352 4595
+sn: 11200111",admin@admin.com,2026-02-09 14:19:50,admin@admin.com,2026-02-09 14:20:50
+5,5tgyy,Returned,2026-02-10,2026-02-10,2026-02-11,,admin@admin.com,2026-02-10 11:08:08,admin@admin.com,2026-02-10 11:09:19
+6,Pin,Cancelled,2026-02-10,,2026-03-03,บริษัท ไทย กลีเซอรีน จำกัด สมุทรสาคร  คุณ ชลิตา 064-9798783 lab@thaiglycerine.com,admin@admin.com,2026-02-10 16:33:03,admin@admin.com,2026-02-10 16:38:43
+7,Pin,Distributed,2026-02-10,2026-02-10,2026-03-03,"บริษัท ไทย กลีเซอรีน จำกัด สมุทรสาคร คุณ ชลิตา 064-9798783 lab@thaiglycerine.com
+ยืม sample beaker, plastic(PP),120 mL,6.1459.300;12 ชิ้น",admin@admin.com,2026-02-10 17:15:04,admin@admin.com,2026-02-10 17:15:42
+8,Nuch,Returned,2026-02-12,2026-02-12,2026-02-12,"Neo factory ปทุม
+12/1/26-2/2/26 ณัฐพล 093-7518759
+natthapon.cho@neo-factory.biz
+1. Omnis titrator with stirrer 1p (sn 001000029611)
+2. Omnis cylinder 10 mL 1p (sn 565025)
+3. Optrode with adapter 1p (6.1115.000/sn 00286938)
+4. Surfactrode resistance 1p (6.0507.130/sn 10990035 )
+5. Electrode cable F 1p 
+6. Reference electrode พร้อม plug B cable with adapter 1p (6.0726.100/sn 00360769) 
+7. Computer notebook and lan hub 1set 
+8. Adapter cable OMNIS Short 1p, long green 1p, Yellow LAN 2p
+9. power cable+ rod stand
+10. magnetic bar 1p",admin@admin.com,2026-02-12 16:46:32,admin@admin.com,2026-02-12 17:04:59
+9,Nuch,Returned,2026-02-12,2026-02-12,2026-02-12,,admin@admin.com,2026-02-12 17:03:48,admin@admin.com,2026-02-12 17:07:16
+10,Tharawuth,Submit,2026-02-13,,2026-02-20,"Demo บริษัท เอสดี กัทธรี สมุทรปราการ 
+ยืมตั้งแต่วันที่ 16-20 กพ.
+S/N 1916002030115
+Solvatrode S/N 01021154 
+800 Dosino S/N 1800002044726
+Dosing Unit S/N 61518220-15",admin@admin.com,2026-02-13 9:47:50,admin@admin.com,2026-02-13 9:47:50
