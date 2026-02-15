@@ -1,225 +1,554 @@
 # Inventory Management System
 
-ระบบจัดการคลังอุปกรณ์ที่พัฒนาด้วย Google Apps Script รองรับการยืม-คืนอุปกรณ์
+> ระบบจัดการคลังอุปกรณ์แบบครบวงจร พร้อมระบบแจ้งเตือนอัตโนมัติทางอีเมล
 
-## ภาพรวม
+[![Google Apps Script](https://img.shields.io/badge/Google%20Apps%20Script-4285F4?style=flat&logo=google&logoColor=white)](https://script.google.com/)
+[![Version](https://img.shields.io/badge/version-2.0-blue.svg)](https://github.com)
+[![License](https://img.shields.io/badge/license-Educational-green.svg)](https://github.com)
 
-เป็นระบบจัดการคลังอุปกรณ์แบบ web application ที่ใช้ Google Sheets เป็น database และ Google Apps Script เป็น backend มีระบบจัดการสิทธิ์ 3 ระดับคือ Admin, User และ Guest
+**📧 Deployment Account**: `noreply.inventory.ims@gmail.com`  
+**🗓️ Last Updated**: February 15, 2026  
+**📦 Version**: 2.0 - Email Notifications & Auto-Archive
 
-## ฟีเจอร์
+---
 
-### ระบบ Authentication
-- Login/Logout ด้วย Session Management
-- รองรับ 3 ระดับสิทธิ์ (Admin, User, Guest)
-- เข้ารหัส password ด้วย SHA-256
-- Email จะถูกแปลงเป็นตัวพิมพ์เล็กทั้งหมด (case-insensitive)
+## 📋 สารบัญ
 
-### การจัดการอุปกรณ์ (สำหรับ Admin)
-- เพิ่ม/แก้ไข/ลบอุปกรณ์
-- จัดการจำนวนคงคลัง (Total และ Available)
-- เปิด-ปิดการใช้งานอุปกรณ์
-- ใส่รูปภาพผ่าน URL
-- ค้นหาและกรองตามสถานะ
+- [ภาพรวมระบบ](#-ภาพรวมระบบ)
+- [ฟีเจอร์หลัก](#-ฟีเจอร์หลัก)
+- [สิทธิ์การใช้งาน](#-สิทธิการใช้งาน)
+- [เทคโนโลยี](#️-เทคโนโลยีที่ใช้)
+- [โครงสร้างไฟล์](#-โครงสร้างไฟล์)
+- [โครงสร้าง Database](#-โครงสร้าง-database)
+- [คู่มือการติดตั้ง](#-คู่มือการติดตั้ง)
+- [การใช้งาน](#-การใช้งาน)
+- [ระบบอีเมล](#️-ระบบอีเมล)
+- [Troubleshooting](#-troubleshooting)
 
-### การจัดการอุปกรณ์เสริม (สำหรับ Admin)
-- เพิ่ม/แก้ไข/ลบอุปกรณ์เสริมของแต่ละอุปกรณ์
-- จัดการจำนวนคงคลัง
-- เปิด-ปิดการใช้งาน
+---
 
-### ระบบยืม-คืน
-**สร้างคำขอยืม:**
-- เลือกอุปกรณ์และอุปกรณ์เสริมได้หลายรายการ
-- ระบุจำนวนและวันที่ยืม-คืน
-- ใส่ชื่อผู้ยืมและหมายเหตุ
+## 🎯 ภาพรวมระบบ
 
-**อนุมัติการจ่าย (Admin):**
-- อนุมัติและจ่ายอุปกรณ์ให้ผู้ยืม
-- ระบบจะหักจำนวนคงคลังอัตโนมัติ
+ระบบจัดการคลังอุปกรณ์แบบ Web Application ที่พัฒนาด้วย Google Apps Script ใช้ Google Sheets เป็น Database มีระบบสิทธิ์การใช้งาน 3 ระดับ (Admin, User, Guest) พร้อมระบบแจ้งเตือนทางอีเมลและ Auto-archive อัตโนมัติ
 
-**คืนอุปกรณ์:**
-- คืนได้ทั้งหมดหรือบางส่วน (Partial Return)
-- ระบบคืนจำนวนคงคลังอัตโนมัติ
+### ✨ จุดเด่น
 
-**ยกเลิกคำขอ (Admin):**
-- ยกเลิกคำขอได้ก่อนจ่ายอุปกรณ์
-- ระบบคืนจำนวนคงคลังเมื่อยกเลิก
+- ✅ **ฟรี 100%** - ไม่มีค่าใช้จ่าย ใช้ Google Services
+- ✅ **ระบบอีเมลอัตโนมัติ** - แจ้งเตือนคำขอใหม่และรายการเกินกำหนด
+- ✅ **Auto-archive** - ย้ายข้อมูลเก่าอัตโนมัติ
+- ✅ **Partial Return** - คืนอุปกรณ์บางส่วนได้
+- ✅ **Responsive Design** - ใช้งานได้ทุกอุปกรณ์
+- ✅ **Audit Trail** - บันทึกทุก activity
+
+---
+
+## 🚀 ฟีเจอร์หลัก
+
+### 🔐 Authentication & Authorization
+
+- Login/Logout ด้วย Session Management (24 ชม.)
+- Password hashing ด้วย SHA-256
+- 3 ระดับสิทธิ์: **Admin**, **User**, **Guest**
+- Email case-insensitive
+
+### 📦 การจัดการอุปกรณ์ (Admin)
+
+- ➕ เพิ่ม/แก้ไข/ลบ อุปกรณ์และอุปกรณ์เสริม
+- 📊 ติดตามจำนวนคงคลัง (Total/Available)
+- 🔍 ค้นหาและกรองตามสถานะ
+- 🖼️ เพิ่มรูปภาพผ่าน URL
+- 🔄 Many-to-many mapping ระหว่าง Items และ Accessories
+
+### 📝 ระบบยืม-คืน
+
+**สร้างคำขอ (User/Admin):**
+- เลือกอุปกรณ์หลายรายการพร้อม accessories
+- ระบุจำนวน วันที่ยืม วันที่คืน
+- Shopping cart system
+- แก้ไขคำขอได้ก่อนอนุมัติ
+
+**จัดการคำขอ (Admin):**
+- ✅ อนุมัติและจ่าย → หักสต็อกอัตโนมัติ
+- 🔄 คืนทั้งหมด/บางส่วน → คืนสต็อกอัตโนมัติ
+- ❌ ยกเลิกคำขอ
 
 **สถานะคำขอ:**
-Submit → Distributed → Partial_Returned → Returned / Cancelled
+```
+Submit → Distributed → Partial_Returned → Returned
+                    ↘ Cancelled
+```
 
-### จัดการผู้ใช้งาน (สำหรับ Admin)
-- เพิ่ม/แก้ไข user พร้อมกำหนด email, password และสิทธิ์
+### 👥 จัดการผู้ใช้ (Admin)
+
+- เพิ่ม/แก้ไข/ลบ users
+- กำหนดสิทธิ์ (Admin/User/Guest)
+- เปิด-ปิดการใช้งาน
 - เปลี่ยนรหัสผ่าน
-- เปิด-ปิดการใช้งาน user
-- ตรวจสอบ email format และไม่ให้ซ้ำกัน
-- ยืนยัน password 2 ครั้งเวลาสร้าง user ใหม่
+- ตั้งค่าผู้รับอีเมล (`Can_Send_Email`)
 
-### Dashboard (สำหรับ Admin)
-- ดูสถิติอุปกรณ์และอุปกรณ์เสริม
-- ดูจำนวนคำขอที่รอดำเนินการ
-- ดู activity log 50 รายการล่าสุด
-- อัพเดทแบบ real-time
+### 📧 ระบบแจ้งเตือนอีเมล
 
-### ฟีเจอร์อื่นๆ
-- ค้นหาอุปกรณ์ตามชื่อและกรองตามสถานะ
-- Shopping cart สำหรับเลือกอุปกรณ์ก่อนสร้างคำขอ
-- Infinite scroll เวลาดูรายการอุปกรณ์
-- Responsive design ใช้งานได้ทั้ง desktop และ mobile
-- UI ออกแบบด้วย Tailwind CSS
+**1. แจ้งคำขอยืมใหม่**
+- ส่งอัตโนมัติเมื่อมีคำขอใหม่
+- แสดงรายละเอียดคำขอและรูปอุปกรณ์
+- มีลิงก์เข้าสู่ระบบอนุมัติ
 
-## 👤 สิทธิ์การใช้งานตามบทบาท
+**2. แจ้งเตือนเกินกำหนด**
+- ส่งทุกวันเวลา 08:30 น.
+- แสดงจำนวนรายการที่เกินกำหนด
+- แสดงสถานะคืนบางส่วน
+- ระบุจำนวนค้างคืนของแต่ละรายการ
+
+**รองรับ 2 ระบบ:**
+- 📨 **Gmail (MailApp)** - ส่งฟรี 100 email/day
+- 🚀 **Mailjet** - ส่งได้ไม่จำกัด (ต้อง verify email)
+
+### ⏰ ระบบ Triggers อัตโนมัติ
+
+- 🗄️ **Auto-archive** (02:00 ทุกวัน)
+  - ย้ายคำขอเก่า (Cancelled/Returned > 7 วัน) ไป Historical sheets
+  
+- 📬 **Overdue email** (08:30 ทุกวัน)
+  - ส่งอีเมลแจ้งเตือนรายการเกินกำหนด
+
+### 📊 Dashboard & Reports (Admin)
+
+- สถิติอุปกรณ์และคำขอ real-time
+- Activity logs 3 ประเภท:
+  - **Request Activity** - Submit, Distribute, Return, Cancel
+  - **System Activity** - Login, Logout
+  - **Inventory Activity** - Item/Accessory CRUD
+- Historical requests viewer
+
+---
+
+## 👤 สิทธิ์การใช้งาน
 
 | ฟีเจอร์ | Admin | User | Guest |
 |---------|:-----:|:----:|:-----:|
 | ดูรายการอุปกรณ์ | ✅ | ✅ | ✅ |
-| ยืมอุปกรณ์ (Cart) | ✅ | ✅ | ❌ |
-| ดูคำขอยืมของตัวเอง | ✅ | ✅ | ❌ |
-| อนุมัติ/คืนอุปกรณ์ | ✅ | ❌ | ❌ |
-| จัดการอุปกรณ์/อุปกรณ์เสริม | ✅ | ❌ | ❌ |
-| จัดการผู้ใช้งาน | ✅ | ❌ | ❌ |
-| Dashboard & Reports | ✅ | ❌ | ❌ |
+| สร้างคำขอยืม | ✅ | ✅ | ❌ |
+| แก้ไขคำขอของตัวเอง | ✅ | ✅ | ❌ |
+| อนุมัติ/จ่าย/คืนอุปกรณ์ | ✅ | ❌ | ❌ |
+| จัดการอุปกรณ์/Accessories | ✅ | ❌ | ❌ |
+| จัดการผู้ใช้ | ✅ | ❌ | ❌ |
+| Dashboard & Activity Logs | ✅ | ❌ | ❌ |
+
+---
 
 ## 🛠️ เทคโนโลยีที่ใช้
 
 ### Backend
-- **Google Apps Script**: Server-side logic และ API endpoints
-- **Google Sheets**: Database (Sheets: Users, Items, Accessories, Requests, Sessions, Logs)
+- **Google Apps Script** - Server-side JavaScript
+- **Google Sheets** - Database (NoSQL-like)
 
 ### Frontend
-- **HTML5**: Structure
-- **Tailwind CSS**: Styling และ Responsive Design
-- **Vanilla JavaScript**: Client-side logic
+- **HTML5** - Structure
+- **Tailwind CSS v4** - Styling & Responsive
+- **Vanilla JavaScript** - Client logic
+- **Moment.js** - Date/Time handling
+- **Font Awesome** - Icons
+- **SweetAlert2** - Beautiful alerts
 
-### Libraries & Tools
-- **Moment.js**: จัดการวันที่และเวลา
-- **Font Awesome**: Icon library
-- **Google Apps Script Web App**: Deployment platform
+### Email
+- **MailApp** - Gmail API (default)
+- **Mailjet** - Third-party email service (optional)
+
+---
 
 ## 📁 โครงสร้างไฟล์
 
 ```
 app-script/
-├── code.gs              # Main backend logic (CRUD operations)
-├── auth.gs              # Authentication & Session management
-├── index.html           # Frontend UI
-└── README.md           # Documentation
+├── 📄 code.gs              # Main logic (3,836 lines)
+│   ├── CRUD operations
+│   ├── Stock management
+│   ├── Email functions
+│   └── Dashboard & logs
+│
+├── 🔐 auth.gs              # Authentication (262 lines)
+│   ├── Password hashing
+│   ├── User authentication
+│   └── Session management
+│
+├── 🗄️ archive.gs           # Auto-archive (106 lines)
+│   └── Move old requests to Historical
+│
+├── ⏰ triggers.gs          # Triggers (386 lines)
+│   ├── Setup/Remove triggers
+│   └── Test & debug functions
+│
+├── 🎨 index.html           # Frontend UI (5,000+ lines)
+│   ├── Tailwind CSS
+│   └── Responsive design
+│
+└── 📖 README.md            # Documentation
+
+**Total**: ~9,600 lines of code
 ```
-
-## 📊 โครงสร้าง Database (Google Sheets)
-
-### 1. Users Sheet
-- Email, Password (hashed), Permission, Active
-
-### 2. Items Sheet
-- Item_Id, Item_Name, Item_Desc, Total_Qty, Available_Qty, Image, Active
-
-### 3. Accessories Sheet
-- Accessory_Id, Item_Id, Accessory_Name, Accessory_Desc, Total_Qty, Available_Qty, Active
-
-### 4. Requests Sheet
-- Request_Id, Requirer_Name, Request_Date, Distributed_Date, Return_Date, Status, Remark
-
-### 5. Request_Items Sheet
-- Request_Id, Item_Index, Item_Id, Item_Name, Qty, Returned_Qty, Status
-
-### 6. Request_Accessories Sheet
-- Request_Id, Item_Index, Accessory_Index, Accessory_Id, Accessory_Name, Qty, Returned_Qty, Status
-
-### 7. Sessions Sheet
-- Session_Id, Email, Session_Token, Created_At, Expires_At
-
-### 8. Logs Sheet
-- Log_Id, Email, Activity, Action_At
-
-## 🚀 การติดตั้งและใช้งาน
-
-### 1. สร้าง Google Sheets
-1. สร้าง Google Sheets ใหม่
-2. สร้าง Sheets ตามโครงสร้างด้านบน
-
-### 2. Deploy Google Apps Script
-1. เปิด Google Apps Script Editor (Extensions > Apps Script)
-2. Copy code จาก `code.gs` และ `auth.gs`
-3. Deploy as Web App:
-   - Execute as: **Me**
-   - Who has access: **Anyone**
-4. Copy Web App URL
-
-### 3. Setup Frontend
-1. Copy code จาก `index.html`
-2. Paste ใน Apps Script (File > New > HTML file)
-3. ตั้งชื่อไฟล์เป็น `index`
-
-### 4. สร้าง Admin User แรก
-1. เพิ่มข้อมูลใน Users Sheet:
-   - Email: `admin@admin.com`
-   - Password: Hash ของ `admin123` (ใช้ function `hashPassword()`)
-   - Permission: `Admin`
-   - Active: `TRUE`
-
-### 5. เปิดใช้งาน
-1. เข้าใช้งานผ่าน Web App URL
-2. Login ด้วย Admin account
-
-## 🔒 ความปลอดภัย
-
-- ✅ Password hashing ด้วย SHA-256
-- ✅ Session-based authentication
-- ✅ Session expiration (24 hours)
-- ✅ Email normalization และ case-insensitive comparison
-- ✅ Permission-based access control
-- ✅ Input validation ทั้ง Frontend และ Backend
-- ✅ Audit logging สำหรับทุกการดำเนินการ
-
-## 📝 Audit Trail
-
-ระบบบันทึก Activity Log สำหรับการดำเนินการสำคัญ:
-- User login/logout
-- Item/Accessory CRUD operations
-- Request submissions
-- Distribute/Return/Cancel operations
-- User management changes
-
-## 🎯 Use Cases
-
-### สำหรับ User/Admin
-1. เข้าสู่ระบบ
-2. ค้นหาและเลือกอุปกรณ์ที่ต้องการยืม
-3. เพิ่มลงตะกร้า
-4. สร้างคำขอยืม พร้อมระบุวันที่คืน
-5. รอ Admin อนุมัติ
-
-### สำหรับ Admin
-1. ตรวจสอบคำขอยืม
-2. อนุมัติและจ่ายอุปกรณ์
-3. บันทึกการคืนเมื่อผู้ยืมนำมาคืน
-4. ดู Dashboard และ Reports
-5. จัดการอุปกรณ์และผู้ใช้งาน
-
-## 🐛 Known Issues
-
-- ไม่รองรับการอัพโหลดรูปภาพโดยตรง (ใช้ URL แทน)
-- การค้นหาแบบ Real-time อาจช้าหากมีข้อมูลเยอะมาก
-- Session จะหมดอายุหลัง 24 ชั่วโมง (ต้อง login ใหม่)
-
-## 🔮 Future Enhancements
-
-- [ ] Notification system (Email/Line Notify)
-- [ ] QR Code สำหรับ tracking อุปกรณ์
-- [ ] Export reports (PDF/Excel)
-- [ ] Image upload support
-- [ ] Advanced search and filtering
-- [ ] Calendar view สำหรับการจอง
-- [ ] Mobile App (PWA)
-
-## 📄 License
-
-This project is for educational purposes.
-
-## 👨‍💻 Author
-
-Developed with ❤️ using Google Apps Script
 
 ---
 
-**Last Updated**: February 2026
+## 📊 โครงสร้าง Database
+
+### Google Sheets Structure (13 Sheets)
+
+#### 1️⃣ **Users** - ผู้ใช้งาน
+```
+Email | Password | Permission | Active | Can_Send_Email
+```
+
+#### 2️⃣ **Items** - อุปกรณ์
+```
+Item_Id | Item_Name | Item_Desc | Total_Qty | Available_Qty | Image | Active | Created_By | Created_At | Modified_By | Modified_At
+```
+
+#### 3️⃣ **Accessories** - อุปกรณ์เสริม
+```
+Accessory_Id | Accessory_Name | Accessory_Desc | Total_Qty | Available_Qty | Active | Created_By | Created_At | Modified_By | Modified_At
+```
+
+#### 4️⃣ **Item_Accessory_Mapping** - ความสัมพันธ์
+```
+Mapping_Id | Item_Id | Accessory_Id | Created_By | Created_At | Active
+```
+
+#### 5️⃣ **Requests** - คำขอยืม
+```
+Request_Id | Requirer_Name | Status | Request_Date | Distributed_Date | Return_Date | Remark | Created_By | Created_At | Modified_By | Modified_At
+```
+
+#### 6️⃣ **Request_Item** - รายการอุปกรณ์ในคำขอ
+```
+Request_Id | Item_Index | Item_Id | Item_Name | Qty | Returned_Qty | Status
+```
+
+#### 7️⃣ **Request_Item_Accessory** - รายการอุปกรณ์เสริม
+```
+Request_Id | Item_Index | Accessory_Index | Accessory_Id | Accessory_Name | Qty | Returned_Qty | Status
+```
+
+#### 8️⃣ **Sessions** - Session management
+```
+Session_Id | Email | Permission | Created_At | Last_Activity
+```
+
+#### 9️⃣ **Activity Logs** - 3 Sheets
+- **Request_Activity** - Request operations
+- **System_Activity** - Login/Logout
+- **Inventory_Activity** - Item/Accessory CRUD
+
+```
+Log_Id | Email | Activity | Action_At
+```
+
+#### 🔟 **Historical** - 3 Sheets (Archive)
+- **Historical_Requests**
+- **Historical_Request_Item**
+- **Historical_Request_Item_Accessory**
+
+*(โครงสร้างเหมือน Requests, Request_Item, Request_Item_Accessory)*
+
+---
+
+## 🚀 คู่มือการติดตั้ง
+
+### Step 1: สร้าง Google Sheets
+
+1. สร้าง Google Sheets ใหม่
+2. สร้าง Sheets ทั้ง 13 sheets ตามโครงสร้างข้างต้น
+   - หรือใช้ function `repairSheets()` สร้างอัตโนมัติ
+
+### Step 2: Setup Apps Script
+
+1. เปิด **Extensions → Apps Script**
+2. สร้างไฟล์ทั้งหมด:
+   - `code.gs`
+   - `auth.gs`
+   - `archive.gs`
+   - `triggers.gs`
+   - `index.html`
+3. Copy code จาก repository
+
+### Step 3: Deploy Web App
+
+1. คลิก **Deploy → New deployment**
+2. เลือก type: **Web app**
+3. ตั้งค่า:
+   ```
+   Execute as: Me (noreply.inventory.ims@gmail.com)
+   Who has access: Anyone
+   ```
+4. คลิก **Deploy**
+5. **Copy Web App URL**
+
+> ⚠️ **สำคัญ**: Deploy ด้วยบัญชี `noreply.inventory.ims@gmail.com` เพื่อส่งอีเมลจากบัญชีนี้
+
+### Step 4: สร้าง Admin User
+
+1. เปิด **Users sheet**
+2. เพิ่มข้อมูล:
+   ```
+   Email: admin@admin.com
+   Password: [รัน hashPassword("admin123")]
+   Permission: Admin
+   Active: TRUE
+   Can_Send_Email: TRUE
+   ```
+
+### Step 5: ตั้งค่าอีเมล
+
+#### ตัวเลือก A: Gmail (แนะนำ) 📨
+
+ใช้ค่าเริ่มต้น - ไม่ต้องตั้งค่า:
+```javascript
+const EMAIL_USE_MAILJET = false;
+```
+
+**ข้อจำกัด**: 100 email/day
+
+#### ตัวเลือก B: Mailjet 🚀
+
+1. สมัคร [Mailjet](https://www.mailjet.com/)
+2. รับ API Key & Secret
+3. Verify email `noreply.inventory.ims@gmail.com`:
+   - Account Settings → Senders & Domains
+   - Add sender
+   - Check email verification
+4. แก้ไข `code.gs`:
+   ```javascript
+   const EMAIL_USE_MAILJET = true;
+   const MAILJET_API_KEY = "your-key";
+   const MAILJET_API_SECRET = "your-secret";
+   const MAILJET_FROM_EMAIL = "noreply.inventory.ims@gmail.com";
+   ```
+5. Deploy ใหม่
+
+**ข้อดี**: ไม่จำกัดจำนวน, Tracking, Better deliverability
+
+### Step 6: ตั้งค่า Triggers
+
+1. เปิด Apps Script Editor
+2. รัน function: `setupAllTriggers()`
+3. **Authorize permissions**:
+   - Gmail
+   - SpreadsheetApp
+   - ScriptApp
+4. ตรวจสอบ: รัน `listAllTriggers()`
+
+**Triggers ที่สร้าง:**
+- 🗄️ Archive: ทุกวัน 02:00 น.
+- 📬 Overdue email: ทุกวัน 08:30 น.
+
+### Step 7: ทดสอบระบบ
+
+1. เปิด Web App URL
+2. Login ด้วย `admin@admin.com` / `admin123`
+3. สร้างคำขอยืมทดสอบ
+4. ตรวจสอบอีเมลที่ users ที่ตั้งค่า `Can_Send_Email = TRUE`
+
+✅ **เสร็จสิ้น!**
+
+---
+
+## 💼 การใช้งาน
+
+### 🧑 User Workflow
+
+1. **Login** เข้าสู่ระบบ
+2. **Browse** ดูรายการอุปกรณ์
+3. **Add to Cart** เลือกอุปกรณ์ที่ต้องการ
+4. **Create Request** สร้างคำขอยืม
+5. **Wait** รอ Admin อนุมัติ
+
+### 👨‍💼 Admin Workflow
+
+1. **Manage Items** จัดการอุปกรณ์และ accessories
+2. **Review Requests** ตรวจสอบคำขอใหม่
+3. **Approve & Distribute** อนุมัติและจ่ายอุปกรณ์
+4. **Track Returns** บันทึกการคืน (เต็มจำนวนหรือบางส่วน)
+5. **View Dashboard** ดูสถิติและ activity logs
+6. **Manage Users** จัดการผู้ใช้และสิทธิ์
+
+---
+
+## ✉️ ระบบอีเมล
+
+### Email Templates
+
+#### 1. คำขอยืมใหม่
+
+**Subject:**
+```
+[คำขอยืมใหม่] Request #XXX - ชื่อผู้ยืม
+```
+
+**Content:**
+- ✅ รายละเอียดคำขอ (เลขที่, ผู้ยืม, วันที่)
+- 🖼️ รายการอุปกรณ์พร้อมรูปภาพ
+- 🔗 ลิงก์เข้าสู่ระบบอนุมัติ
+- 📧 ผู้รับ: Users ที่ `Can_Send_Email = TRUE`
+
+**ตัวอย่าง:**
+
+![New Request Email](https://via.placeholder.com/600x400?text=New+Request+Email+Template)
+
+#### 2. แจ้งเตือนเกินกำหนด
+
+**Subject:**
+```
+[แจ้งเตือนเกินกำหนด] X รายการ
+```
+
+**Content:**
+- 📊 สรุปจำนวนรายการ
+- 📅 รายละเอียดแต่ละคำขอ (เกินกำหนดกี่วัน)
+- 🔄 สถานะคืนบางส่วน (หากมี)
+- 📦 รายการอุปกรณ์ค้างคืนพร้อมจำนวน
+- ⏰ ส่ง: ทุกวัน 08:30 น.
+
+**ตัวอย่าง:**
+
+![Overdue Email](https://via.placeholder.com/600x400?text=Overdue+Email+Template)
+
+### การตั้งค่าผู้รับอีเมล
+
+1. เปิด **Users sheet**
+2. ตั้งค่า column `Can_Send_Email`:
+   - `TRUE` = รับอีเมล
+   - `FALSE` หรือเว้นว่าง = ไม่รับอีเมล
+
+---
+
+## 🔧 Troubleshooting
+
+### 🚫 อีเมลไม่ออก
+
+**ตรวจสอบ:**
+1. ✅ มี users ที่ตั้งค่า `Can_Send_Email = TRUE` หรือไม่?
+2. ✅ รัน `testEmailSending()` เพื่อทดสอบ
+3. ✅ ตรวจสอบ authorization (Gmail scope)
+4. ✅ ดู Execution log ใน Apps Script Editor
+
+**แก้ไข:**
+```javascript
+// ทดสอบการส่งอีเมล
+testEmailSending();
+
+// ตรวจสอบผู้รับ
+getEmailRecipients();
+```
+
+### ⏰ Triggers ไม่ทำงาน
+
+**ตรวจสอบ:**
+1. ✅ รัน `listAllTriggers()` - มี triggers หรือไม่?
+2. ✅ ดู Trigger executions (Apps Script → Triggers → Executions)
+3. ✅ Check authorization
+
+**แก้ไข:**
+```javascript
+// ลบและสร้างใหม่
+removeAllTriggers();
+setupAllTriggers();
+
+// ตรวจสอบ
+listAllTriggers();
+```
+
+### 🔄 ข้อมูลไม่อัพเดท
+
+**แก้ไข:**
+```javascript
+// ปิด cache
+const ENABLE_CACHE = false;
+```
+
+- รีเฟรชหน้าเว็บ (Ctrl+F5)
+- ตรวจสอบชื่อ sheets ถูกต้อง
+
+### 🔒 Authorization Issues
+
+**วิธีแก้:**
+1. รัน function ใน Apps Script Editor (ไม่ใช่ Web App)
+2. คลิก "Review Permissions"
+3. เลือกบัญชี Google
+4. คลิก "Allow" ทุก scope
+
+---
+
+## 🔒 ความปลอดภัย
+
+- ✅ **Password Hashing**: SHA-256
+- ✅ **Session Management**: 24-hour expiration
+- ✅ **Permission Control**: Role-based access
+- ✅ **Input Validation**: Frontend & Backend
+- ✅ **Audit Trail**: บันทึกทุก action
+- ✅ **Email Normalization**: Case-insensitive
+
+---
+
+## 📈 System Statistics
+
+| Metric | Value |
+|--------|-------|
+| **Total Lines** | ~9,600 |
+| **Backend** | ~4,500 lines |
+| **Frontend** | ~5,000 lines |
+| **Sheets** | 13 sheets |
+| **Functions** | 50+ |
+| **Email Templates** | 2 |
+| **Triggers** | 2 |
+| **Supported Users** | Unlimited |
+
+---
+
+## 🔮 Future Enhancements
+
+- [x] ~~Email notifications~~ ✅ Done
+- [x] ~~Auto-archive~~ ✅ Done
+- [ ] **Line Notify** integration
+- [ ] **QR Code** tracking
+- [ ] **Export reports** (PDF/Excel)
+- [ ] **Image upload** (Google Drive)
+- [ ] **Advanced search** & filters
+- [ ] **Calendar view** booking
+- [ ] **Mobile App** (PWA)
+- [ ] **Custom email templates**
+
+---
+
+## 📝 Changelog
+
+### Version 2.0 (Feb 15, 2026)
+- ✨ Email notification system
+- ✨ Auto-archive feature
+- ✨ Mailjet integration
+- ✨ Partial return support
+- 🐛 Bug fixes & improvements
+
+### Version 1.0
+- 🎉 Initial release
+- ✅ Basic CRUD operations
+- ✅ Request management
+- ✅ User authentication
+
+---
+
+## 📄 License
+
+This project is for **educational purposes**.
+
+---
+
+
+## 🙏 Acknowledgments
+
+- Google Apps Script Team
+- Tailwind CSS
+- Moment.js
+- Font Awesome
+- SweetAlert2
+- Mailjet
+
+---

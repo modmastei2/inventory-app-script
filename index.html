@@ -886,6 +886,32 @@
                             </div>
                         </div>
 
+                        <!-- Search and Filter -->
+                        <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-3">
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-slate-700">ค้นหาชื่อรายการ</label>
+                                <input type="text" id="mgmt-item-search-name" placeholder="ค้นหาชื่อรายการ..."
+                                    class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500"
+                                    oninput="filterManagementItems()">
+                            </div>
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-slate-700">สถานะ</label>
+                                <select id="mgmt-item-search-status"
+                                    class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500"
+                                    onchange="filterManagementItems()">
+                                    <option value="All">ทั้งหมด</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="clearManagementItemsFilter()"
+                                    class="w-full px-4 py-2 font-medium text-slate-600 transition border rounded-lg cursor-pointer border-slate-300 hover:bg-slate-50">
+                                    <i class="fas fa-times mr-1"></i> ล้างการค้นหา
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- Icon Legend -->
                         <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
                             <div class="flex items-center gap-1">
@@ -917,11 +943,11 @@
                                                 class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">
                                                 Name</th>
                                             <th
-                                                class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
-                                                Total Qty</th>
+                                                class="px-6 py-4 text-xs font-semibold text-left uppercase text-slate-600">
+                                                Description</th>
                                             <th
                                                 class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
-                                                Available Qty</th>
+                                                Quantity</th>
                                             <th
                                                 class="px-6 py-4 text-xs font-semibold text-center uppercase text-slate-600">
                                                 Status</th>
@@ -952,6 +978,32 @@
                                 <button onclick="openMgmtAccessoryModal()"
                                     class="px-4 py-2 font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">
                                     <i class="fas fa-plus mr-2"></i>Create Accessory
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Search and Filter -->
+                        <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-3">
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-slate-700">ค้นหาชื่ออุปกรณ์เสริม</label>
+                                <input type="text" id="mgmt-accessory-search-name" placeholder="ค้นหาชื่ออุปกรณ์เสริม..."
+                                    class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500"
+                                    oninput="filterManagementAccessories()">
+                            </div>
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-slate-700">สถานะ</label>
+                                <select id="mgmt-accessory-search-status"
+                                    class="w-full px-4 py-2 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500"
+                                    onchange="filterManagementAccessories()">
+                                    <option value="All">ทั้งหมด</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="clearManagementAccessoriesFilter()"
+                                    class="w-full px-4 py-2 font-medium text-slate-600 transition border rounded-lg cursor-pointer border-slate-300 hover:bg-slate-50">
+                                    <i class="fas fa-times mr-1"></i> ล้างการค้นหา
                                 </button>
                             </div>
                         </div>
@@ -1514,10 +1566,10 @@
                 <!-- Dates -->
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                        <label class="block mb-2 text-sm font-semibold text-slate-700">วันที่ยืม</label>
+                        <label class="block mb-2 text-sm font-semibold text-slate-700">วันที่ยืม <span
+                                class="text-red-500">*</span></label>
                         <input type="date" id="requestDate"
-                            class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500 bg-slate-50"
-                            readonly>
+                            class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-slate-700">วันที่คืน <span
@@ -1752,6 +1804,7 @@
     let itemList = [];
     let accessoriesList = [];
     let allAccessories = [];
+    let filteredAccessories = [];
 
     // active requests
     let activeRequest = [];
@@ -3649,6 +3702,7 @@
     // ============================================
 
     let managementItems = [];
+    let filteredManagementItems = [];
     let managementAccessories = [];
     let managementUsers = [];
 
@@ -3691,6 +3745,7 @@
         google.script.run
             .withSuccessHandler((response) => {
                 managementItems = response.data || [];
+                filteredManagementItems = [...managementItems];
                 renderManagementItems();
             })
             .withFailureHandler((error) => {
@@ -3701,22 +3756,47 @@
             .loadItems('', 'ALL', 1, 1000);
     }
 
+    function filterManagementItems() {
+        const nameSearch = document.getElementById('mgmt-item-search-name').value.toLowerCase().trim();
+        const statusFilter = document.getElementById('mgmt-item-search-status').value;
+
+        filteredManagementItems = managementItems.filter(item => {
+            const nameMatch = !nameSearch || item.Item_Name.toLowerCase().includes(nameSearch);
+            const statusMatch = statusFilter === 'All' || 
+                               (statusFilter === 'Active' && item.Active) || 
+                               (statusFilter === 'Inactive' && !item.Active);
+            
+            return nameMatch && statusMatch;
+        });
+
+        renderManagementItems();
+    }
+
+    function clearManagementItemsFilter() {
+        document.getElementById('mgmt-item-search-name').value = '';
+        document.getElementById('mgmt-item-search-status').value = 'All';
+        filteredManagementItems = [...managementItems];
+        renderManagementItems();
+    }
+
     function renderManagementItems() {
         const tbody = document.getElementById('mgmt-items-tbody');
 
-        if (managementItems.length === 0) {
+        if (filteredManagementItems.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-slate-500">No items found</td></tr>';
             return;
         }
 
-        tbody.innerHTML = managementItems.map(item => `
+        tbody.innerHTML = filteredManagementItems.map(item => `
             <tr class="border-t border-slate-100 hover:bg-slate-50">
                 <td class="px-4 py-3 text-sm text-slate-700 text-center">${item.Item_Id}</td>
                 <td class="px-4 py-3 text-sm font-medium text-slate-800">${item.Item_Name}</td>
-                <td class="px-4 py-3 text-sm text-slate-700 text-center">${item.Total_Qty}</td>
-                <td class="px-4 py-3 text-sm text-slate-700 text-center">${item.Available_Qty}</td>
-                <td class="px-4 py-3 text-sm">
-                    <span class="px-2 py-1 text-xs font-medium text-center rounded-full ${item.Active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                <td class="px-4 py-3 text-sm text-slate-600">${item.Item_Desc || '-'}</td>
+                <td class="px-4 py-3 text-sm text-slate-700 text-center">
+                    <span class="font-semibold">${item.Available_Qty}</span> / ${item.Total_Qty}
+                </td>
+                <td class="px-4 py-3 text-sm text-center">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full ${item.Active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
                         ${item.Active ? 'Active' : 'Inactive'}
                     </span>
                 </td>
@@ -4132,7 +4212,8 @@
             .withSuccessHandler((response) => {
                 if (response.success) {
                     allAccessories = response.data || [];
-                    renderManagementAccessories(allAccessories);
+                    filteredAccessories = [...allAccessories];
+                    renderManagementAccessories(filteredAccessories);
                 } else {
                     Swal.fire('เกิดข้อผิดพลาด', 'เกิดข้อผิดพลาด: ' + (response.message || 'ไม่สามารถโหลดอุปกรณ์เสริมได้'), 'error');
                     document.getElementById('mgmt-accessories-tbody').innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading accessories</td></tr>';
@@ -4144,6 +4225,29 @@
                 document.getElementById('mgmt-accessories-tbody').innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading accessories</td></tr>';
             })
             .loadAccessories([], true);
+    }
+
+    function filterManagementAccessories() {
+        const nameSearch = document.getElementById('mgmt-accessory-search-name').value.toLowerCase().trim();
+        const statusFilter = document.getElementById('mgmt-accessory-search-status').value;
+
+        filteredAccessories = allAccessories.filter(accessory => {
+            const nameMatch = !nameSearch || accessory.Accessory_Name.toLowerCase().includes(nameSearch);
+            const statusMatch = statusFilter === 'All' || 
+                               (statusFilter === 'Active' && accessory.Active) || 
+                               (statusFilter === 'Inactive' && !accessory.Active);
+            
+            return nameMatch && statusMatch;
+        });
+
+        renderManagementAccessories(filteredAccessories);
+    }
+
+    function clearManagementAccessoriesFilter() {
+        document.getElementById('mgmt-accessory-search-name').value = '';
+        document.getElementById('mgmt-accessory-search-status').value = 'All';
+        filteredAccessories = [...allAccessories];
+        renderManagementAccessories(filteredAccessories);
     }
 
     function renderManagementAccessories(accessories) {

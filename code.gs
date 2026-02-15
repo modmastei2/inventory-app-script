@@ -39,6 +39,17 @@ const DURATION_CACHE_SEC = 15; // 5 minutes
 const ENABLE_CACHE = false; // Set to false to disable caching
 
 // ============================================
+// Email Configuration
+// ============================================
+// NOTE: MailApp will send from the Google Account that runs the script
+// To send from a specific email address, use Mailjet after verifying the sender
+const EMAIL_USE_MAILJET = false; // Set to true to use Mailjet, false to use MailApp
+const MAILJET_API_KEY = "64488383a067ab2089c3bf03e2de9180"; // Your Mailjet API Key
+const MAILJET_API_SECRET = "bf156f362e3cae63478d96d02c53d1c4"; // Your Mailjet API Secret
+const MAILJET_FROM_EMAIL = "noreply.inventory.ims@gmail.com"; // Sender email (verify this in Mailjet first)
+const MAILJET_FROM_NAME = "Inventory System"; // Sender name
+
+// ============================================
 // Core Functions
 // ============================================
 
@@ -1517,6 +1528,14 @@ function submitRequest(submitRequestData, sessionId) {
                 requestItemAccessorySheet.getRange(requestItemAccessorySheet.getLastRow() + 1, 1, requestItemsAccessories.length, requestItemsAccessories[0].length).setValues(requestItemsAccessories);
 
             logRequestActivity("Create Request", sessionId);
+            
+            // Send email notification for new request
+            try {
+                sendRequestSubmitEmail(requestId);
+            } catch (emailError) {
+                Logger.log("Email notification error: " + emailError.toString());
+                // Don't fail the request if email fails
+            }
         } else {
             // Edit existing request - only allowed if status is 'Submit' (Pending)
             const result = editRequest(submitRequestData, sessionId);
@@ -3162,5 +3181,658 @@ function getHistoricalRequests(filters = {}, page = 1, pageSize = 100) {
     } catch (error) {
         Logger.log("Error in getHistoricalRequests: " + error.toString());
         return { success: false, message: error.toString(), data: [] };
+    }
+}
+
+// ============================================
+// Email Functions
+// ============================================
+
+/*
+@ Get users who should receive email notifications
+*/
+function getEmailRecipients() {
+    try {
+        const ss = getActiveSheet();
+        const userSheet = ss.getSheetByName(USER_SHEET_NAME);
+        
+        if (!userSheet) {
+            throw new Error(`Sheet "${USER_SHEET_NAME}" not found`);
+        }
+        
+        const data = userSheet.getDataRange().getValues();
+        const headers = data.shift(); // Remove header row
+        const emailColIndex = headers.indexOf("Email");
+        const canSendEmailColIndex = headers.indexOf("Can_Send_Email");
+        
+        const recipients = [];
+        for (let row of data) {
+            if (row[canSendEmailColIndex] === true || row[canSendEmailColIndex] === 'TRUE') {
+                recipients.push(row[emailColIndex]);
+            }
+        }
+        
+        Logger.log("Email recipients: " + recipients.join(", "));
+        return recipients;
+    } catch (error) {
+        Logger.log("Error getting email recipients: " + error.toString());
+        return [];
+    }
+}
+
+/*
+@ Send email via Mailjet API
+*/
+function sendEmailViaMailjet(options) {
+    try {
+        if (!MAILJET_API_KEY || !MAILJET_API_SECRET) {
+            throw new Error("Mailjet API credentials not configured");
+        }
+        
+        const url = "https://api.mailjet.com/v3.1/send";
+        const auth = Utilities.base64Encode(MAILJET_API_KEY + ":" + MAILJET_API_SECRET);
+        
+        const payload = {
+            "Messages": [{
+                "From": {
+                    "Email": MAILJET_FROM_EMAIL,
+                    "Name": options.name || MAILJET_FROM_NAME
+                },
+                "To": [{
+                    "Email": options.to
+                }],
+                "Subject": options.subject,
+                "HTMLPart": options.htmlBody
+            }]
+        };
+        
+        const httpOptions = {
+            "method": "post",
+            "contentType": "application/json",
+            "headers": {
+                "Authorization": "Basic " + auth
+            },
+            "payload": JSON.stringify(payload),
+            "muteHttpExceptions": true
+        };
+        
+        const response = UrlFetchApp.fetch(url, httpOptions);
+        const responseCode = response.getResponseCode();
+        const responseText = response.getContentText();
+        
+        if (responseCode === 200) {
+            Logger.log("Mailjet email sent successfully to: " + options.to);
+            return { success: true };
+        } else {
+            Logger.log("Mailjet API error: " + responseCode + " - " + responseText);
+            throw new Error("Mailjet API error: " + responseCode);
+        }
+    } catch (error) {
+        Logger.log("Error sending email via Mailjet: " + error.toString());
+        throw error;
+    }
+}
+
+/*
+@ Send email wrapper - automatically selects MailApp or Mailjet based on configuration
+@ options: { to, subject, htmlBody, name, noReply }
+*/
+function sendEmail(options) {
+    try {
+        if (EMAIL_USE_MAILJET) {
+            // Use Mailjet
+            return sendEmailViaMailjet(options);
+        } else {
+            // Use MailApp (default Gmail)
+            MailApp.sendEmail({
+                to: options.to,
+                subject: options.subject,
+                htmlBody: options.htmlBody,
+                name: options.name || "Inventory System (No-Reply)",
+                noReply: options.noReply !== false // default true
+            });
+            Logger.log("MailApp email sent to: " + options.to);
+            return { success: true };
+        }
+    } catch (error) {
+        Logger.log("Error sending email to " + options.to + ": " + error.toString());
+        throw error;
+    }
+}
+
+/*
+@ Send email notification when a request is submitted
+*/
+function sendRequestSubmitEmail(requestId) {
+    try {
+        const recipients = getEmailRecipients();
+        
+        if (recipients.length === 0) {
+            Logger.log("No email recipients configured");
+            return;
+        }
+        
+        // Get request details
+        const requestData = getRowRequest(requestId);
+        
+        if (!requestData.success) {
+            throw new Error("Failed to get request data");
+        }
+        
+        const request = requestData.data;
+        
+        // Get web app URL for approval link (if deployed as web app)
+        const scriptUrl = ScriptApp.getService().getUrl() || "https://script.google.com";
+        
+        // Build email content
+        const subject = `[คำขอยืมใหม่] Request #${requestId} - ${request.Requirer_Name}`;
+        
+        // Build items list with images
+        let itemsHtml = '';
+        if (request.Items && request.Items.length > 0) {
+            for (let item of request.Items) {
+                itemsHtml += `
+                    <tr>
+                        <td style="padding: 15px; border-bottom: 1px solid #e5e7eb;">`;
+                
+                // Add item image if available
+                if (item.Image && item.Image.trim() !== '') {
+                    itemsHtml += `
+                            <img src="${item.Image}" alt="${item.Item_Name}" 
+                                 style="max-width: 120px; max-height: 120px; border-radius: 8px; margin-bottom: 10px; display: block;">`;
+                }
+                
+                itemsHtml += `
+                            <div style="font-weight: bold; color: #1f2937; margin-bottom: 5px;">
+                                ${item.Item_Name} <span style="color: #6b7280;">(จำนวน ${item.Qty})</span>
+                            </div>`;
+                
+                // Add accessories if any
+                if (item.Accessories && item.Accessories.length > 0) {
+                    itemsHtml += `
+                            <div style="margin-left: 15px; margin-top: 8px; color: #4b5563; font-size: 14px;">
+                                <div style="font-weight: 600; margin-bottom: 3px;">• อุปกรณ์เสริม:</div>
+                                <ul style="margin: 0; padding-left: 20px;">`;
+                    for (let acc of item.Accessories) {
+                        itemsHtml += `<li>${acc.Accessory_Name} <span style="color: #6b7280;">(จำนวน ${acc.Qty})</span></li>`;
+                    }
+                    itemsHtml += `
+                                </ul>
+                            </div>`;
+                }
+                
+                itemsHtml += `
+                        </td>
+                    </tr>`;
+            }
+        }
+        
+        const htmlBody = `
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { 
+                            font-family: 'Sarabun', 'Arial', sans-serif; 
+                            line-height: 1.6; 
+                            color: #333333; 
+                            margin: 0;
+                            padding: 0;
+                            background-color: #f5f5f5;
+                        }
+                        .container { 
+                            max-width: 650px; 
+                            margin: 20px auto; 
+                            background-color: #ffffff;
+                            border: 1px solid #e0e0e0;
+                        }
+                        .header { 
+                            background-color: #2563eb;
+                            color: white; 
+                            padding: 25px;
+                            border-bottom: 3px solid #1d4ed8;
+                        }
+                        .header h1 {
+                            margin: 0;
+                            font-size: 22px;
+                            font-weight: 600;
+                        }
+                        .content { 
+                            padding: 25px;
+                        }
+                        .greeting {
+                            font-size: 16px;
+                            color: #333333;
+                            margin-bottom: 15px;
+                        }
+                        .intro-text {
+                            color: #4b5563;
+                            margin-bottom: 25px;
+                            line-height: 1.8;
+                        }
+                        .info-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 15px 0;
+                            background-color: #fafafa;
+                            border: 1px solid #e0e0e0;
+                        }
+                        .info-table tr {
+                            border-bottom: 1px solid #e0e0e0;
+                        }
+                        .info-table tr:last-child {
+                            border-bottom: none;
+                        }
+                        .info-table td {
+                            padding: 10px 12px;
+                        }
+                        .info-label {
+                            font-weight: 600;
+                            color: #555555;
+                            width: 120px;
+                        }
+                        .info-value {
+                            color: #333333;
+                        }
+                        .section-title {
+                            font-size: 16px;
+                            font-weight: 600;
+                            color: #333333;
+                            margin: 20px 0 10px 0;
+                            padding-bottom: 5px;
+                            border-bottom: 2px solid #2563eb;
+                        }
+                        .items-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            background-color: #ffffff;
+                            border: 1px solid #e0e0e0;
+                        }
+                        .approval-box {
+                            background-color: #fff9e6;
+                            border: 1px solid #fbbf24;
+                            padding: 15px;
+                            margin: 20px 0;
+                        }
+                        .approval-link {
+                            display: inline-block;
+                            background-color: #2563eb;
+                            color: white !important;
+                            padding: 10px 24px;
+                            text-decoration: none;
+                            font-weight: 600;
+                            margin-top: 10px;
+                        }
+                        .footer {
+                            background-color: #fafafa;
+                            padding: 15px 25px;
+                            font-size: 12px;
+                            color: #666666;
+                            border-top: 1px solid #e0e0e0;
+                        }
+                        .footer-note {
+                            margin: 5px 0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>มีคำขอยืมใหม่</h1>
+                        </div>
+                        <div class="content">
+                            <div class="greeting">
+                                เรียน ผู้อนุมัติ
+                            </div>
+                            
+                            <div class="intro-text">
+                                มีคำขอยืมใหม่เข้าสู่ระบบ โดยมีรายละเอียดดังนี้:
+                            </div>
+                            
+                            <table class="info-table">
+                                <tr>
+                                    <td class="info-label">เลขที่คำขอ:</td>
+                                    <td class="info-value"><strong>#${requestId}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">ผู้ยืม:</td>
+                                    <td class="info-value">${request.Requirer_Name}</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">วันที่ยืม:</td>
+                                    <td class="info-value">${request.Request_Date}</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">วันที่คืน:</td>
+                                    <td class="info-value">${request.Return_Date}</td>
+                                </tr>
+                            </table>
+                            
+                            <div class="section-title">รายการอุปกรณ์ที่ขอยืม</div>
+                            
+                            <table class="items-table">
+                                ${itemsHtml}
+                            </table>
+                            
+                            ${request.Remark ? `
+                            <div style="margin-top: 20px;">
+                                <div style="font-weight: 600; color: #374151; margin-bottom: 8px;">หมายเหตุ:</div>
+                                <div style="background-color: #f3f4f6; padding: 12px; border-radius: 6px; color: #4b5563;">
+                                    ${request.Remark}
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            <div class="approval-box">
+                                <strong style="color: #92400e;">กรุณาดำเนินการ:</strong>
+                                <div style="margin-top: 8px; color: #78350f;">
+                                    กรุณาเข้าสู่ระบบเพื่อตรวจสอบรายละเอียดและอนุมัติคำขอ
+                                </div>
+                                <a href="${scriptUrl}" class="approval-link">
+                                    เข้าสู่ระบบอนุมัติ
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="footer">
+                            <div class="footer-note">
+                                อีเมลนี้ส่งจากระบบอัตโนมัติ กรุณาอย่าตอบกลับ
+                            </div>
+                            <div class="footer-note">
+                                Inventory Management System
+                            </div>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        `;
+        
+        // Send email to all recipients with no-reply sender
+        for (let recipient of recipients) {
+            try {
+                sendEmail({
+                    to: recipient,
+                    subject: subject,
+                    htmlBody: htmlBody,
+                    name: "Inventory System (No-Reply)",
+                    noReply: true
+                });
+            } catch (emailError) {
+                Logger.log("Failed to send email to " + recipient + ": " + emailError.toString());
+            }
+        }
+        
+        Logger.log("Request submit email notification sent for Request #" + requestId);
+        
+    } catch (error) {
+        Logger.log("Error sending request submit email: " + error.toString());
+        throw error;
+    }
+}
+
+/*
+@ Send email notification for overdue items
+@ Should be triggered daily at T+1 (08:30)
+*/
+function sendOverdueItemsEmail() {
+    try {
+        const recipients = getEmailRecipients();
+        
+        if (recipients.length === 0) {
+            Logger.log("No email recipients configured");
+            return;
+        }
+        
+        // Get all active requests (Distributed status)
+        const requests = getRequestList();
+        
+        if (!requests.success || !requests.data) {
+            Logger.log("Failed to get request list");
+            return;
+        }
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const overdueRequests = [];
+        
+        for (let request of requests.data) {
+            // Check both Distributed and Partial_Returned status
+            if ((request.Status === 'Distributed' || request.Status === 'Partial_Returned') && request.Return_Date) {
+                const returnDate = new Date(request.Return_Date);
+                returnDate.setHours(0, 0, 0, 0);
+                
+                // Check if return date is in the past
+                if (returnDate < today) {
+                    const daysOverdue = Math.floor((today - returnDate) / (1000 * 60 * 60 * 24));
+                    overdueRequests.push({
+                        ...request,
+                        daysOverdue: daysOverdue
+                    });
+                }
+            }
+        }
+        
+        if (overdueRequests.length === 0) {
+            Logger.log("No overdue requests found");
+            return;
+        }
+        
+        // Build email content
+        const subject = `[แจ้งเตือนเกินกำหนด] ${overdueRequests.length} รายการ`;
+        
+        let overdueHtml = '';
+        for (let request of overdueRequests) {
+            // Get full request details including items
+            const fullRequest = getRowRequest(request.Request_Id);
+            
+            let itemsList = '';
+            if (fullRequest.success && fullRequest.data.Items) {
+                for (let item of fullRequest.data.Items) {
+                    // Add item image if available
+                    if (item.Image && item.Image.trim() !== '') {
+                        itemsList += `
+                            <div style="margin-bottom: 8px;">
+                                <img src="${item.Image}" alt="${item.Item_Name}" 
+                                     style="max-width: 100px; max-height: 100px; border-radius: 6px;">
+                            </div>`;
+                    }
+                    
+                    // Calculate outstanding quantity
+                    const returnedQty = item.Returned_Qty || 0;
+                    const outstandingQty = item.Qty - returnedQty;
+                    
+                    // Show item with return status
+                    if (returnedQty > 0) {
+                        itemsList += `<li><strong>${item.Item_Name}</strong> 
+                            <span style="color: #6b7280;">(ยืม ${item.Qty}, คืนแล้ว ${returnedQty}, <span style="color: #dc2626; font-weight: 600;">ค้างคืน ${outstandingQty}</span>)</span>`;
+                    } else {
+                        itemsList += `<li><strong>${item.Item_Name}</strong> <span style="color: #6b7280;">(ยืม ${item.Qty})</span>`;
+                    }
+                    
+                    if (item.Accessories && item.Accessories.length > 0) {
+                        itemsList += `<ul style="margin: 5px 0 0 20px; font-size: 14px;">`;
+                        for (let acc of item.Accessories) {
+                            const accReturnedQty = acc.Returned_Qty || 0;
+                            const accOutstandingQty = acc.Qty - accReturnedQty;
+                            
+                            if (accReturnedQty > 0) {
+                                itemsList += `<li style="color: #4b5563;">${acc.Accessory_Name} 
+                                    <span style="color: #6b7280;">(ยืม ${acc.Qty}, คืนแล้ว ${accReturnedQty}, <span style="color: #dc2626; font-weight: 600;">ค้างคืน ${accOutstandingQty}</span>)</span></li>`;
+                            } else {
+                                itemsList += `<li style="color: #4b5563;">${acc.Accessory_Name} <span style="color: #6b7280;">(ยืม ${acc.Qty})</span></li>`;
+                            }
+                        }
+                        itemsList += `</ul>`;
+                    }
+                    itemsList += `</li>`;
+                }
+            }
+            
+            overdueHtml += `
+                <div style="margin: 15px 0; padding: 15px; background-color: #fff5f5; border: 1px solid #fca5a5; border-left: 4px solid #dc2626;">
+                    <div style="margin-bottom: 12px;">
+                        <strong style="color: #dc2626; font-size: 16px;">คำขอ #${request.Request_Id}</strong>
+                        <span style="background-color: #fee2e2; color: #991b1b; padding: 3px 10px; margin-left: 10px; font-size: 13px; font-weight: 600;">
+                            เกินกำหนด ${request.daysOverdue} วัน
+                        </span>
+                        ${request.Status === 'Partial_Returned' ? `
+                        <span style="background-color: #fef3c7; color: #92400e; padding: 3px 10px; margin-left: 5px; font-size: 13px; font-weight: 600;">
+                            คืนบางส่วนแล้ว
+                        </span>
+                        ` : ''}
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; background-color: #ffffff; border: 1px solid #e0e0e0;">
+                        <tr style="background-color: #fafafa; border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 8px 10px; font-weight: 600; color: #555555; width: 100px;">ผู้ยืม:</td>
+                            <td style="padding: 8px 10px; color: #333333;">${request.Requirer_Name}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 8px 10px; font-weight: 600; color: #555555;">วันที่ยืม:</td>
+                            <td style="padding: 8px 10px; color: #333333;">${request.Request_Date}</td>
+                        </tr>
+                        <tr style="background-color: #fafafa; border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 8px 10px; font-weight: 600; color: #555555;">ควรคืน:</td>
+                            <td style="padding: 8px 10px; color: #dc2626; font-weight: 600;">${request.Return_Date}</td>
+                        </tr>
+                        ${request.Remark ? `
+                        <tr>
+                            <td style="padding: 8px 10px; font-weight: 600; color: #555555; vertical-align: top;">หมายเหตุ:</td>
+                            <td style="padding: 8px 10px; color: #333333;">${request.Remark}</td>
+                        </tr>
+                        ` : ''}
+                    </table>
+                    <div style="margin-top: 12px;">
+                        <div style="font-weight: 600; color: #555555; margin-bottom: 6px;">รายการอุปกรณ์:</div>
+                        <ul style="margin: 0; padding-left: 20px; color: #333333;">
+                            ${itemsList}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+        
+        const htmlBody = `
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { 
+                            font-family: 'Sarabun', 'Arial', sans-serif; 
+                            line-height: 1.6; 
+                            color: #333333; 
+                            margin: 0;
+                            padding: 0;
+                            background-color: #f5f5f5;
+                        }
+                        .container { 
+                            max-width: 700px; 
+                            margin: 20px auto; 
+                            background-color: #ffffff;
+                            border: 1px solid #e0e0e0;
+                        }
+                        .header { 
+                            background-color: #dc2626;
+                            color: white; 
+                            padding: 25px;
+                            border-bottom: 3px solid #b91c1c;
+                        }
+                        .header h1 {
+                            margin: 0;
+                            font-size: 22px;
+                            font-weight: 600;
+                        }
+                        .content { 
+                            padding: 25px;
+                        }
+                        .summary-box {
+                            background-color: #fff5f5;
+                            border: 1px solid #fca5a5;
+                            padding: 15px;
+                            margin-bottom: 20px;
+                            text-align: center;
+                        }
+                        .summary-number {
+                            font-size: 32px;
+                            font-weight: 700;
+                            color: #dc2626;
+                            margin: 8px 0;
+                        }
+                        .action-box {
+                            background-color: #fff9e6;
+                            border: 1px solid #fbbf24;
+                            padding: 15px;
+                            margin: 20px 0;
+                        }
+                        .footer {
+                            background-color: #fafafa;
+                            padding: 15px 25px;
+                            font-size: 12px;
+                            color: #666666;
+                            border-top: 1px solid #e0e0e0;
+                        }
+                        .footer-note {
+                            margin: 5px 0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>แจ้งเตือนรายการเกินกำหนดคืน</h1>
+                        </div>
+                        <div class="content">
+                            <div class="summary-box">
+                                <div style="color: #991b1b; font-weight: 600;">พบรายการยืมที่เกินกำหนดคืน</div>
+                                <div class="summary-number">${overdueRequests.length}</div>
+                                <div style="color: #7c2d12; font-size: 14px;">รายการ</div>
+                            </div>
+                            
+                            ${overdueHtml}
+                            
+                            <div class="action-box">
+                                <div style="font-weight: 600; color: #92400e; font-size: 16px; margin-bottom: 6px;">
+                                    การดำเนินการ:
+                                </div>
+                                <div style="color: #78350f;">
+                                    กรุณาติดตามผู้ยืมเพื่อให้คืนอุปกรณ์โดยเร็วที่สุด เพื่อให้ผู้อื่นสามารถใช้งานต่อได้
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="footer">
+                            <div class="footer-note">
+                                อีเมลนี้ส่งจากระบบอัตโนมัติ กรุณาอย่าตอบกลับ
+                            </div>
+                            <div class="footer-note">
+                                ส่งอัตโนมัติทุกวันเวลา 08:30 น. - Inventory Management System
+                            </div>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        `;
+        
+        // Send email to all recipients with no-reply sender
+        for (let recipient of recipients) {
+            try {
+                sendEmail({
+                    to: recipient,
+                    subject: subject,
+                    htmlBody: htmlBody,
+                    name: "Inventory System (No-Reply)",
+                    noReply: true
+                });
+            } catch (emailError) {
+                Logger.log("Failed to send overdue email to " + recipient + ": " + emailError.toString());
+            }
+        }
+        
+        Logger.log("Overdue items email notification sent for " + overdueRequests.length + " requests");
+        
+    } catch (error) {
+        Logger.log("Error sending overdue items email: " + error.toString());
     }
 }
